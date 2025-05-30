@@ -1,45 +1,40 @@
 const header = {
-  // all the properties are optional - can be left empty or deleted
-  homepage: 'https://rjshkhr.github.io/cleanfolio',
-  title: 'JS.',
+  homepage: 'https://walidsardib.github.io/porfolio',
+  title: 'WSB',
 }
 
 const about = {
-  // all the properties are optional - can be left empty or deleted
-  name: 'John Smith',
-  role: 'Front End Engineer',
+  name: 'Walid Sardi',
+  role: 'Desarrollador de Software',
   description:
-    'Adipisicing sit fugit ullam unde aliquid sequi Facilis soluta facilis perspiciatis corporis nulla aspernatur. Autem eligendi rerum delectus modi quisquam? Illo ut quasi nemo ipsa cumque perspiciatis! Maiores minima consectetur.',
-  resume: 'https://example.com',
+    '¡Hola! Soy Walid Sardi, Técnico en Desarrollo de Aplicaciones Multiplataforma (DAM). Apasionado por la tecnología, la programación y la creación de soluciones innovadoras. Me gusta aprender constantemente y enfrentar nuevos retos que me permitan crecer profesionalmente. Siempre busco aportar mi energía, conocimientos y creatividad a cada proyecto en el que participo.',
   social: {
-    linkedin: 'https://linkedin.com',
-    github: 'https://github.com',
+    linkedin: 'https://www.linkedin.com/in/walid-sardi-740619304/',
+    github: 'https://github.com/walidsardib',
   },
 }
 
 const projects = [
-  // projects can be added an removed
-  // if there are no projects, Projects section won't show up
   {
-    name: 'Project 1',
+    name: 'Proyecto 1',
     description:
-      'Amet asperiores et impedit aliquam consectetur? Voluptates sed a nulla ipsa officia et esse aliquam',
+      'Aplicación desarrollada con SASS, TypeScript y React. Permite gestionar tareas de manera eficiente y sencilla.',
     stack: ['SASS', 'TypeScript', 'React'],
     sourceCode: 'https://github.com',
     livePreview: 'https://github.com',
   },
   {
-    name: 'Project 2',
+    name: 'Proyecto 2',
     description:
-      'Amet asperiores et impedit aliquam consectetur? Voluptates sed a nulla ipsa officia et esse aliquam',
+      'Plataforma web interactiva para compartir recursos educativos. Optimizada para un rendimiento rápido y seguro.',
     stack: ['SASS', 'TypeScript', 'React'],
     sourceCode: 'https://github.com',
     livePreview: 'https://github.com',
   },
   {
-    name: 'Project 3',
+    name: 'Proyecto 3',
     description:
-      'Amet asperiores et impedit aliquam consectetur? Voluptates sed a nulla ipsa officia et esse aliquam',
+      'Sistema de gestión de inventario con interfaz intuitiva y funcionalidades avanzadas para empresas.',
     stack: ['SASS', 'TypeScript', 'React'],
     sourceCode: 'https://github.com',
     livePreview: 'https://github.com',
@@ -47,25 +42,31 @@ const projects = [
 ]
 
 const skills = [
-  // skills can be added or removed
-  // if there are no skills, Skills section won't show up
   'HTML',
   'CSS',
+  'Boostrap',
+  'Tailwind CSS',
   'JavaScript',
-  'TypeScript',
+  'PHP',
+  'Laravel',
+  'MySQL',
+  'SQL',
+  'SQLite',
+  'MongoDB',
   'React',
-  'Redux',
-  'SASS',
-  'Material UI',
   'Git',
-  'CI/CD',
-  'Jest',
-  'Enzyme',
+  'Java',
+  'JavaFX',
+  'Spring',
+  'Kotlin',
+  'Android',
+  'XML',
+  'Firebase',
+  'Node.js',
 ]
 
 const contact = {
-  // email is optional - if left empty Contact section won't show up
-  email: 'johnsmith@mail.com',
+  email: 'walidsardib@gmail.com',
 }
 
 export { header, about, projects, skills, contact }
