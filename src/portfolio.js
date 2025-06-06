@@ -18,26 +18,26 @@ const projects = [
   {
     name: 'Proyecto 1',
     description:
-      'Aplicación desarrollada con SASS, TypeScript y React. Permite gestionar tareas de manera eficiente y sencilla.',
-    stack: ['SASS', 'TypeScript', 'React'],
-    sourceCode: 'https://github.com',
-    livePreview: 'https://github.com',
+      'Desarrollo de una plataforma web para la gestión de ligas y estadísticas deportivas como Trabajo de Fin de Grado, diseñé y desarrollé una aplicación web para una federación de baloncesto. El sistema permite gestionar competiciones, equipos, partidos y clasificaciones, además de generar estadísticas detalladas de jugadores y encuentros. Utilicé tecnologías como Laravel, MySQL y TailwindCSS para construir una solución completa, responsive y orientada a la automatización de tareas administrativas. El proyecto pone énfasis en la usabilidad y en la visualización clara de datos deportivos en tiempo real',
+    stack: ['Laravel', 'MySQL', 'Tailwind CSS'],
+    sourceCode: 'https://github.com/walidsardib/FederacionBaloncestoW-TFG-',
+    livePreview: '',
   },
   {
     name: 'Proyecto 2',
     description:
-      'Plataforma web interactiva para compartir recursos educativos. Optimizada para un rendimiento rápido y seguro.',
-    stack: ['SASS', 'TypeScript', 'React'],
-    sourceCode: 'https://github.com',
-    livePreview: 'https://github.com',
+      'PROXIMAMENTE',
+    stack: ['...', '...', '...'],
+    sourceCode: '',
+    livePreview: '',
   },
   {
     name: 'Proyecto 3',
     description:
-      'Sistema de gestión de inventario con interfaz intuitiva y funcionalidades avanzadas para empresas.',
-    stack: ['SASS', 'TypeScript', 'React'],
-    sourceCode: 'https://github.com',
-    livePreview: 'https://github.com',
+      'PROXIMAMENTE',
+    stack: ['...', '...', '...'],
+    sourceCode: '',
+    livePreview: '',
   },
 ]
 
