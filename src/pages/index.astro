@@ -41,6 +41,11 @@ const skillIcons = {
   <meta name="keywords" content="Walid, Walid Sardi, Walid Sardi Boukhari, desarrollador web, diseñador web, páginas web Zaragoza, diseño web Zaragoza, freelance web, portfolio Walid Sardi" />
   <link rel="canonical" href="https://walidsardib.es/" />
 
+  <!-- Favicon (icono de la pestaña del navegador) -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <meta name="theme-color" content="#6f8c5a" />
+
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Walid Sardi Boukhari" />
@@ -48,11 +53,16 @@ const skillIcons = {
   <meta property="og:description" content="Diseño y desarrollo de páginas web a medida para negocios y marcas. Rápidas, modernas y pensadas para convertir." />
   <meta property="og:url" content="https://walidsardib.es/" />
   <meta property="og:locale" content="es_ES" />
+  <meta property="og:image" content="https://walidsardib.es/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Walid Sardi Boukhari — Desarrollador y diseñador web en Zaragoza" />
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Walid Sardi Boukhari — Desarrollador y diseñador web" />
   <meta name="twitter:description" content="Páginas web a medida para negocios y marcas. Zaragoza." />
+  <meta name="twitter:image" content="https://walidsardib.es/og.png" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -86,6 +96,7 @@ const skillIcons = {
   <!-- ═══ HERO ═══ -->
   <section id="hero" class="hero">
     <div class="container">
+     <div class="hero-grid">
       <div class="hero-content">
         <p class="hero-greeting reveal-up" id="heroGreeting">Desarrollador web · Zaragoza</p>
         <h1 class="hero-name reveal-up">Webs que tu negocio <span class="gradient-text">merece</span>.</h1>
@@ -96,98 +107,38 @@ const skillIcons = {
           y convierten visitas en clientes.
         </p>
         <div class="hero-ctas reveal-up">
-          <a class="btn btn-primary" href="/trabajos">
+          <a class="btn btn-primary" href="#trabajos">
             Ver trabajos
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </a>
           <a class="btn btn-secondary" href="#contact">Hablemos de tu proyecto</a>
         </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ═══ SOBRE MÍ ═══ -->
-  <section id="about" class="section">
-    <div class="container">
-      <div class="section-label reveal-up">
-        <span class="section-number">01</span>
-        <h3 class="section-title">Sobre mí</h3>
-        <div class="section-line"></div>
-      </div>
-      <div class="about-grid">
-        <div class="about-text reveal-up">
-          <h3>Hola — soy Walid Sardi Boukhari</h3>
-          <p>
-            <span class="about-highlight">Técnico en Desarrollo de Aplicaciones Multiplataforma (DAM)</span> y
-            desarrollador web afincado en Zaragoza. Combino una base sólida de ingeniería —PHP, Laravel, bases de datos— con
-            un ojo cuidado para el diseño, la velocidad y el detalle.
-          </p>
-          <p>
-            Durante el día trabajo como desarrollador en proyectos corporativos. Fuera de ahí, diseño y
-            construyo <span class="about-highlight">webs a medida para negocios</span>: restaurantes, barberías y marcas
-            locales que necesitan una presencia online profesional que de verdad funcione.
-          </p>
-          <p>
-            Cada proyecto es único, así que nada de plantillas genéricas. Y lo más importante:
-            <span class="about-highlight">me encargo de absolutamente todo</span> —diseño, desarrollo, dominio,
-            hosting, SEO y mantenimiento—. Tú solo te preocupas de tu negocio; de lo demás, me ocupo yo.
-          </p>
+        <!-- Tira de servicios: visible sin bajar, dice qué ofreces de un vistazo -->
+        <div class="hero-services reveal-up">
+          <span class="hero-services-label">Qué hago</span>
+          <span class="hero-service-pill">Diseño web</span>
+          <span class="hero-service-pill">Desarrollo a medida</span>
+          <span class="hero-service-pill">Tiendas online</span>
+          <span class="hero-service-pill">SEO</span>
+          <span class="hero-service-pill">Dominio + hosting</span>
+          <span class="hero-service-pill">Mantenimiento</span>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- ═══ EXPERIENCIA ═══ -->
-  <section id="experience" class="section">
-    <div class="container">
-      <div class="section-label reveal-up">
-        <span class="section-number">02</span>
-        <h3 class="section-title">Experiencia profesional</h3>
-        <div class="section-line"></div>
-      </div>
-
-      <p class="section-intro reveal-up">Mi trabajo como desarrollador <strong>dentro de empresa</strong>: proyectos corporativos y para entidades públicas.</p>
-
-      <div class="experience-timeline">
-        <div class="exp-item reveal-up">
-          <div class="exp-header">
-            <h4 class="exp-role">Desarrollador <span class="exp-company">@ Memorándum Tecnología</span></h4>
-            <span class="exp-date">Mar 2025 — Actualidad</span>
-          </div>
-
-          <div class="exp-project">
-            <div class="exp-project-title">Proyecto de gestión interna</div>
-            <div class="exp-project-tech">Laravel · JavaScript · MySQL</div>
-            <ul>
-              <li>Desarrollo de un sistema de gestión interna para la empresa (gestión de usuarios, control de procesos internos y panel administrativo).</li>
-              <li>Implementación de funcionalidades back-end en Laravel y APIs para consumo frontend.</li>
-              <li>Interacciones y mejoras en la interfaz con JavaScript; optimización de consultas y modelos MySQL.</li>
-              <li>Pruebas, documentación técnica y despliegues en entornos de staging/producción.</li>
-            </ul>
-          </div>
-
-          <div class="exp-project">
-            <div class="exp-project-title">Proyecto CMS — mantenimiento y mejoras</div>
-            <div class="exp-project-tech">PHP · MariaDB · JavaScript</div>
-            <ul>
-              <li>Mantenimiento evolutivo y correctivo del CMS de una grande entidad pública: resolución de bugs y soporte de incidencias.</li>
-              <li>Optimización de consultas SQL y migraciones de esquemas/datos en MariaDB.</li>
-              <li>Implementación de nuevas funcionalidades y mejoras UX con JavaScript; revisiones de seguridad y despliegues.</li>
-              <li>Coordinación con el equipo del cliente para priorizar mejoras y asegurar continuidad del servicio.</li>
-            </ul>
-          </div>
-
-          <div class="exp-project">
-            <div class="exp-project-title">Gestión Documental CMS</div>
-            <div class="exp-project-tech">Java · JSP · XML</div>
-            <ul>
-              <li>Mantenimiento de un sistema de gestión de contenidos (CMS) para una grande entidad pública.</li>
-              <li>Implementación de lógica de negocio robusta utilizando Java y procesamiento de estructuras de datos complejas mediante XML.</li>
-              <li>Creación y mantenimiento de vistas dinámicas legacy con JSP para la presentación y administración de documentos.</li>
-            </ul>
-          </div>
+      <!-- Visual: mockups de webs reales en marco navegador (prueba de trabajo) -->
+      <div class="hero-visual reveal-up r-right" aria-hidden="true">
+        <div class="mockup mockup-main">
+          <div class="mockup-bar"><span></span><span></span><span></span><em>tacosstreet.es</em></div>
+          <img src="/assets/work/tacos-hero.jpeg" alt="" loading="eager" />
         </div>
+        <div class="mockup mockup-back">
+          <div class="mockup-bar"><span></span><span></span><span></span></div>
+          <img src="/assets/work/barberia-hero.jpeg" alt="" loading="lazy" />
+        </div>
+        <div class="hero-visual-badge">+3 webs en producción</div>
       </div>
+     </div>
     </div>
   </section>
 
@@ -195,7 +146,7 @@ const skillIcons = {
   <section id="trabajos" class="section">
     <div class="container">
       <div class="section-label reveal-up">
-        <span class="section-number">03</span>
+        <span class="section-number">01</span>
         <h3 class="section-title">Trabajos propios</h3>
         <div class="section-line"></div>
         <a href="/trabajos" class="section-link">Ver todos<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
@@ -257,6 +208,91 @@ const skillIcons = {
           </div>
         </a>
       ))}
+    </div>
+  </section>
+
+  <!-- ═══ SOBRE MÍ ═══ -->
+  <section id="about" class="section">
+    <div class="container">
+      <div class="section-label reveal-up">
+        <span class="section-number">02</span>
+        <h3 class="section-title">Sobre mí</h3>
+        <div class="section-line"></div>
+      </div>
+      <div class="about-grid">
+        <div class="about-text reveal-up">
+          <h3>Hola — soy Walid Sardi Boukhari</h3>
+          <p>
+            <span class="about-highlight">Técnico en Desarrollo de Aplicaciones Multiplataforma (DAM)</span> y
+            desarrollador web afincado en Zaragoza. Combino una base sólida de ingeniería —PHP, Laravel, bases de datos— con
+            un ojo cuidado para el diseño, la velocidad y el detalle.
+          </p>
+          <p>
+            Durante el día trabajo como desarrollador en proyectos corporativos. Fuera de ahí, diseño y
+            construyo <span class="about-highlight">webs a medida para negocios</span>: restaurantes, barberías y marcas
+            locales que necesitan una presencia online profesional que de verdad funcione.
+          </p>
+          <p>
+            Cada proyecto es único, así que nada de plantillas genéricas. Y lo más importante:
+            <span class="about-highlight">me encargo de absolutamente todo</span> —diseño, desarrollo, dominio,
+            hosting, SEO y mantenimiento—. Tú solo te preocupas de tu negocio; de lo demás, me ocupo yo.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ EXPERIENCIA ═══ -->
+  <section id="experience" class="section">
+    <div class="container">
+      <div class="section-label reveal-up">
+        <span class="section-number">03</span>
+        <h3 class="section-title">Experiencia profesional</h3>
+        <div class="section-line"></div>
+      </div>
+
+      <p class="section-intro reveal-up">Mi trabajo como desarrollador <strong>dentro de empresa</strong>: proyectos corporativos y para entidades públicas.</p>
+
+      <div class="experience-timeline">
+        <div class="exp-item reveal-up">
+          <div class="exp-header">
+            <h4 class="exp-role">Desarrollador <span class="exp-company">@ Memorándum Tecnología</span></h4>
+            <span class="exp-date">Mar 2025 — Actualidad</span>
+          </div>
+
+          <div class="exp-project">
+            <div class="exp-project-title">Proyecto de gestión interna</div>
+            <div class="exp-project-tech">Laravel · JavaScript · MySQL</div>
+            <ul>
+              <li>Desarrollo de un sistema de gestión interna para la empresa (gestión de usuarios, control de procesos internos y panel administrativo).</li>
+              <li>Implementación de funcionalidades back-end en Laravel y APIs para consumo frontend.</li>
+              <li>Interacciones y mejoras en la interfaz con JavaScript; optimización de consultas y modelos MySQL.</li>
+              <li>Pruebas, documentación técnica y despliegues en entornos de staging/producción.</li>
+            </ul>
+          </div>
+
+          <div class="exp-project">
+            <div class="exp-project-title">Proyecto CMS — mantenimiento y mejoras</div>
+            <div class="exp-project-tech">PHP · MariaDB · JavaScript</div>
+            <ul>
+              <li>Mantenimiento evolutivo y correctivo del CMS de una grande entidad pública: resolución de bugs y soporte de incidencias.</li>
+              <li>Optimización de consultas SQL y migraciones de esquemas/datos en MariaDB.</li>
+              <li>Implementación de nuevas funcionalidades y mejoras UX con JavaScript; revisiones de seguridad y despliegues.</li>
+              <li>Coordinación con el equipo del cliente para priorizar mejoras y asegurar continuidad del servicio.</li>
+            </ul>
+          </div>
+
+          <div class="exp-project">
+            <div class="exp-project-title">Gestión Documental CMS</div>
+            <div class="exp-project-tech">Java · JSP · XML</div>
+            <ul>
+              <li>Mantenimiento de un sistema de gestión de contenidos (CMS) para una grande entidad pública.</li>
+              <li>Implementación de lógica de negocio robusta utilizando Java y procesamiento de estructuras de datos complejas mediante XML.</li>
+              <li>Creación y mantenimiento de vistas dinámicas legacy con JSP para la presentación y administración de documentos.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 

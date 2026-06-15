@@ -69,6 +69,8 @@ function initScrollSpy() {
   const navLinks = document.querySelectorAll('.navbar-links a');
   if (!sections.length || !navLinks.length) return;
 
+  // Línea fina en el centro del viewport: la sección que la cruza es la activa.
+  // Independiente de la altura de la sección (Experiencia es muy alta).
   const io = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -79,7 +81,7 @@ function initScrollSpy() {
         });
       }
     });
-  }, { threshold: 0.3, rootMargin: '-10% 0px -50% 0px' });
+  }, { threshold: 0, rootMargin: '-45% 0px -45% 0px' });
 
   sections.forEach(s => io.observe(s));
 }
