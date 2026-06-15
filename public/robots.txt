@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://walidsardib.es/sitemap.xml

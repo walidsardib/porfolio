@@ -1,15 +1,7 @@
 ---
 import Layout from '../components/Layout.astro';
-
-const projects = [
-  {
-    title: 'Federación de Baloncesto',
-    slug: 'federacion',
-    desc: 'Plataforma web para la gestión de ligas y estadísticas deportivas. Gestión de competiciones, equipos, partidos, clasificaciones y estadísticas de jugadores.',
-    tech: ['Laravel', 'MySQL', 'Tailwind CSS', 'JavaScript'],
-    live: 'https://walidsardib.kesug.com/'
-  }
-];
+import { works } from '../data/works.js';
+import { projects } from '../data/projects.js';
 
 const primarySkills = ['PHP', 'Laravel', 'JavaScript', 'SQL'];
 const otherSkills = [
@@ -43,11 +35,50 @@ const skillIcons = {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Walid Sardi — Desarrollador de Software</title>
-  <meta name="description" content="Portfolio de Walid Sardi — Desarrollador de Software especializado en Laravel, PHP, JavaScript y bases de datos." />
+  <title>Walid Sardi Boukhari — Desarrollador y diseñador web en Zaragoza</title>
+  <meta name="description" content="Walid Sardi Boukhari, desarrollador y diseñador web en Zaragoza. Diseño y desarrollo de páginas web a medida para negocios y marcas: rápidas, modernas y pensadas para convertir." />
+  <meta name="author" content="Walid Sardi Boukhari" />
+  <meta name="keywords" content="Walid, Walid Sardi, Walid Sardi Boukhari, desarrollador web, diseñador web, páginas web Zaragoza, diseño web Zaragoza, freelance web, portfolio Walid Sardi" />
+  <link rel="canonical" href="https://walidsardib.es/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Walid Sardi Boukhari" />
+  <meta property="og:title" content="Walid Sardi Boukhari — Desarrollador y diseñador web en Zaragoza" />
+  <meta property="og:description" content="Diseño y desarrollo de páginas web a medida para negocios y marcas. Rápidas, modernas y pensadas para convertir." />
+  <meta property="og:url" content="https://walidsardib.es/" />
+  <meta property="og:locale" content="es_ES" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Walid Sardi Boukhari — Desarrollador y diseñador web" />
+  <meta name="twitter:description" content="Páginas web a medida para negocios y marcas. Zaragoza." />
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Datos estructurados: Persona (clave para búsquedas por nombre) -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Walid Sardi Boukhari",
+    "alternateName": ["Walid Sardi", "Walid"],
+    "jobTitle": "Desarrollador y diseñador web",
+    "description": "Desarrollador y diseñador web en Zaragoza. Páginas web a medida para negocios y marcas.",
+    "url": "https://walidsardib.es/",
+    "email": "mailto:walidsardib@gmail.com",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Zaragoza",
+      "addressCountry": "ES"
+    },
+    "knowsAbout": ["Desarrollo web", "Diseño web", "SEO", "Laravel", "PHP", "JavaScript", "Astro"],
+    "sameAs": [
+      "https://github.com/walidsardib",
+      "https://www.linkedin.com/in/walid-sardi-740619304/"
+    ]
+  })} />
 </head>
 
 <Layout>
@@ -56,19 +87,20 @@ const skillIcons = {
   <section id="hero" class="hero">
     <div class="container">
       <div class="hero-content">
-        <p class="hero-greeting reveal-up" id="heroGreeting">Hola, mi nombre es</p>
-        <h1 class="hero-name reveal-up">Walid Sardi.</h1>
-        <h2 class="hero-role reveal-up">Desarrollador de Software · Técnico DAM</h2>
+        <p class="hero-greeting reveal-up" id="heroGreeting">Desarrollador web · Zaragoza</p>
+        <h1 class="hero-name reveal-up">Webs que tu negocio <span class="gradient-text">merece</span>.</h1>
+        <h2 class="hero-role reveal-up">Diseño y desarrollo páginas web a medida</h2>
         <p class="hero-desc reveal-up">
-          Desarrollo soluciones de software robustas y escalables con especial atención en la arquitectura de datos y la experiencia de usuario. 
-          Trabajo principalmente con <span class="gradient-text">PHP, Laravel, JavaScript</span> y bases de datos relacionales.
+          Creo sitios web rápidos, modernos y cuidados al detalle para negocios y marcas.
+          Del diseño al despliegue: webs que cargan al instante, se ven perfectas en cualquier pantalla
+          y convierten visitas en clientes.
         </p>
         <div class="hero-ctas reveal-up">
-          <a class="btn btn-primary" href="#projects">
-            Ver proyectos
+          <a class="btn btn-primary" href="/trabajos">
+            Ver trabajos
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </a>
-          <a class="btn btn-secondary" href="#contact">Contactar</a>
+          <a class="btn btn-secondary" href="#contact">Hablemos de tu proyecto</a>
         </div>
       </div>
     </div>
@@ -84,16 +116,21 @@ const skillIcons = {
       </div>
       <div class="about-grid">
         <div class="about-text reveal-up">
-          <h3>Hola — soy Walid Sardi</h3>
+          <h3>Hola — soy Walid Sardi Boukhari</h3>
           <p>
-            <span class="about-highlight">Técnico en Desarrollo de Aplicaciones Multiplataforma (DAM)</span> y 
-            desarrollador de software. Me especializo en construir aplicaciones web con una mezcla de 
-            back-end sólido y front-end usable.
+            <span class="about-highlight">Técnico en Desarrollo de Aplicaciones Multiplataforma (DAM)</span> y
+            desarrollador web afincado en Zaragoza. Combino una base sólida de ingeniería —PHP, Laravel, bases de datos— con
+            un ojo cuidado para el diseño, la velocidad y el detalle.
           </p>
           <p>
-            Apasionado por resolver problemas reales con código, me centro en crear soluciones 
-            mantenibles y eficientes. Disfruto colaborar con equipos, documentar decisiones técnicas 
-            y desplegar mejoras que aporten valor a usuarios y clientes.
+            Durante el día trabajo como desarrollador en proyectos corporativos. Fuera de ahí, diseño y
+            construyo <span class="about-highlight">webs a medida para negocios</span>: restaurantes, barberías y marcas
+            locales que necesitan una presencia online profesional que de verdad funcione.
+          </p>
+          <p>
+            Cada proyecto es único, así que nada de plantillas genéricas. Y lo más importante:
+            <span class="about-highlight">me encargo de absolutamente todo</span> —diseño, desarrollo, dominio,
+            hosting, SEO y mantenimiento—. Tú solo te preocupas de tu negocio; de lo demás, me ocupo yo.
           </p>
         </div>
       </div>
@@ -105,9 +142,12 @@ const skillIcons = {
     <div class="container">
       <div class="section-label reveal-up">
         <span class="section-number">02</span>
-        <h3 class="section-title">Experiencia</h3>
+        <h3 class="section-title">Experiencia profesional</h3>
         <div class="section-line"></div>
       </div>
+
+      <p class="section-intro reveal-up">Mi trabajo como desarrollador <strong>dentro de empresa</strong>: proyectos corporativos y para entidades públicas.</p>
+
       <div class="experience-timeline">
         <div class="exp-item reveal-up">
           <div class="exp-header">
@@ -151,60 +191,71 @@ const skillIcons = {
     </div>
   </section>
 
-  <!-- ═══ PROYECTOS ═══ -->
-  <section id="projects" class="section">
+  <!-- ═══ TRABAJOS PROPIOS (FREELANCE + A MEDIDA) ═══ -->
+  <section id="trabajos" class="section">
     <div class="container">
       <div class="section-label reveal-up">
         <span class="section-number">03</span>
-        <h3 class="section-title">Proyectos</h3>
+        <h3 class="section-title">Trabajos propios</h3>
         <div class="section-line"></div>
+        <a href="/trabajos" class="section-link">Ver todos<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
       </div>
 
-      {projects.map(p => (
-        <div class="project-card reveal-up">
-          <a href={`/projects/${p.slug}`} class="project-card-media-link" style="display: block; overflow: hidden; border-radius: var(--radius); border: 1px solid var(--border);">
-            <div class="project-card-media" style="border: none; border-radius: 0;">
-              <span class="project-featured-badge">Trabajo de Fin de Grado</span>
-              {p.slug === 'federacion' ? (
-                <div class="project-slideshow" data-interval="3500">
-                  <img class="slide active" src="/assets/competiciones.png" alt={`${p.title} imagen 1`} />
-                  <img class="slide" src="/assets/directo.png" alt={`${p.title} imagen 2`} />
-                </div>
-              ) : (
-                <img src="/assets/competiciones.png" alt={`${p.title} thumbnail`} />
-              )}
+      <p class="section-intro reveal-up">Lo que hago por mi cuenta como <strong>freelance</strong>: webs para clientes y proyectos a medida de principio a fin.</p>
+
+      <h4 class="works-subtitle reveal-up">Webs para clientes</h4>
+      <div class="works-grid stagger-children">
+        {works.map(w => (
+          <a href={w.caseStudy || w.live} target={w.caseStudy ? undefined : '_blank'} rel={w.caseStudy ? undefined : 'noopener'} class={`work-card reveal-up${w.featured ? ' featured' : ''}`}>
+            <div class="work-card-media">
+              <img src={w.img} alt={`Web de ${w.title}`} loading="lazy" />
+              {w.featured && <span class="work-badge">Caso de éxito</span>}
+            </div>
+            <div class="work-card-body">
+              <div class="work-card-head">
+                <h4 class="work-card-title">{w.title}</h4>
+                <span class="work-card-tagline">{w.tagline}</span>
+              </div>
+              <p class="work-card-desc">{w.desc}</p>
+              <div class="work-card-tech">
+                {w.tech.map(t => (<span class="tech-pill">{t}</span>))}
+              </div>
+              <span class="work-card-link">
+                {w.caseStudy ? 'Ver caso de estudio' : 'Visitar web'}
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </span>
             </div>
           </a>
-          <div class="project-card-body">
-            <h4 class="project-card-title">
-              <a href={`/projects/${p.slug}`}>{p.title}</a>
-            </h4>
-            <p class="project-card-desc">{p.desc}</p>
-            {p.tech && p.tech.length > 0 && (
-              <div class="project-tags">
-                {p.tech.map(t => (<span class="tag">{t}</span>))}
-              </div>
-            )}
-            <div class="project-card-links" style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: auto; padding-top: 16px;">
-              <a href={`/projects/${p.slug}`} class="btn btn-primary" style="padding: 8px 16px; font-size: 0.9rem; color: #ffffff !important;">
-                Ver más
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-              </a>
-              {p.live && (
-                <a href={p.live} target="_blank" rel="noopener" class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.9rem;">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                  Demo
-                </a>
-              )}
-              {p.repo && (
-                <a href={p.repo} target="_blank" rel="noopener" class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.9rem;">
-                  <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.16 6.84 9.49.5.09.68-.22.68-.48 0-.24-.01-.87-.01-1.7-2.78.6-3.37-1.1-3.37-1.1-.45-1.16-1.1-1.47-1.1-1.47-.9-.62.07-.61.07-.61 1 .07 1.53 1.04 1.53 1.04.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.64-1.33-2.22-.25-4.56-1.11-4.56-4.95 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02A9.56 9.56 0 0112 6.8c.85.004 1.71.115 2.5.337 1.9-1.29 2.74-1.02 2.74-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.85-2.34 4.7-4.57 4.95.36.31.68.92.68 1.85 0 1.33-.01 2.4-.01 2.73 0 .26.18.58.69.48A10.01 10.01 0 0022 12c0-5.52-4.48-10-10-10z"/></svg>
-                  Código
-                </a>
-              )}
+        ))}
+      </div>
+
+      <h4 class="works-subtitle reveal-up" style="margin-top: 64px;">Desarrollo a medida</h4>
+      <p class="section-intro reveal-up">Mi proyecto personal más grande. La mejor muestra de lo que puedo construir desde cero: de la base de datos al directo.</p>
+
+      {projects.map(p => (
+        <a href={`/projects/${p.slug}`} class="work-card featured reveal-up">
+          <div class="work-card-media">
+            <div class="project-slideshow" data-interval="3500">
+              <img class="slide active" src="/assets/competiciones.png" alt={`${p.title} imagen 1`} loading="lazy" />
+              <img class="slide" src="/assets/directo.png" alt={`${p.title} imagen 2`} loading="lazy" />
             </div>
+            <span class="work-badge">Proyecto a medida</span>
           </div>
-        </div>
+          <div class="work-card-body">
+            <div class="work-card-head">
+              <h3 class="work-card-title">{p.title}</h3>
+              <span class="work-card-tagline">Trabajo de Fin de Grado · Proyecto personal</span>
+            </div>
+            <p class="work-card-desc">{p.desc}</p>
+            <div class="work-card-tech">
+              {p.tech.map(t => (<span class="tech-pill">{t}</span>))}
+            </div>
+            <span class="work-card-link">
+              Ver caso de estudio
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </span>
+          </div>
+        </a>
       ))}
     </div>
   </section>
@@ -262,15 +313,15 @@ const skillIcons = {
       <div class="contact-cta reveal-up" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 64px 40px; text-align: center; position: relative; overflow: hidden;">
         
         <!-- Subtle background decoration for the CTA -->
-        <div style="position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at 50% 0%, rgba(129, 140, 248, 0.08) 0%, transparent 50%); pointer-events: none;"></div>
+        <div style="position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at 50% 0%, var(--accent-glow) 0%, transparent 50%); pointer-events: none;"></div>
 
-        <h3 style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; color: var(--text); margin-bottom: 24px; letter-spacing: -0.02em;">
+        <h3 style="font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); font-weight: 600; color: var(--text); margin-bottom: 24px; letter-spacing: -0.01em; line-height: 1.15;">
           ¿Construimos algo <span class="gradient-text">increíble</span>?
         </h3>
-        
+
         <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6; max-width: 600px; margin: 0 auto 40px;">
-          Actualmente estoy abierto a nuevas oportunidades profesionales y proyectos como freelance. 
-          Ya sea que necesites una arquitectura back-end robusta, una interfaz moderna o simplemente un compañero de equipo proactivo, me encantaría hablar contigo.
+          ¿Tienes un negocio y necesitas una web que de verdad funcione? Cuéntame tu idea y me encargo de todo
+          —diseño, desarrollo, dominio, hosting, SEO y mantenimiento—. También estoy abierto a nuevas oportunidades profesionales.
         </p>
         
         <div class="contact-links" style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">

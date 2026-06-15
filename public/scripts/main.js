@@ -243,13 +243,13 @@ function initTheme() {
   const toggleBtnMobile = document.getElementById('themeToggleMobile');
   if (!toggleBtn && !toggleBtnMobile) return;
 
-  // Default to dark explicitly regardless of OS to preserve the intended design baseline
-  const currentTheme = localStorage.getItem('theme') || 'dark';
-  
-  if (currentTheme === 'light') {
-    document.documentElement.setAttribute('data-theme', 'light');
-  } else {
+  // Por defecto tema claro editorial (cálido)
+  const currentTheme = localStorage.getItem('theme') || 'light';
+
+  if (currentTheme === 'dark') {
     document.documentElement.setAttribute('data-theme', 'dark');
+  } else {
+    document.documentElement.setAttribute('data-theme', 'light');
   }
 
   function toggleTheme() {
