@@ -450,3 +450,26 @@
 @media (max-width: 560px) {
   .s-grid { grid-template-columns: 1fr; }
 }
+
+/* ═══ Alternativa en JS al recorrido con scroll (navegadores sin animation-timeline) ═══ */
+.sd-fallback .c-tour { height: 280svh; }
+
+.sd-fallback .c-tour-sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  padding: calc(var(--nav-height) + 16px) 0 24px;
+}
+
+.sd-fallback .c-tour-sticky .c-tour-grid { width: 100%; }
+.sd-fallback .c-browser { max-width: calc((100svh - var(--nav-height) - 110px) * 1.6); }
+
+.sd-fallback .c-tour-label {
+  color: var(--text-muted);
+  transition: color 0.3s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sd-fallback .c-tour-label.is-on { color: var(--text); transform: translateX(10px); }
+

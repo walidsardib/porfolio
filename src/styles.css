@@ -122,7 +122,8 @@ body,
 
 /* Tema oscuro: ajustes específicos */
 [data-theme="dark"] .navbar.scrolled {
-  background: color-mix(in srgb, var(--bg) 94%, transparent);
+  /* rgba explícito: Safari calcula como transparente color-mix(var(--bg), transparent) */
+  background: rgba(244, 243, 239, 0.94);
   box-shadow: 0 1px 0 var(--border), 0 6px 24px rgba(0, 0, 0, 0.35);
 }
 
@@ -189,7 +190,8 @@ img {
 }
 
 .navbar.scrolled {
-  background: color-mix(in srgb, var(--bg) 94%, transparent);
+  /* rgba explícito: Safari calcula como transparente color-mix(var(--bg), transparent) */
+  background: rgba(244, 243, 239, 0.94);
   backdrop-filter: blur(20px) saturate(1.1);
   -webkit-backdrop-filter: blur(20px) saturate(1.1);
   box-shadow: 0 1px 0 var(--border), 0 4px 20px rgba(58, 42, 28, 0.08);

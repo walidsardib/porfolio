@@ -879,7 +879,7 @@ body { font-feature-settings: "calt" 0; }
   padding: 6px;
   margin-bottom: 40px;
   border-radius: 999px;
-  background: color-mix(in srgb, #1a1a18 92%, transparent);
+  background: rgba(26, 26, 24, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--l-line);
@@ -1309,7 +1309,7 @@ body { font-feature-settings: "calt" 0; }
 .tl-fill {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, color-mix(in srgb, var(--accent) 15%, transparent), var(--accent));
+  background: linear-gradient(to bottom, rgba(240, 83, 28, 0.15), var(--accent));
   transform-origin: top;
 }
 
@@ -1701,3 +1701,53 @@ body { font-feature-settings: "calt" 0; }
   .story-media, .story-media.is-active { transform: none; filter: none; transition: opacity 0.3s ease; }
   .services-thumbs img { transition: none; }
 }
+
+/* ═══ Alternativa en JS a las animaciones con scroll (navegadores sin animation-timeline) ═══
+   Replica la estructura de los bloques @supports; los valores animados los pone main.js. */
+.sd-fallback .vt { height: 220svh; }
+.sd-fallback .tl-head-track { display: block; }
+
+.sd-fallback .tl-item::before {
+  background: var(--bg);
+  border-color: var(--border-hover);
+  transform: scale(0.85);
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sd-fallback .tl-item.is-on::before { background: var(--accent); border-color: var(--accent); transform: none; }
+.sd-fallback .tl-item .tl-date { color: var(--text-muted); transition: color 0.3s ease; }
+.sd-fallback .tl-item.is-on .tl-date { color: var(--accent-ink); }
+
+/* ═══ Botón de play cuando el navegador bloquea la reproducción automática ═══ */
+.proj-media { position: relative; }
+
+.vid-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 6;
+  transform: translate(-50%, -50%);
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(13, 13, 12, 0.74);
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.vid-play:hover { background: var(--accent); }
+.vid-play:active { transform: translate(-50%, -50%) scale(0.94); }
+.vid-play:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.vid-play svg { margin-left: 3px; }
+
+/* En la píldora del nombre el botón es más pequeño */
+.h-pill .vid-play { width: 40px; height: 40px; }
+

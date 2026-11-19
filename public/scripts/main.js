@@ -316,7 +316,7 @@ function initStory() {
       if (on && !prefersReduced) {
         if (!v.src) v.src = v.dataset.src; // carga diferida: solo al llegar a su paso
         v.currentTime = 0;
-        v.play().catch(() => {});
+        playOrOffer(v);
       } else {
         v.pause();
       }
@@ -348,7 +348,7 @@ function initAutoVideos() {
       const v = e.target;
       if (e.isIntersecting) {
         if (!v.src) v.src = v.dataset.src;
-        v.play().catch(() => {});
+        playOrOffer(v);
       } else {
         v.pause();
       }
@@ -484,6 +484,126 @@ function initWordReveal() {
   });
 }
 
+// ── Vídeos: si el navegador bloquea la reproducción automática (p. ej. iPhone en modo de bajo consumo),
+//    se muestra un botón de play para que la visita lo reproduzca con un toque ──
+function offerPlay(v) {
+  if (v.dataset.offered) return;
+  v.dataset.offered = '1';
+  const host = v.closest('.vt-panel, .h-pill, .proj-media, .story-media') || v.parentElement;
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'vid-play';
+  b.setAttribute('aria-label', LANG === 'en' ? 'Play video' : 'Reproducir vídeo');
+  b.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>';
+  b.addEventListener('click', (e) => {
+    // dentro de enlaces (píldora, tarjetas) el toque reproduce y no navega
+    e.preventDefault();
+    e.stopPropagation();
+    v.play().then(() => b.remove()).catch(() => {});
+  });
+  host.appendChild(b);
+}
+
+function playOrOffer(v) {
+  const pr = v.play();
+  if (pr && pr.catch) pr.catch(() => offerPlay(v));
+}
+
+// ── Animaciones ligadas al scroll en JavaScript para navegadores sin animation-timeline
+//    (Safari anterior a iOS 26, Firefox). Reproduce los mismos efectos que el CSS de @supports ──
+function initScrollFallback() {
+  if (prefersReduced) return;
+  if (window.CSS && CSS.supports && CSS.supports('animation-timeline: view()')) return;
+  document.documentElement.classList.add('sd-fallback');
+
+  const clamp = (x) => Math.min(Math.max(x, 0), 1);
+  const lerp = (a, b, t) => a + (b - a) * t;
+  // d = cuánto ha entrado el elemento desde el borde inferior de la pantalla (0 = asomando)
+  const entered = (el) => innerHeight - el.getBoundingClientRect().top;
+  const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-height')) || 72;
+  const fx = [];
+
+  // Hero de /larue3x3: el panel se abre, las letras crecen y desaparecen
+  document.querySelectorAll('.vt').forEach((vt) => {
+    const panel = vt.querySelector('.vt-panel');
+    const masks = vt.querySelectorAll('.vt-mask');
+    const ui = vt.querySelector('.vt-ui');
+    fx.push(() => {
+      const vh = innerHeight, h = vt.offsetHeight;
+      const p = clamp((entered(vt) - vh) / Math.max(h - vh, 1));
+      const mob = innerWidth <= 900, k = clamp(p / 0.55);
+      const top = lerp(navH + (mob ? 4 : 8), 0, k), side = lerp(mob ? 8 : 16, 0, k), rad = lerp(mob ? 20 : 28, 0, k);
+      panel.style.clipPath = `inset(${top}px ${side}px ${side}px ${side}px round ${rad}px)`;
+      let sc = lerp(1, 1.5, clamp(p / 0.45)), op = 1;
+      if (p > 0.45) { const q = clamp((p - 0.45) / 0.35); sc = lerp(1.5, 2.4, q); op = 1 - q; }
+      masks.forEach((m) => { m.style.transform = `scale(${sc})`; m.style.opacity = op; });
+      const u = clamp(p / 0.2);
+      if (ui) { ui.style.opacity = 1 - u; ui.style.transform = `translateY(${16 * u}px)`; }
+    });
+  });
+
+  // Capturas de las tarjetas de proyecto: se abren al entrar
+  document.querySelectorAll('.proj-media').forEach((m) => fx.push(() => {
+    const vh = innerHeight, h = m.offsetHeight;
+    const p = clamp((entered(m) - 0.1 * h) / (0.45 * (vh + h) - 0.1 * h));
+    m.style.clipPath = `inset(${lerp(14, 0, p)}% ${lerp(10, 0, p)}% 0 ${lerp(10, 0, p)}% round 14px)`;
+  }));
+
+  // Trayectoria: relleno, punto que baja y nodos que se encienden en el centro de la pantalla
+  document.querySelectorAll('.tl-wrap').forEach((w) => {
+    const fill = w.querySelector('.tl-fill');
+    const head = w.querySelector('.tl-head-track');
+    const items = w.querySelectorAll('.tl-item');
+    fx.push(() => {
+      const vh = innerHeight, h = w.offsetHeight;
+      const p = clamp((entered(w) - 0.5 * vh) / Math.max(h, 1));
+      if (fill) fill.style.transform = `scaleY(${p})`;
+      if (head) head.style.transform = `translateY(${(p - 1) * 100}%)`;
+      items.forEach((it) => it.classList.toggle('is-on', it.getBoundingClientRect().top + 36 <= vh * 0.5));
+    });
+  });
+
+  // Tacos Street: la web se desplaza dentro del navegador y se enciende la etiqueta de cada sección
+  document.querySelectorAll('.c-tour').forEach((t) => {
+    const strip = t.querySelector('.c-strip');
+    const view = t.querySelector('.c-browser-view');
+    const labels = t.querySelectorAll('.c-tour-label');
+    fx.push(() => {
+      const vh = innerHeight, h = t.offsetHeight;
+      const p = clamp((entered(t) - vh) / Math.max(h - vh, 1));
+      strip.style.transform = `translateY(${-(strip.offsetHeight - view.clientHeight) * p}px)`;
+      const idx = Math.min(labels.length - 1, Math.floor(p * labels.length));
+      labels.forEach((l, i) => l.classList.toggle('is-on', i === idx));
+    });
+  });
+
+  // Tacos Street: capturas de características y el "Nº1"
+  document.querySelectorAll('.c-feature-media').forEach((m) => {
+    const img = m.querySelector('img');
+    fx.push(() => {
+      const vh = innerHeight, h = m.offsetHeight, d = entered(m);
+      const p = clamp(d / (0.45 * (vh + h))), q = clamp(d / (0.6 * (vh + h)));
+      m.style.clipPath = `inset(${lerp(10, 0, p)}% ${lerp(12, 0, p)}% ${lerp(10, 0, p)}% ${lerp(12, 0, p)}% round 16px)`;
+      if (img) img.style.transform = `scale(${lerp(1.18, 1, q)})`;
+    });
+  });
+  document.querySelectorAll('.c-big').forEach((b) => {
+    const ref = b.parentElement; // se mide el contenedor: el propio número cambia de tamaño
+    fx.push(() => {
+      const p = clamp(entered(ref) / (0.5 * (innerHeight + ref.offsetHeight)));
+      b.style.transform = `scale(${lerp(0.55, 1, p)}) rotate(${lerp(-6, 0, p)}deg)`;
+      b.style.opacity = lerp(0.2, 1, p);
+    });
+  });
+
+  if (!fx.length) return;
+  let ticking = false;
+  const run = () => { ticking = false; fx.forEach((f) => f()); };
+  addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(run); } }, { passive: true });
+  addEventListener('resize', run);
+  run();
+}
+
 // ── Init ──
 function init() {
   initTheme();
@@ -502,6 +622,7 @@ function init() {
   initContactForm();
   initCountUp();
   initWordReveal();
+  initScrollFallback();
 }
 
 if (document.readyState === 'loading') {
