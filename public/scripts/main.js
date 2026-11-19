@@ -271,6 +271,197 @@ function initTheme() {
   if (toggleBtnMobile) toggleBtnMobile.addEventListener('click', toggleTheme);
 }
 
+// ── Recorrido con scroll (LaRue3x3) ──
+// El paso que cruza el centro del viewport activa su captura/vídeo en la pantalla fija.
+function initStory() {
+  const story = document.querySelector('[data-story]');
+  if (!story) return;
+
+  const steps = Array.from(story.querySelectorAll('[data-step]'));
+  const media = Array.from(story.querySelectorAll('[data-media]'));
+  const bar = story.querySelector('.story-progress span');
+  let current = -1;
+
+  function activate(i) {
+    if (i === current) return;
+    current = i;
+    steps.forEach((s, n) => s.classList.toggle('is-active', n === i));
+    media.forEach((m, n) => {
+      const on = n === i;
+      m.classList.toggle('is-active', on);
+      const v = m.querySelector('video');
+      if (!v) return;
+      if (on && !prefersReduced) {
+        if (!v.src) v.src = v.dataset.src; // carga diferida: solo al llegar a su paso
+        v.currentTime = 0;
+        v.play().catch(() => {});
+      } else {
+        v.pause();
+      }
+    });
+    if (bar) bar.style.transform = `scaleX(${(i + 1) / steps.length})`;
+  }
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) activate(steps.indexOf(e.target));
+    });
+  }, {
+    // En móvil la pantalla fija ocupa la mitad de arriba: el paso cambia en la zona de texto visible
+    rootMargin: matchMedia('(max-width: 900px)').matches ? '-64% 0px -36% 0px' : '-50% 0px -50% 0px',
+    threshold: 0
+  });
+
+  steps.forEach(s => io.observe(s));
+  activate(0);
+}
+
+// ── Vídeos que se reproducen solo cuando están en pantalla ──
+function initAutoVideos() {
+  const vids = document.querySelectorAll('video[data-autoplay]');
+  if (!vids.length || prefersReduced) return;
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      const v = e.target;
+      if (e.isIntersecting) {
+        if (!v.src) v.src = v.dataset.src;
+        v.play().catch(() => {});
+      } else {
+        v.pause();
+      }
+    });
+  }, { threshold: 0.25 });
+
+  vids.forEach(v => io.observe(v));
+}
+
+// ── Formulario de contacto ──
+// Pon aquí la URL de un servicio de formularios (Formspree, Web3Forms...) para recibir los mensajes.
+// Mientras esté vacía, el formulario abre el correo del visitante con el mensaje ya redactado.
+const FORM_ENDPOINT = 'https://api.web3forms.com/submit';
+
+function initContactForm() {
+  const form = document.querySelector('[data-contact-form]');
+  if (!form) return;
+  const status = form.querySelector('[data-status]');
+  const btn = form.querySelector('button[type="submit"]');
+
+  function setStatus(msg, type) {
+    status.textContent = msg;
+    status.className = 'cform-status' + (type ? ' ' + type : '');
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = new FormData(form);
+    if (data.get('web')) return; // bot
+
+    // Validación propia con mensajes claros
+    let firstBad = null;
+    form.querySelectorAll('input[required], textarea[required]').forEach(f => {
+      const bad = !f.checkValidity() || !f.value.trim();
+      f.classList.toggle('is-invalid', bad);
+      if (bad && !firstBad) firstBad = f;
+    });
+    if (firstBad) {
+      setStatus(firstBad.type === 'email' && firstBad.value ? 'Revisa el email, parece incompleto.' : 'Rellena los campos marcados.', 'err');
+      firstBad.focus();
+      return;
+    }
+
+    const nombre = data.get('nombre').trim();
+    const motivo = data.get('motivo');
+    const mensaje = data.get('mensaje').trim();
+
+    if (!FORM_ENDPOINT) {
+      const body = `${mensaje}
+
+— ${nombre} (${data.get('email')})`;
+      location.href = `mailto:walidsardib@gmail.com?subject=${encodeURIComponent(motivo + ' · ' + nombre)}&body=${encodeURIComponent(body)}`;
+      setStatus('Se ha abierto tu correo con el mensaje listo para enviar.', 'ok');
+      return;
+    }
+
+    // Asunto del correo que recibirás y quitar el campo trampa
+    data.set('subject', `Portfolio · ${motivo} · ${nombre}`);
+    data.delete('web');
+
+    btn.disabled = true;
+    setStatus('Enviando…');
+    try {
+      const res = await fetch(FORM_ENDPOINT, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || json.success === false) throw new Error(json.message || res.status);
+      form.reset();
+      setStatus('¡Mensaje enviado! Te respondo lo antes posible.', 'ok');
+    } catch {
+      setStatus('No se ha podido enviar. Escríbeme a walidsardib@gmail.com.', 'err');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  form.addEventListener('input', (e) => e.target.classList.remove('is-invalid'));
+}
+
+// ── Números que cuentan hacia arriba al aparecer ──
+function initCountUp() {
+  const els = document.querySelectorAll('[data-count]');
+  if (!els.length || prefersReduced) return;
+
+  const fmt = (n, d) => n.toLocaleString('es-ES', { minimumFractionDigits: d, maximumFractionDigits: d });
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      io.unobserve(e.target);
+      const el = e.target;
+      const end = parseFloat(el.dataset.count);
+      const dec = parseInt(el.dataset.decimals || '0', 10);
+      const dur = 1400;
+      const t0 = performance.now();
+      const tick = (now) => {
+        const p = Math.min((now - t0) / dur, 1);
+        const eased = 1 - Math.pow(1 - p, 4); // frena al final
+        el.textContent = fmt(end * eased, dec);
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      el.textContent = fmt(0, dec);
+      requestAnimationFrame(tick);
+    });
+  }, { threshold: 0.6 });
+
+  els.forEach(el => io.observe(el));
+}
+
+// ── Párrafo cuyas palabras se encienden según avanzas con el scroll ──
+function initWordReveal() {
+  const blocks = document.querySelectorAll('[data-words]');
+  if (!blocks.length || prefersReduced) return;
+
+  blocks.forEach(block => {
+    const words = block.textContent.trim().split(/\s+/);
+    block.innerHTML = words.map(w => `<span class="w">${w}</span>`).join(' ');
+    const spans = block.querySelectorAll('.w');
+
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const r = block.getBoundingClientRect();
+      // 0 cuando el párrafo asoma por abajo, 1 cuando su final pasa el centro de la pantalla
+      const start = innerHeight * 0.85;
+      const end = innerHeight * 0.45;
+      const p = Math.min(Math.max((start - r.top) / (start - end + r.height), 0), 1);
+      const lit = Math.round(p * spans.length);
+      spans.forEach((s, i) => s.classList.toggle('on', i < lit));
+    };
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+    addEventListener('scroll', onScroll, { passive: true });
+    update();
+  });
+}
+
 // ── Init ──
 function init() {
   initTheme();
@@ -284,6 +475,11 @@ function init() {
   initTypewriter();
   initMagneticIcons();
   initCardTilt();
+  initStory();
+  initAutoVideos();
+  initContactForm();
+  initCountUp();
+  initWordReveal();
 }
 
 if (document.readyState === 'loading') {

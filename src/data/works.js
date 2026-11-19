@@ -6,7 +6,7 @@ export const works = [
     tagline: 'The Original French Tacos · Zaragoza',
     desc: 'Web de marca para una cadena de comida urbana. Carta interactiva, configurador "crea tu taco", animaciones a medida y enlaces directos a delivery.',
     tech: ['Astro', 'TypeScript', 'CSS'],
-    img: '/assets/work/tacos-hero.jpeg',
+    img: '/assets/work/tacos-hero.webp',
     live: 'https://tacosstreet.es',
     caseStudy: '/projects/tacosstreet',
     featured: true,
@@ -18,7 +18,7 @@ export const works = [
     tagline: 'Tacos franceses & Crousty',
     desc: 'Landing de restaurante con identidad propia, menú visual y pedidos integrados con Glovo y Uber Eats.',
     tech: ['Astro', 'TypeScript'],
-    img: '/assets/work/zaza-hero.jpeg',
+    img: '/assets/work/zaza-hero.webp',
     live: 'https://zazastop.walidsardib.es',
     year: '2026'
   },
@@ -28,7 +28,7 @@ export const works = [
     tagline: 'Barbería en Zaragoza',
     desc: 'Web para barbería con reserva de cita, galería de trabajos, servicios y contacto directo por WhatsApp.',
     tech: ['Astro', 'Tailwind CSS'],
-    img: '/assets/work/barberia-hero.jpeg',
+    img: '/assets/work/barberia-hero.webp',
     live: 'https://barberiagabriel.walidsardib.es',
     year: '2026'
   }

@@ -1,0 +1,161 @@
+---
+import Layout from '../components/Layout.astro';
+import { works } from '../data/works.js';
+import { projects } from '../data/projects.js';
+import '../home.css';
+import '../case.css';
+
+// Lo que incluye un encargo de principio a fin
+const included = [
+  { title: 'Diseño', text: 'Una web con la identidad de tu negocio, sin plantillas genéricas.' },
+  { title: 'Desarrollo', text: 'Rápida, cuidada al detalle y perfecta en el móvil.' },
+  { title: 'Dominio', text: 'Me encargo de registrar y configurar tu dirección web.' },
+  { title: 'Hosting', text: 'Publicada y funcionando, sin que tengas que preocuparte del servidor.' },
+  { title: 'SEO', text: 'Preparada desde el primer día para que te encuentren en Google.' },
+  { title: 'Mantenimiento', text: 'Cambios, actualizaciones y soporte cuando lo necesites.' }
+];
+---
+
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Servicios web — Walid Sardi · Webs a medida en Zaragoza</title>
+  <meta name="description" content="Webs a medida para negocios en Zaragoza: diseño, desarrollo, dominio, hosting, SEO y mantenimiento. Tacos Street, ZazaStop y Gabriel's Barber." />
+  <meta name="author" content="Walid Sardi Boukhari" />
+  <link rel="canonical" href="https://walidsardib.es/servicios" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <meta name="theme-color" content="#f0531c" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Servicios web — Walid Sardi" />
+  <meta property="og:description" content="Webs a medida para negocios: diseño, desarrollo, hosting, SEO y mantenimiento." />
+  <meta property="og:url" content="https://walidsardib.es/servicios" />
+  <meta property="og:image" content="https://walidsardib.es/og.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://walidsardib.es/og.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<Layout>
+  <!-- ═══ HERO ═══ -->
+  <section class="c-hero">
+    <div class="container">
+      <a href="/" class="c-back">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Inicio
+      </a>
+      <p class="c-meta reveal-up">Servicios · Webs a medida</p>
+      <h1 class="c-title">
+        <span class="h-word"><span>Webs</span></span>
+        <span class="h-word"><span>a</span></span>
+        <span class="h-word"><span>medida<span class="h-accent">.</span></span></span>
+      </h1>
+      <p class="c-lead reveal-up">
+        Diseño y desarrollo páginas web para negocios reales, como restaurantes, barberías y marcas locales,
+        cuidando cada detalle: rendimiento, diseño y resultados. Llave en mano: tú te ocupas de tu negocio y yo de la web.
+      </p>
+      <div class="h-ctas reveal-up">
+        <a class="h-btn h-btn-solid" href="/#contacto">Pedir presupuesto</a>
+        <a class="h-btn h-btn-ghost" href="#trabajos">Ver trabajos</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ QUÉ INCLUYE ═══ -->
+  <section class="h-section">
+    <div class="container">
+      <div class="h-head reveal-up">
+        <h2 class="h-title">Qué incluye</h2>
+      </div>
+      <dl class="s-grid">
+        {included.map((x, i) => (
+          <div class="s-cell reveal-up" style={`--i:${i}`}>
+            <dt><span>{String(i + 1).padStart(2, '0')}</span>{x.title}</dt>
+            <dd>{x.text}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- ═══ TRABAJOS ═══ -->
+  <section class="h-section" id="trabajos">
+    <div class="container">
+      <div class="h-head reveal-up">
+        <h2 class="h-title">Webs para clientes</h2>
+      </div>
+      <div class="projects">
+        {works.map(w => (
+          <a
+            class="proj reveal-up"
+            href={w.caseStudy || w.live}
+            target={w.caseStudy ? undefined : '_blank'}
+            rel={w.caseStudy ? undefined : 'noopener'}
+          >
+            <div class="proj-text">
+              <span class="proj-kicker">{w.tagline} · {w.year}</span>
+              <h3 class="proj-title">{w.title}</h3>
+              <p class="proj-desc">{w.desc}</p>
+              <ul class="proj-tags">{w.tech.map(t => (<li>{t}</li>))}</ul>
+              <span class="proj-link">
+                {w.caseStudy ? 'Ver caso de estudio' : 'Visitar web'}
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </span>
+            </div>
+            <div class="proj-media">
+              <img src={w.img} srcset={`${w.img.replace('.webp','-sm.webp')} 760w, ${w.img} 1280w`} sizes="(max-width: 900px) 92vw, 600px" width="1280" height="800" alt={`Web de ${w.title}`} loading="lazy" />
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ DESARROLLO A MEDIDA ═══ -->
+  <section class="h-section">
+    <div class="container">
+      <div class="h-head reveal-up">
+        <h2 class="h-title">También aplicaciones completas</h2>
+      </div>
+      <p class="c-note reveal-up" style="margin-bottom: 32px;">
+        No solo webs de presentación: también construyo aplicaciones desde cero. Este es mi producto más ambicioso.
+      </p>
+      <div class="projects">
+        {projects.map(p => (
+          <a class="proj proj-dark reveal-up" href={p.href}>
+            <div class="proj-text">
+              <span class="proj-kicker">{p.tagline}</span>
+              <img class="proj-logo" src="/larue/logo-blanco.webp" alt={p.title} width="200" height="70" loading="lazy" />
+              <p class="proj-desc">{p.desc}</p>
+              <ul class="proj-tags">{p.tech.map(t => (<li>{t}</li>))}</ul>
+              <span class="proj-link">Ver proyecto
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </span>
+            </div>
+            <div class="proj-media">
+              <img src={p.images[0]} srcset={`${p.images[0].replace('.webp','-sm.webp')} 760w, ${p.images[0]} 1280w`} sizes="(max-width: 900px) 92vw, 600px" width="1280" height="800" alt={`${p.title}, captura`} loading="lazy" />
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CTA ═══ -->
+  <section class="h-section">
+    <div class="container">
+      <div class="c-cta reveal-up">
+        <h2>¿Tienes un negocio y necesitas web?</h2>
+        <p>Cuéntame tu idea y te propongo una web a medida, rápida y lista para vender. Sin plantillas, sin complicaciones.</p>
+        <div class="h-ctas">
+          <a class="h-btn h-btn-solid" href="/#contacto">Pedir presupuesto</a>
+          <a class="h-btn h-btn-ghost" href="mailto:walidsardib@gmail.com">walidsardib@gmail.com</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+</html>

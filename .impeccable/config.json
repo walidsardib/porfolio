@@ -1,0 +1,23 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "createdAt": "2026-11-19T10:59:16.602Z",
+        "reason": "Claude decision: Inter is the existing site-wide body font on all pages; personality comes from Bricolage Grotesque display face"
+      },
+      {
+        "rule": "tight-leading",
+        "value": "*",
+        "files": [
+          "cv/cv.html"
+        ],
+        "createdAt": "2026-11-19T13:07:13.366Z",
+        "reason": "Claude decision: detector misreads unitless line-height against pt font sizes (reports 0.13x); actual values are 1.38-1.55 in this print CV"
+      }
+    ]
+  }
+}

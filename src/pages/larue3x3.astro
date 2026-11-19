@@ -1,0 +1,350 @@
+---
+import Layout from '../components/Layout.astro';
+import '../home.css';
+
+// Pasos del recorrido con scroll
+const larueSteps = [
+  {
+    kicker: 'Competiciones',
+    title: 'Ligas y torneos sin hojas de cálculo.',
+    text: 'Clasificaciones, jornadas y cuadros de torneo que se actualizan solos con cada resultado.',
+    media: { type: 'img', src: '/larue/d-ligas-d.webp', frame: 'browser' }
+  },
+  {
+    kicker: 'Mesa de anotación',
+    title: 'La mesa de anotación, ahora digital.',
+    text: 'Canastas, rebotes, faltas y cambios con un toque. Las estadísticas de cada jugador salen solas.',
+    media: { type: 'video', src: '/larue/mesa.mp4', poster: '/larue/mesa-poster.webp', frame: 'browser' }
+  },
+  {
+    kicker: 'En el pabellón',
+    title: 'Un marcador para toda la pista.',
+    text: 'Pantalla grande sincronizada en tiempo real con la mesa: reloj, faltas, tiempos muertos y jugadas.',
+    media: { type: 'video', src: '/larue/pantalla.mp4', poster: '/larue/pantalla-poster.webp', frame: 'screen' }
+  },
+  {
+    kicker: 'En directo',
+    title: 'El partido, jugada a jugada, en el móvil.',
+    text: 'Aficionados, jugadores y familias siguen cada canasta en tiempo real: marcador, crónica y estadísticas.',
+    media: { type: 'video', src: '/larue/movil.mp4', poster: '/larue/movil-poster.webp', frame: 'phone' }
+  },
+  {
+    kicker: 'Jugadores',
+    title: 'Cada jugador, con su perfil y sus números.',
+    text: 'Fichas completas, líderes estadísticos y comparador de jugadores, actualizados al terminar cada partido.',
+    media: { type: 'img', src: '/larue/d-jugador-d.webp', frame: 'browser' }
+  }
+];
+
+const DEMO = 'https://larue3x3.walidsardib.es';
+
+// Quién usa la plataforma y qué puede hacer (roles reales de la aplicación)
+const roles = [
+  { name: 'Federación', text: 'Administra todo: ligas y torneos, clubes, árbitros, pistas, sanciones, noticias, usuarios y la configuración de la competición.' },
+  { name: 'Organizador de torneos', text: 'Gestiona sus torneos: inscripciones, llegada de equipos, cuadro, patrocinadores y calendario de sus partidos.' },
+  { name: 'Anotador', text: 'Ve sus partidos designados y lleva la mesa digital: cada acción, el reloj, las faltas y los tiempos muertos.' },
+  { name: 'Entrenador', text: 'Gestiona su equipo y su plantilla, inscribe al equipo en torneos y consulta su panel de estadísticas.' },
+  { name: 'Afición', text: 'Sigue resultados, clasificaciones y partidos en directo, guarda favoritos y recibe avisos.' }
+];
+
+// Ficha completa de funciones, agrupada
+const features = [
+  { id: 'competiciones', title: 'Competiciones', items: [
+    'Ligas con clasificación que se actualiza sola tras cada partido',
+    'Jornadas, calendario y resultados; temporadas anteriores siempre consultables',
+    'Torneos con cuadro automático: fase de grupos y eliminatoria',
+    'Inscripción online de equipos, con gestión y retirada de inscripciones',
+    'Check-in el día del torneo con un QR en el cartel; incomparecencias con un toque',
+    'Circuitos: ranking acumulado entre varios torneos',
+    'Patrocinadores e imagen propia en cada torneo',
+    'Partidos amistosos con la misma mesa y estadísticas, compartibles por enlace'
+  ]},
+  { id: 'mesa', title: 'Mesa de anotación digital', items: [
+    'Tiros de 1 y 2 puntos y tiros libres, marcando desde dónde se lanzó cada uno',
+    'Rebotes, asistencias, robos, tapones y pérdidas por jugador',
+    'Faltas personales, técnicas, antideportivas y descalificantes',
+    'Cambios desde el banquillo y tiempo jugado de cada jugador',
+    'Tiempos muertos con cuenta atrás y reloj de posesión',
+    'Deshacer la última acción con un toque e historial de cambios del partido',
+    'Jugador de última hora añadido desde la propia mesa',
+    'Marcador rápido para el móvil: solo puntos, faltas y reloj',
+    'Funciona sin conexión: guarda las acciones y las envía al volver la red, sin duplicarlas'
+  ]},
+  { id: 'directo', title: 'Directo y difusión', items: [
+    'Cada acción llega al instante a quien sigue el partido',
+    'Mapa de tiros y crónica jugada a jugada en directo',
+    'Enlace corto y código QR para compartir cada partido',
+    'Marcador a pantalla completa para proyectar en el pabellón, del partido o del torneo',
+    'Imagen del resultado lista para redes sociales (formato post y enlace)',
+    'Tarjeta de cada jugador en imagen para compartir',
+    'Galería de fotos de cada partido y sección de noticias'
+  ]},
+  { id: 'estadisticas', title: 'Estadísticas y scouting', items: [
+    'Medias, totales y valoración (PIR) de cada jugador',
+    'Eficiencia de tiro y últimos partidos',
+    'Vista global, por temporada y por partido',
+    'Líderes de cada competición',
+    'Scouting con comparador de jugadores',
+    'Panel del entrenador con los datos de su equipo',
+    'Comparativa entre los dos equipos de cada partido'
+  ]},
+  { id: 'gestion', title: 'Gestión de la federación', items: [
+    'Clubes, equipos y plantillas, con jugadores oficiales y no oficiales',
+    'Árbitros y pistas',
+    'Designación de árbitros y pista, cambios de fecha, aplazamientos y W.O.',
+    'Sanciones con control de acumulación de técnicas y antideportivas',
+    'Acta de cada partido generada automáticamente',
+    'Historial de cambios de toda la federación',
+    'Usuarios y permisos por rol'
+  ]},
+  { id: 'exportar', title: 'Exportación y avisos', items: [
+    'Clasificaciones, jugadores y partidos en Excel (CSV)',
+    'Informe de la competición listo para imprimir o guardar en PDF',
+    'Calendario de un equipo o de una liga para suscribirse desde el móvil (.ics)',
+    'Notificaciones push y avisos por correo de los equipos y jugadores favoritos',
+    'Baja de los avisos con un clic desde el propio correo',
+    'Búsqueda global de equipos, jugadores, competiciones y clubes'
+  ]}
+];
+
+const security = [
+  { title: 'Verificación en dos pasos', text: 'Acceso protegido con código de aplicación de autenticación (TOTP).' },
+  { title: 'Permisos por rol', text: 'Cada usuario ve y edita solo lo que le corresponde: federación, organizador, anotador, entrenador o afición.' },
+  { title: 'Historial de cambios', text: 'Queda registrado quién cambió qué en cada partido y en toda la federación.' },
+  { title: 'Copias de seguridad', text: 'Descarga de la base de datos completa desde el panel de administración.' },
+  { title: 'RGPD y LSSI', text: 'Aviso legal, privacidad y cookies; cada usuario puede descargar sus datos o borrar su cuenta.' },
+  { title: 'Supervisión', text: 'Registro de errores consultable desde el panel y un punto de estado para vigilar la web desde fuera.' }
+];
+
+const tech = [
+  { title: 'Sin instalar nada', text: 'Funciona en el navegador y se puede instalar como app (PWA) en móvil y tablet, sin pasar por tiendas.' },
+  { title: 'Cualquier pantalla', text: 'Móvil, tablet, portátil y pantalla grande del pabellón. Modo claro y oscuro.' },
+  { title: 'Formato FIBA 3x3', text: 'Un periodo de 10 minutos, se gana al llegar a 21 y 12 segundos de posesión. El 5x5 se puede activar.' },
+  { title: 'Hosting sencillo', text: 'Laravel y MySQL. Funciona incluso en hosting compartido, sin tareas programadas en el servidor.' }
+];
+
+const faqs = [
+  { q: '¿Qué pasa si en el pabellón no hay cobertura?', a: 'La mesa se abre igualmente y sigue anotando. Las acciones se guardan en el dispositivo y se envían solas al volver la conexión, sin duplicar ninguna canasta ni falta.' },
+  { q: '¿Hay que instalar una aplicación?', a: 'No. Se usa desde el navegador en cualquier dispositivo y, si se quiere, se instala como app en el móvil o la tablet directamente desde la web.' },
+  { q: '¿Sirve para 5x5 además de 3x3?', a: 'Sí. Viene configurada para 3x3 con las reglas FIBA y la modalidad 5x5 (cuatro periodos y 24 segundos de posesión) se activa desde la configuración de la federación.' },
+  { q: '¿Quién puede llevar la mesa de un partido?', a: 'Los anotadores designados para ese partido. Si no hay anotador, la federación puede permitir que lo lleve el entrenador.' },
+  { q: '¿Podemos sacar los datos de la plataforma?', a: 'Sí. Clasificaciones, jugadores y partidos se exportan a Excel, hay informes imprimibles y el administrador puede descargar una copia de seguridad completa.' },
+  { q: '¿Se puede probar antes?', a: 'Sí: la demo pública está abierta y además puedo hacerte una demostración guiada con tus propias competiciones.' }
+];
+---
+
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LaRue3x3 — Plataforma para ligas y torneos de baloncesto 3x3</title>
+  <meta name="description" content="LaRue3x3: ligas, torneos, partidos en directo, estadísticas y mesa de anotación digital para baloncesto 3x3. Proyecto de Walid Sardi Boukhari." />
+  <meta name="author" content="Walid Sardi Boukhari" />
+  <link rel="canonical" href="https://walidsardib.es/larue3x3" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <meta name="theme-color" content="#0d0d0c" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="LaRue3x3 — Plataforma para baloncesto 3x3" />
+  <meta property="og:description" content="Ligas, torneos, directo, estadísticas y mesa de anotación digital en una sola plataforma." />
+  <meta property="og:url" content="https://walidsardib.es/larue3x3" />
+  <meta property="og:image" content="https://walidsardib.es/og-larue.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://walidsardib.es/og-larue.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<Layout>
+  <!-- ═══ HERO: vídeo dentro de "LaRue3x3"; al hacer scroll se expande a pantalla completa ═══ -->
+  <section class="vt vt-larue" id="inicio">
+    <div class="vt-sticky">
+      <div class="vt-panel">
+        <video class="vt-video" muted loop playsinline preload="auto" poster="/hero/reel-poster.webp" src="/hero/reel.mp4" data-autoplay aria-hidden="true"></video>
+        <div class="vt-mask" aria-hidden="true">
+          <span class="vt-word"><span>LaRue</span></span>
+          <span class="vt-word"><span>3x3</span></span>
+        </div>
+        <!-- Misma palabra en modo "screen": aclara solo el interior de las letras para que siempre se lean -->
+        <div class="vt-mask vt-lift" aria-hidden="true">
+          <span class="vt-word"><span>LaRue</span></span>
+          <span class="vt-word"><span>3x3</span></span>
+        </div>
+        <div class="vt-ui">
+          <p class="vt-role"><span class="h-dot"></span>Plataforma para ligas y torneos de baloncesto 3x3</p>
+          <a class="vt-down" href="#descubre">Descubre más
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+  </section>
+
+  <section class="larue larue-page" id="descubre">
+    <div class="container">
+      <a class="larue-back" href="/#proyectos">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Proyectos
+      </a>
+
+      <div class="larue-intro">
+        <h1 class="larue-claim reveal-up">La plataforma para organizar ligas y torneos de <span>3x3</span>.</h1>
+        <p class="larue-desc reveal-up">
+          Nació como mi Trabajo de Fin de Grado y lo he convertido en un producto completo:
+          competiciones, partidos en directo, estadísticas y mesa de anotación digital en una sola plataforma.
+          Diseñado, programado y desplegado por mí, de principio a fin.
+        </p>
+        <div class="h-ctas reveal-up">
+          <a class="h-btn h-btn-solid" href={DEMO} target="_blank" rel="noopener">Ver demo en vivo
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+          </a>
+          <a class="h-btn h-btn-ghost" href="mailto:walidsardib@gmail.com?subject=Demo%20guiada%20de%20LaRue3x3">Pedir una demo guiada</a>
+        </div>
+      </div>
+
+      <!-- Índice de la página: se queda fijo arriba al bajar -->
+      <nav class="l-toc" aria-label="Contenido de la página">
+        <a href="#recorrido">Cómo funciona</a>
+        <a href="#para-quien">Para quién</a>
+        <a href="#funciones">Funciones</a>
+        <a href="#seguridad">Seguridad</a>
+        <a href="#tecnologia">Tecnología</a>
+        <a href="#historia">Historia</a>
+        <a href="#preguntas">Preguntas</a>
+        <a class="l-toc-cta" href={DEMO} target="_blank" rel="noopener">Demo en vivo ↗</a>
+      </nav>
+
+      <!-- Anuncio completo (con sonido y controles) -->
+      <figure class="larue-ad reveal-up">
+        <video controls playsinline preload="metadata" poster="/larue/anuncio-poster.webp" width="1280" height="720">
+          <source src="/larue/anuncio.mp4" type="video/mp4" />
+          Tu navegador no puede reproducir este vídeo. <a href="/larue/anuncio.mp4">Descárgalo aquí</a>.
+        </video>
+        <figcaption>El anuncio de LaRue3x3 · 1:27</figcaption>
+      </figure>
+
+      <!-- Recorrido con scroll: los pasos avanzan y la pantalla fija cambia -->
+      <div class="story" id="recorrido" data-story>
+        <div class="story-stage" aria-hidden="true">
+          <div class="story-stage-inner">
+            {larueSteps.map((s, i) => (
+              <figure class={`story-media frame-${s.media.frame}${i === 0 ? ' is-active' : ''}`} data-media>
+                {s.media.frame === 'browser' && <div class="frame-bar"><span></span><span></span><span></span><em>larue3x3</em></div>}
+                {s.media.type === 'img'
+                  ? <img src={s.media.src} srcset={`${s.media.src.replace('.webp','-sm.webp')} 760w, ${s.media.src} 1280w`} sizes="(max-width: 900px) 92vw, 640px" width="1280" height="800" alt="" loading="lazy" />
+                  : <video muted loop playsinline preload="none" poster={s.media.poster} data-src={s.media.src}></video>}
+              </figure>
+            ))}
+          </div>
+          <div class="story-progress"><span></span></div>
+        </div>
+
+        <ol class="story-steps">
+          {larueSteps.map((s, i) => (
+            <li class={`story-step${i === 0 ? ' is-active' : ''}`} data-step>
+              <span class="story-kicker">{String(i + 1).padStart(2, '0')} · {s.kicker}</span>
+              <h2>{s.title}</h2>
+              <p>{s.text}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <!-- ═══ PARA QUIÉN ═══ -->
+      <section class="l-block" id="para-quien">
+        <h2 class="l-h2 reveal-up">Una plataforma, cinco perfiles</h2>
+        <p class="l-sub reveal-up">Cada persona entra con su usuario y ve exactamente lo que necesita.</p>
+        <ol class="l-roles">
+          {roles.map((r, i) => (
+            <li class="l-role reveal-up" style={`--i:${i}`}>
+              <span class="l-role-n">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{r.name}</h3>
+              <p>{r.text}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <!-- ═══ FUNCIONES: ficha completa ═══ -->
+      <section class="l-block" id="funciones">
+        <h2 class="l-h2 reveal-up">Todo lo que incluye</h2>
+        <p class="l-sub reveal-up">La ficha completa, sin letra pequeña. Todo esto ya funciona en la demo.</p>
+        <div class="l-specs">
+          {features.map(g => (
+            <div class="l-spec" id={`f-${g.id}`}>
+              <h3 class="l-spec-title">{g.title}<span>{g.items.length}</span></h3>
+              <ul class="l-spec-list">
+                {g.items.map(it => (<li class="reveal-up">{it}</li>))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- ═══ SEGURIDAD ═══ -->
+      <section class="l-block" id="seguridad">
+        <h2 class="l-h2 reveal-up">Seguridad y protección de datos</h2>
+        <p class="l-sub reveal-up">Los datos de tu competición y de tus jugadores, bien guardados y bajo control.</p>
+        <dl class="l-grid">
+          {security.map(x => (
+            <div class="l-cell reveal-up"><dt>{x.title}</dt><dd>{x.text}</dd></div>
+          ))}
+        </dl>
+      </section>
+
+      <!-- ═══ TECNOLOGÍA ═══ -->
+      <section class="l-block" id="tecnologia">
+        <h2 class="l-h2 reveal-up">Tecnología y puesta en marcha</h2>
+        <dl class="l-grid">
+          {tech.map(x => (
+            <div class="l-cell reveal-up"><dt>{x.title}</dt><dd>{x.text}</dd></div>
+          ))}
+        </dl>
+        <ul class="larue-tags l-tags reveal-up">
+          <li>Laravel</li><li>PHP</li><li>MySQL</li><li>JavaScript</li><li>Tailwind CSS</li><li>PWA</li><li>Tiempo real</li>
+        </ul>
+      </section>
+
+      <!-- ═══ LA HISTORIA ═══ -->
+      <section class="l-block l-story" id="historia">
+        <h2 class="l-h2 reveal-up">Por qué existe LaRue3x3</h2>
+        <div class="l-story-text">
+          <p class="reveal-up">
+            El baloncesto es mi gran pasión fuera del código. Tras años siguiendo ligas y jugando a nivel amateur,
+            vi que faltaban herramientas modernas, rápidas y accesibles para gestionar la competición en una federación.
+          </p>
+          <p class="reveal-up">
+            Así que uní mis dos mundos y lo convertí en mi Trabajo de Fin de Grado. Nunca lo planteé como un ejercicio
+            académico: el objetivo era un sistema real, que una federación pudiera usar en producción para dejar atrás
+            las actas en papel, las hojas de cálculo y los resultados que llegan tarde. Desde entonces lo he seguido
+            desarrollando hasta convertirlo en el producto que ves aquí.
+          </p>
+        </div>
+      </section>
+
+      <!-- ═══ PREGUNTAS ═══ -->
+      <section class="l-block" id="preguntas">
+        <h2 class="l-h2 reveal-up">Preguntas frecuentes</h2>
+        <div class="l-faq">
+          {faqs.map((f, i) => (
+            <details class="reveal-up" open={i === 0}>
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <div class="larue-cta reveal-up">
+        <p>¿Organizas competiciones de 3x3? Pruébalo ahora o pídeme una demo con tus propias ligas.</p>
+        <div class="h-ctas">
+          <a class="h-btn h-btn-solid" href={DEMO} target="_blank" rel="noopener">Ver demo en vivo</a>
+          <a class="h-btn h-btn-ghost" href="mailto:walidsardib@gmail.com?subject=Demo%20guiada%20de%20LaRue3x3">Pedir una demo guiada</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+</html>

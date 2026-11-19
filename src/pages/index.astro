@@ -1,89 +1,85 @@
 ---
 import Layout from '../components/Layout.astro';
 import { works } from '../data/works.js';
-import { projects } from '../data/projects.js';
+import '../home.css';
 
-const primarySkills = ['PHP', 'Laravel', 'JavaScript', 'SQL'];
-const otherSkills = [
-  'HTML', 'CSS', 'Bootstrap', 'Tailwind CSS', 'MySQL', 'SQLite', 'MongoDB',
-  'Git', 'Java', 'JavaFX', 'Spring', 'Kotlin', 'Android', 'XML', 'Firebase'
+// Tecnologías con logo (devicon). Si un icono no carga, se oculta y queda el nombre.
+const DEV = 'https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons';
+const stack = [
+  { name: 'PHP', icon: 'php/php-original' },
+  { name: 'Laravel', icon: 'laravel/laravel-original' },
+  { name: '.NET', icon: 'dotnetcore/dotnetcore-original' },
+  { name: 'C#', icon: 'csharp/csharp-original' },
+  { name: 'Java', icon: 'java/java-original' },
+  { name: 'Spring', icon: 'spring/spring-original' },
+  { name: 'JavaScript', icon: 'javascript/javascript-original' },
+  { name: 'TypeScript', icon: 'typescript/typescript-original' },
+  { name: 'Node.js', icon: 'nodejs/nodejs-original' },
+  { name: 'Astro', icon: 'astro/astro-original' },
+  { name: 'Tailwind CSS', icon: 'tailwindcss/tailwindcss-original' },
+  { name: 'MySQL', icon: 'mysql/mysql-original' },
+  { name: 'MariaDB', icon: 'mariadb/mariadb-original' },
+  { name: 'SQLite', icon: 'sqlite/sqlite-original' },
+  { name: 'MongoDB', icon: 'mongodb/mongodb-original' },
+  { name: 'Azure', icon: 'azure/azure-original' },
+  { name: 'Docker', icon: 'docker/docker-original' },
+  { name: 'Git', icon: 'git/git-original' },
+  { name: 'Firebase', icon: 'firebase/firebase-plain' },
+  { name: 'Kotlin', icon: 'kotlin/kotlin-original' },
+  { name: 'Android', icon: 'android/android-original' },
+  // IA generativa: sin logo de marca, con un icono propio (ai: true)
+  { name: 'Claude Code', ai: true },
+  { name: 'ComfyUI', ai: true },
+  { name: 'Remotion', ai: true }
 ];
-
-const skillIcons = {
-  'PHP': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg',
-  'Laravel': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg',
-  'JavaScript': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg',
-  'SQL': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/azuresqldatabase/azuresqldatabase-original.svg',
-  'HTML': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg',
-  'CSS': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg',
-  'Bootstrap': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg',
-  'Tailwind CSS': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg',
-  'MySQL': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg',
-  'SQLite': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sqlite/sqlite-original.svg',
-  'MongoDB': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongodb/mongodb-original.svg',
-  'Git': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg',
-  'Java': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg',
-  'JavaFX': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg',
-  'Spring': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/spring/spring-original.svg',
-  'Kotlin': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/kotlin/kotlin-original.svg',
-  'Android': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/android/android-original.svg',
-  'XML': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/xml/xml-original.svg',
-  'Firebase': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firebase/firebase-plain.svg'
-};
 ---
 
+<html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Walid Sardi Boukhari — Desarrollador y diseñador web en Zaragoza</title>
-  <meta name="description" content="Walid Sardi Boukhari, desarrollador y diseñador web en Zaragoza. Diseño y desarrollo de páginas web a medida para negocios y marcas: rápidas, modernas y pensadas para convertir." />
+  <title>Walid Sardi Boukhari — Desarrollador full-stack en Zaragoza</title>
+  <meta name="description" content="Walid Sardi Boukhari, desarrollador full-stack en Zaragoza. Creador de LaRue3x3, plataforma para competiciones de baloncesto 3x3. Laravel, PHP, JavaScript y Azure." />
   <meta name="author" content="Walid Sardi Boukhari" />
-  <meta name="keywords" content="Walid, Walid Sardi, Walid Sardi Boukhari, desarrollador web, diseñador web, páginas web Zaragoza, diseño web Zaragoza, freelance web, portfolio Walid Sardi" />
   <link rel="canonical" href="https://walidsardib.es/" />
-
-  <!-- Favicon (icono de la pestaña del navegador) -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="apple-touch-icon" href="/favicon.svg" />
-  <meta name="theme-color" content="#6f8c5a" />
+  <meta name="theme-color" content="#f0531c" />
 
-  <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Walid Sardi Boukhari" />
-  <meta property="og:title" content="Walid Sardi Boukhari — Desarrollador y diseñador web en Zaragoza" />
-  <meta property="og:description" content="Diseño y desarrollo de páginas web a medida para negocios y marcas. Rápidas, modernas y pensadas para convertir." />
+  <meta property="og:title" content="Walid Sardi Boukhari — Desarrollador full-stack" />
+  <meta property="og:description" content="Desarrollador full-stack en Zaragoza y creador de LaRue3x3." />
   <meta property="og:url" content="https://walidsardib.es/" />
   <meta property="og:locale" content="es_ES" />
   <meta property="og:image" content="https://walidsardib.es/og.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Walid Sardi Boukhari — Desarrollador y diseñador web en Zaragoza" />
-
-  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Walid Sardi Boukhari — Desarrollador y diseñador web" />
-  <meta name="twitter:description" content="Páginas web a medida para negocios y marcas. Zaragoza." />
+  <meta name="twitter:title" content="Walid Sardi Boukhari — Desarrollador full-stack" />
+  <meta name="twitter:description" content="Desarrollador full-stack en Zaragoza y creador de LaRue3x3." />
   <meta name="twitter:image" content="https://walidsardib.es/og.png" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Datos estructurados: Persona (clave para búsquedas por nombre) -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "Person",
     "name": "Walid Sardi Boukhari",
     "alternateName": ["Walid Sardi", "Walid"],
-    "jobTitle": "Desarrollador y diseñador web",
-    "description": "Desarrollador y diseñador web en Zaragoza. Páginas web a medida para negocios y marcas.",
+    "jobTitle": "Desarrollador full-stack",
     "url": "https://walidsardib.es/",
     "email": "mailto:walidsardib@gmail.com",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Zaragoza",
-      "addressCountry": "ES"
+    "address": { "@type": "PostalAddress", "addressLocality": "Zaragoza", "addressCountry": "ES" },
+    "knowsAbout": ["Laravel", "PHP", "JavaScript", "MySQL", "Microsoft Azure", "Desarrollo web"],
+    "hasCredential": {
+      "@type": "EducationalOccupationalCredential",
+      "name": "Microsoft Certified: Azure Fundamentals",
+      "credentialCategory": "certification",
+      "recognizedBy": { "@type": "Organization", "name": "Microsoft" }
     },
-    "knowsAbout": ["Desarrollo web", "Diseño web", "SEO", "Laravel", "PHP", "JavaScript", "Astro"],
     "sameAs": [
       "https://github.com/walidsardib",
       "https://www.linkedin.com/in/walid-sardi-740619304/"
@@ -93,285 +89,263 @@ const skillIcons = {
 
 <Layout>
 
-  <!-- ═══ HERO ═══ -->
-  <section id="hero" class="hero">
+  <!-- ═══ HERO: nombre con una píldora de vídeo incrustada ═══ -->
+  <section class="h-hero" id="inicio">
     <div class="container">
-     <div class="hero-grid">
-      <div class="hero-content">
-        <p class="hero-greeting reveal-up" id="heroGreeting">Desarrollador web · Zaragoza</p>
-        <h1 class="hero-name reveal-up">Webs que tu negocio <span class="gradient-text">merece</span>.</h1>
-        <h2 class="hero-role reveal-up">Diseño y desarrollo páginas web a medida</h2>
-        <p class="hero-desc reveal-up">
-          Creo sitios web rápidos, modernos y cuidados al detalle para negocios y marcas.
-          Del diseño al despliegue: webs que cargan al instante, se ven perfectas en cualquier pantalla
-          y convierten visitas en clientes.
-        </p>
-        <div class="hero-ctas reveal-up">
-          <a class="btn btn-primary" href="#trabajos">
-            Ver trabajos
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </a>
-          <a class="btn btn-secondary" href="#contact">Hablemos de tu proyecto</a>
-        </div>
-
-        <!-- Tira de servicios: visible sin bajar, dice qué ofreces de un vistazo -->
-        <div class="hero-services reveal-up">
-          <span class="hero-services-label">Qué hago</span>
-          <span class="hero-service-pill">Diseño web</span>
-          <span class="hero-service-pill">Desarrollo a medida</span>
-          <span class="hero-service-pill">Tiendas online</span>
-          <span class="hero-service-pill">SEO</span>
-          <span class="hero-service-pill">Dominio + hosting</span>
-          <span class="hero-service-pill">Mantenimiento</span>
-        </div>
+      <p class="h-eyebrow reveal-up"><span class="h-dot"></span>Desarrollador full-stack · Zaragoza</p>
+      <h1 class="h-name">
+        <span class="h-word"><span>Walid</span></span>
+        <a class="h-pill" href="#proyectos" aria-label="Ver proyectos">
+          <!-- Montaje: outro de LaRue3x3 → Tacos Street → ZazaStop → Barbería -->
+          <video muted loop playsinline preload="auto" poster="/hero/pill-poster.webp" src="/hero/pill.mp4" data-autoplay aria-hidden="true"></video>
+        </a>
+        <span class="h-word"><span>Sardi<span class="h-accent">.</span></span></span>
+      </h1>
+      <p class="h-lead reveal-up">
+        Construyo software de principio a fin, de la base de datos a la interfaz.
+        Desarrollador en <strong>Memorándum Tecnología</strong> y, por mi cuenta,
+        creo productos propios y webs a medida.
+      </p>
+      <div class="h-ctas reveal-up">
+        <a class="h-btn h-btn-solid" href="#proyectos">Ver proyectos
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+        </a>
+        <a class="h-btn h-btn-ghost" href="#contacto">Contactar</a>
+        <a class="h-btn h-btn-ghost" href="/cv/CV-Walid-Sardi.pdf" download>Descargar CV
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="4" x2="12" y2="16"/><polyline points="6 11 12 17 18 11"/><line x1="5" y1="20" x2="19" y2="20"/></svg>
+        </a>
       </div>
 
-      <!-- Visual: mockups de webs reales en marco navegador (prueba de trabajo) -->
-      <div class="hero-visual reveal-up r-right" aria-hidden="true">
-        <div class="mockup mockup-main">
-          <div class="mockup-bar"><span></span><span></span><span></span><em>tacosstreet.es</em></div>
-          <img src="/assets/work/tacos-hero.jpeg" alt="" loading="eager" />
-        </div>
-        <div class="mockup mockup-back">
-          <div class="mockup-bar"><span></span><span></span><span></span></div>
-          <img src="/assets/work/barberia-hero.jpeg" alt="" loading="lazy" />
-        </div>
-        <div class="hero-visual-badge">+3 webs en producción</div>
-      </div>
-     </div>
+      <dl class="h-facts reveal-up">
+        <div><dt>Ahora</dt><dd>Desarrollador en Memorándum Tecnología</dd></div>
+        <div><dt>Último proyecto</dt><dd><a class="h-facts-link" href="/larue3x3">LaRue3x3</a></dd></div>
+        <div><dt>Última certificación</dt><dd>Microsoft Azure Fundamentals</dd></div>
+      </dl>
     </div>
   </section>
 
-  <!-- ═══ TRABAJOS PROPIOS (FREELANCE + A MEDIDA) ═══ -->
-  <section id="trabajos" class="section">
+  <!-- ═══ PROYECTOS ═══ -->
+  <section class="h-section h-projects" id="proyectos">
     <div class="container">
-      <div class="section-label reveal-up">
-        <span class="section-number">01</span>
-        <h3 class="section-title">Trabajos propios</h3>
-        <div class="section-line"></div>
-        <a href="/trabajos" class="section-link">Ver todos<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+      <div class="h-head reveal-up">
+        <span class="h-num">01</span>
+        <h2 class="h-title">Proyectos</h2>
       </div>
 
-      <p class="section-intro reveal-up">Lo que hago por mi cuenta como <strong>freelance</strong>: webs para clientes y proyectos a medida de principio a fin.</p>
-
-      <h4 class="works-subtitle reveal-up">Webs para clientes</h4>
-      <div class="works-grid stagger-children">
-        {works.map(w => (
-          <a href={w.caseStudy || w.live} target={w.caseStudy ? undefined : '_blank'} rel={w.caseStudy ? undefined : 'noopener'} class={`work-card reveal-up${w.featured ? ' featured' : ''}`}>
-            <div class="work-card-media">
-              <img src={w.img} alt={`Web de ${w.title}`} loading="lazy" />
-              {w.featured && <span class="work-badge">Caso de éxito</span>}
-            </div>
-            <div class="work-card-body">
-              <div class="work-card-head">
-                <h4 class="work-card-title">{w.title}</h4>
-                <span class="work-card-tagline">{w.tagline}</span>
-              </div>
-              <p class="work-card-desc">{w.desc}</p>
-              <div class="work-card-tech">
-                {w.tech.map(t => (<span class="tech-pill">{t}</span>))}
-              </div>
-              <span class="work-card-link">
-                {w.caseStudy ? 'Ver caso de estudio' : 'Visitar web'}
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-              </span>
-            </div>
-          </a>
-        ))}
-      </div>
-
-      <h4 class="works-subtitle reveal-up" style="margin-top: 64px;">Desarrollo a medida</h4>
-      <p class="section-intro reveal-up">Mi proyecto personal más grande. La mejor muestra de lo que puedo construir desde cero: de la base de datos al directo.</p>
-
-      {projects.map(p => (
-        <a href={`/projects/${p.slug}`} class="work-card featured reveal-up">
-          <div class="work-card-media">
-            <div class="project-slideshow" data-interval="3500">
-              <img class="slide active" src="/assets/competiciones.png" alt={`${p.title} imagen 1`} loading="lazy" />
-              <img class="slide" src="/assets/directo.png" alt={`${p.title} imagen 2`} loading="lazy" />
-            </div>
-            <span class="work-badge">Proyecto a medida</span>
-          </div>
-          <div class="work-card-body">
-            <div class="work-card-head">
-              <h3 class="work-card-title">{p.title}</h3>
-              <span class="work-card-tagline">Trabajo de Fin de Grado · Proyecto personal</span>
-            </div>
-            <p class="work-card-desc">{p.desc}</p>
-            <div class="work-card-tech">
-              {p.tech.map(t => (<span class="tech-pill">{t}</span>))}
-            </div>
-            <span class="work-card-link">
-              Ver caso de estudio
+      <div class="projects">
+        <a class="proj proj-dark reveal-up" href="/larue3x3">
+          <div class="proj-text">
+            <span class="proj-kicker">Producto propio · SaaS deportivo</span>
+            <img class="proj-logo" src="/larue/logo-blanco.webp" alt="LaRue3x3" width="200" height="70" loading="lazy" />
+            <p class="proj-desc">Plataforma para organizar ligas y torneos de baloncesto 3x3: partidos en directo, estadísticas y mesa de anotación digital. Empezó como mi TFG y hoy es un producto listo para clubes y federaciones.</p>
+            <ul class="proj-tags"><li>Laravel</li><li>MySQL</li><li>JavaScript</li><li>Tiempo real</li></ul>
+            <span class="proj-link">Descubrir LaRue3x3
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </span>
           </div>
+          <div class="proj-media">
+            <video muted loop playsinline preload="none" poster="/hero/reel-poster.webp" data-autoplay data-src="/hero/reel.mp4" aria-hidden="true"></video>
+          </div>
         </a>
-      ))}
+
+        <a class="proj reveal-up" href="/projects/tacosstreet">
+          <div class="proj-text">
+            <span class="proj-kicker">Web de marca · Cliente · 2026</span>
+            <h3 class="proj-title">Tacos Street</h3>
+            <p class="proj-desc">Web para una cadena de French Tacos en Zaragoza: carta interactiva, configurador «crea tu taco», animaciones a medida y pedidos directos a delivery.</p>
+            <ul class="proj-tags"><li>Astro</li><li>TypeScript</li><li>CSS</li></ul>
+            <span class="proj-link">Ver caso de estudio
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </span>
+          </div>
+          <div class="proj-media">
+            <img src="/assets/work/tacos-hero.webp" srcset="/assets/work/tacos-hero-sm.webp 760w, /assets/work/tacos-hero.webp 1280w" sizes="(max-width: 900px) 92vw, 600px" width="1280" height="800" alt="Web de Tacos Street" loading="lazy" />
+          </div>
+        </a>
+      </div>
     </div>
   </section>
 
-  <!-- ═══ SOBRE MÍ ═══ -->
-  <section id="about" class="section">
+  <!-- ═══ TRAYECTORIA ═══ -->
+  <section class="h-section" id="trayectoria">
     <div class="container">
-      <div class="section-label reveal-up">
-        <span class="section-number">02</span>
-        <h3 class="section-title">Sobre mí</h3>
-        <div class="section-line"></div>
+      <div class="h-head reveal-up">
+        <span class="h-num">02</span>
+        <h2 class="h-title">Trayectoria</h2>
       </div>
-      <div class="about-grid">
-        <div class="about-text reveal-up">
-          <h3>Hola — soy Walid Sardi Boukhari</h3>
-          <p>
-            <span class="about-highlight">Técnico en Desarrollo de Aplicaciones Multiplataforma (DAM)</span> y
-            desarrollador web afincado en Zaragoza. Combino una base sólida de ingeniería —PHP, Laravel, bases de datos— con
-            un ojo cuidado para el diseño, la velocidad y el detalle.
-          </p>
-          <p>
-            Durante el día trabajo como desarrollador en proyectos corporativos. Fuera de ahí, diseño y
-            construyo <span class="about-highlight">webs a medida para negocios</span>: restaurantes, barberías y marcas
-            locales que necesitan una presencia online profesional que de verdad funcione.
-          </p>
-          <p>
-            Cada proyecto es único, así que nada de plantillas genéricas. Y lo más importante:
-            <span class="about-highlight">me encargo de absolutamente todo</span> —diseño, desarrollo, dominio,
-            hosting, SEO y mantenimiento—. Tú solo te preocupas de tu negocio; de lo demás, me ocupo yo.
-          </p>
+
+      <div class="tl-wrap">
+        <!-- Raíl: relleno + punto que baja con el scroll (decorativo) -->
+        <div class="tl-rail" aria-hidden="true">
+          <span class="tl-fill"></span>
+          <span class="tl-head-track"><span class="tl-head"></span></span>
         </div>
+      <ol class="timeline">
+        <li class="tl-item reveal-up">
+          <span class="tl-date">Nov 2026</span>
+          <div class="tl-body">
+            <h3>Microsoft Certified: Azure Fundamentals</h3>
+            <p class="tl-where">Certificación · Microsoft</p>
+            <p>Fundamentos de cloud, servicios principales de Azure, seguridad, gobernanza y costes.</p>
+          </div>
+        </li>
+
+        <li class="tl-item reveal-up">
+          <span class="tl-date">Mar 2025 — hoy</span>
+          <div class="tl-body">
+            <h3>Desarrollador</h3>
+            <p class="tl-where">Memorándum Tecnología · Zaragoza</p>
+            <ul class="tl-list">
+              <li><span class="tl-when">Ago 2026 — hoy</span><strong>Plataforma de gestión integral para una gran empresa pública</strong> en .NET y Microsoft Azure: proyectos, economía, inventario y más, con integraciones con ERP como Oracle PeopleSoft, bases de datos en Azure y despliegue del entorno de preproducción.</li>
+              <li><span class="tl-when">Mar 2026 — hoy</span><strong>CMS de una entidad gubernamental</strong> en Java, JSP y XML: lógica de negocio, procesamiento de estructuras XML complejas y mantenimiento de vistas legacy.</li>
+              <li><span class="tl-when">Jul 2025 — hoy</span><strong>CMS de una gran entidad pública</strong> en PHP y MariaDB: evolutivos, optimización de consultas, migraciones y seguridad.</li>
+              <li><span class="tl-when">2025 · unos 3 meses</span><strong>Sistema de gestión interna</strong> con Laravel, JavaScript y MySQL: usuarios, procesos internos, panel de administración y APIs.</li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="tl-item reveal-up">
+          <span class="tl-date">Proyecto propio</span>
+          <div class="tl-body">
+            <h3>LaRue3x3</h3>
+            <p class="tl-where">De TFG a producto · <a href="/larue3x3">Ver proyecto</a></p>
+            <p>La plataforma de gestión de baloncesto de mi TFG, evolucionada hasta un producto listo para la venta.</p>
+          </div>
+        </li>
+
+        <li class="tl-item reveal-up">
+          <span class="tl-date">2023 — 2025</span>
+          <div class="tl-body">
+            <h3>Técnico Superior en Desarrollo de Aplicaciones Multiplataforma</h3>
+            <p class="tl-where">Ciclo Formativo de Grado Superior (DAM) · Izquierdo FP, Zaragoza</p>
+            <p>Programación, bases de datos, desarrollo móvil y de escritorio, y servicios.</p>
+          </div>
+        </li>
+      </ol>
       </div>
     </div>
   </section>
 
-  <!-- ═══ EXPERIENCIA ═══ -->
-  <section id="experience" class="section">
+  <!-- ═══ CERTIFICACIONES ═══ -->
+  <section class="h-section" id="certificaciones">
     <div class="container">
-      <div class="section-label reveal-up">
-        <span class="section-number">03</span>
-        <h3 class="section-title">Experiencia profesional</h3>
-        <div class="section-line"></div>
+      <div class="h-head reveal-up">
+        <span class="h-num">03</span>
+        <h2 class="h-title">Certificaciones</h2>
       </div>
 
-      <p class="section-intro reveal-up">Mi trabajo como desarrollador <strong>dentro de empresa</strong>: proyectos corporativos y para entidades públicas.</p>
-
-      <div class="experience-timeline">
-        <div class="exp-item reveal-up">
-          <div class="exp-header">
-            <h4 class="exp-role">Desarrollador <span class="exp-company">@ Memorándum Tecnología</span></h4>
-            <span class="exp-date">Mar 2025 — Actualidad</span>
+      <div class="certs">
+        <a class="cert reveal-up" href="https://learn.microsoft.com/api/credentials/share/es-es/walidsardib/E71C6BB3BFCEAF7A?sharingId=71F5D401DB474E1F" target="_blank" rel="noopener">
+          <span class="cert-logo" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <div class="cert-body">
+            <span class="cert-issuer">Microsoft Certified · AZ-900</span>
+            <h3>Azure Fundamentals</h3>
+            <span class="cert-date">Obtenida en noviembre de 2026</span>
           </div>
+          <span class="cert-link">Verificar
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
 
-          <div class="exp-project">
-            <div class="exp-project-title">Proyecto de gestión interna</div>
-            <div class="exp-project-tech">Laravel · JavaScript · MySQL</div>
-            <ul>
-              <li>Desarrollo de un sistema de gestión interna para la empresa (gestión de usuarios, control de procesos internos y panel administrativo).</li>
-              <li>Implementación de funcionalidades back-end en Laravel y APIs para consumo frontend.</li>
-              <li>Interacciones y mejoras en la interfaz con JavaScript; optimización de consultas y modelos MySQL.</li>
-              <li>Pruebas, documentación técnica y despliegues en entornos de staging/producción.</li>
-            </ul>
-          </div>
+  <!-- ═══ STACK ═══ -->
+  <section class="h-section" id="stack">
+    <div class="container">
+      <div class="h-head reveal-up">
+        <span class="h-num">04</span>
+        <h2 class="h-title">Con qué trabajo</h2>
+      </div>
 
-          <div class="exp-project">
-            <div class="exp-project-title">Proyecto CMS — mantenimiento y mejoras</div>
-            <div class="exp-project-tech">PHP · MariaDB · JavaScript</div>
-            <ul>
-              <li>Mantenimiento evolutivo y correctivo del CMS de una grande entidad pública: resolución de bugs y soporte de incidencias.</li>
-              <li>Optimización de consultas SQL y migraciones de esquemas/datos en MariaDB.</li>
-              <li>Implementación de nuevas funcionalidades y mejoras UX con JavaScript; revisiones de seguridad y despliegues.</li>
-              <li>Coordinación con el equipo del cliente para priorizar mejoras y asegurar continuidad del servicio.</li>
-            </ul>
-          </div>
+      <ul class="tech-grid">
+        {stack.map((t, i) => (
+          <li class="tech reveal-up" style={`--i:${i}`}>
+            {t.ai
+              ? <svg class="tech-ai" width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.2 6.3 6.3 2.2-6.3 2.2L12 19.5l-2.2-6.3L3.5 11l6.3-2.2z"/><path d="M19 15.5l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z"/></svg>
+              : <img src={`${DEV}/${t.icon}.svg`} alt="" width="28" height="28" loading="lazy" onerror="this.remove()" />}
+            <span>{t.name}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
 
-          <div class="exp-project">
-            <div class="exp-project-title">Gestión Documental CMS</div>
-            <div class="exp-project-tech">Java · JSP · XML</div>
-            <ul>
-              <li>Mantenimiento de un sistema de gestión de contenidos (CMS) para una grande entidad pública.</li>
-              <li>Implementación de lógica de negocio robusta utilizando Java y procesamiento de estructuras de datos complejas mediante XML.</li>
-              <li>Creación y mantenimiento de vistas dinámicas legacy con JSP para la presentación y administración de documentos.</li>
-            </ul>
+  <!-- ═══ SERVICIOS (enlace a subpágina) ═══ -->
+  <section class="h-section" id="servicios">
+    <div class="container">
+      <a class="services-band reveal-up" href="/servicios">
+        <div class="services-text">
+          <span class="h-num">05 · Servicios</span>
+          <h2>¿Tienes un negocio? También hago webs a medida.</h2>
+          <p>Diseño, desarrollo, dominio, hosting y mantenimiento. Mira algunas webs que ya están funcionando.</p>
+          <span class="services-link">Ver servicios y trabajos
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
+        </div>
+        <div class="services-thumbs" aria-hidden="true">
+          {works.slice(0, 3).map(w => (<img src={w.img.replace('.webp', '-sm.webp')} width="760" height="475" alt="" loading="lazy" />))}
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ═══ CONTACTO ═══ -->
+  <section class="h-section h-contact" id="contacto">
+    <div class="container">
+      <div class="contact-grid">
+        <div>
+          <h2 class="h-contact-title reveal-up">Hablemos.</h2>
+          <p class="h-contact-text reveal-up">Una oferta de trabajo, una web para tu negocio o una demo de LaRue3x3. Contesto rápido.</p>
+          <a class="h-mail reveal-up" href="mailto:walidsardib@gmail.com">walidsardib@gmail.com</a>
+          <div class="h-socials reveal-up">
+            <a href="https://www.linkedin.com/in/walid-sardi-740619304/" target="_blank" rel="noopener">LinkedIn ↗</a>
+            <a href="https://github.com/walidsardib" target="_blank" rel="noopener">GitHub ↗</a>
+            <a href="/cv/CV-Walid-Sardi.pdf" download>CV en PDF ↓</a>
+            <a href="/cv/Resume-Walid-Sardi-EN.pdf" download hreflang="en">Resume in English ↓</a>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ═══ SKILLS ═══ -->
-  <section id="skills" class="section">
-    <div class="container">
-      <div class="section-label reveal-up">
-        <span class="section-number">04</span>
-        <h3 class="section-title">Skills</h3>
-        <div class="section-line"></div>
-      </div>
-
-      <div class="skills-section-group reveal-up">
-        <div class="skills-group-title">Tecnologías principales</div>
-        <div class="skills-grid stagger-children">
-          {primarySkills.map(s => (
-            <div class="skill-chip primary reveal-up">
-              <img 
-                class="skill-chip-icon" 
-                src={skillIcons[s] || `/assets/skills/${s.toLowerCase().replace(/[^a-z0-9]+/gi,'-')}.png`} 
-                alt={s}
-                onerror="this.style.display='none'"
-              />
-              <span>{s}</span>
+        <!-- Formulario: envía con Web3Forms (FORM_ENDPOINT en main.js) -->
+        <form class="cform reveal-up" data-contact-form novalidate>
+          <!-- Clave pública de Web3Forms (pensada para ir en el HTML) -->
+          <input type="hidden" name="access_key" value="916ff1c4-48f9-4ee0-a211-c26c9d3d08bc" />
+          <input type="hidden" name="from_name" value="Portfolio walidsardib.es" />
+          <div class="cform-row">
+            <label class="cfield">
+              <span>Nombre</span>
+              <input type="text" name="nombre" autocomplete="name" required />
+            </label>
+            <label class="cfield">
+              <span>Email</span>
+              <input type="email" name="email" autocomplete="email" required />
+            </label>
+          </div>
+          <fieldset class="cfield">
+            <legend>Motivo</legend>
+            <div class="cchips">
+              <label><input type="radio" name="motivo" value="Oferta de trabajo" checked /><span>Oferta de trabajo</span></label>
+              <label><input type="radio" name="motivo" value="Web para mi negocio" /><span>Web para mi negocio</span></label>
+              <label><input type="radio" name="motivo" value="Demo de LaRue3x3" /><span>Demo de LaRue3x3</span></label>
+              <label><input type="radio" name="motivo" value="Otro" /><span>Otro</span></label>
             </div>
-          ))}
-        </div>
-      </div>
-
-      <div class="skills-section-group reveal-up">
-        <div class="skills-group-title">Otras tecnologías</div>
-        <div class="skills-grid stagger-children">
-          {otherSkills.map(s => (
-            <div class="skill-chip reveal-up">
-              {skillIcons[s] && (
-                <img 
-                  class="skill-chip-icon" 
-                  src={skillIcons[s]} 
-                  alt={s}
-                  onerror="this.style.display='none'"
-                />
-              )}
-              <span>{s}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ CONTACTO / CTA ═══ -->
-  <section id="contact" class="section">
-    <div class="container">
-      <div class="contact-cta reveal-up" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 64px 40px; text-align: center; position: relative; overflow: hidden;">
-        
-        <!-- Subtle background decoration for the CTA -->
-        <div style="position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at 50% 0%, var(--accent-glow) 0%, transparent 50%); pointer-events: none;"></div>
-
-        <h3 style="font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); font-weight: 600; color: var(--text); margin-bottom: 24px; letter-spacing: -0.01em; line-height: 1.15;">
-          ¿Construimos algo <span class="gradient-text">increíble</span>?
-        </h3>
-
-        <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6; max-width: 600px; margin: 0 auto 40px;">
-          ¿Tienes un negocio y necesitas una web que de verdad funcione? Cuéntame tu idea y me encargo de todo
-          —diseño, desarrollo, dominio, hosting, SEO y mantenimiento—. También estoy abierto a nuevas oportunidades profesionales.
-        </p>
-        
-        <div class="contact-links" style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
-          <a class="btn btn-primary" href="mailto:walidsardib@gmail.com" style="padding: 12px 24px; font-size: 1rem; color: #ffffff !important;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            Hablemos por email
-          </a>
-          <a class="btn btn-secondary" href="https://www.linkedin.com/in/walid-sardi-740619304/" target="_blank" rel="noopener" style="padding: 12px 24px; font-size: 1rem;">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-            Conectar en LinkedIn
-          </a>
-        </div>
+          </fieldset>
+          <label class="cfield">
+            <span>Mensaje</span>
+            <textarea name="mensaje" rows="5" required></textarea>
+          </label>
+          <!-- Trampa para bots: los humanos no la ven -->
+          <input class="sr-only" type="text" name="web" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          <div class="cform-foot">
+            <button class="h-btn h-btn-solid" type="submit">Enviar mensaje
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+            <p class="cform-status" role="status" aria-live="polite" data-status></p>
+          </div>
+        </form>
       </div>
     </div>
   </section>
 
 </Layout>
+</html>
