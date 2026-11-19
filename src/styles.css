@@ -123,7 +123,7 @@ body,
 /* Tema oscuro: ajustes específicos */
 [data-theme="dark"] .navbar.scrolled {
   /* rgba explícito: Safari calcula como transparente color-mix(var(--bg), transparent) */
-  background: rgba(244, 243, 239, 0.94);
+  background: rgba(15, 15, 14, 0.94);
   box-shadow: 0 1px 0 var(--border), 0 6px 24px rgba(0, 0, 0, 0.35);
 }
 

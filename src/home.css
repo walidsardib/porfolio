@@ -1659,9 +1659,22 @@ body { font-feature-settings: "calt" 0; }
     top: calc(var(--nav-height) + 62px);
     height: auto;
     z-index: 2;
-    padding: 8px 0 16px;
-    background: linear-gradient(var(--l-bg) 85%, transparent);
+    padding: 8px 0 14px;
+    /* fondo sólido: con degradado, el texto que pasa por debajo se veía agrisado */
+    background: var(--l-bg);
+    box-shadow: 0 10px 14px -6px var(--l-bg);
     gap: 12px;
+  }
+
+  /* En móvil solo se ve un paso a la vez bajo la pantalla: todos con el texto al 100 % */
+  .story-step { opacity: 1; }
+
+  /* Cambio de imagen solo con fundido (el desenfoque en Safari parecía que la foto "enfocaba") */
+  .story-media,
+  .story-media.is-active {
+    filter: none;
+    transform: none;
+    transition: opacity 0.35s ease;
   }
 
   .story-stage-inner { aspect-ratio: 16 / 11; max-height: 42vh; margin: 0 auto; }
