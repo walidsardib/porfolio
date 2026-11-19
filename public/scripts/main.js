@@ -509,12 +509,12 @@ function playOrOffer(v) {
   if (pr && pr.catch) pr.catch(() => offerPlay(v));
 }
 
-// ── Animaciones ligadas al scroll en JavaScript para navegadores sin animation-timeline
-//    (Safari anterior a iOS 26, Firefox). Reproduce los mismos efectos que el CSS de @supports ──
+// ── Animaciones ligadas al scroll en JavaScript, en todos los navegadores.
+//    El CSS con animation-timeline solo se usa sin JS: algunos Safari dicen soportarlo
+//    pero no ejecutan bien las líneas de tiempo con nombre ni los rangos calculados ──
 function initScrollFallback() {
   if (prefersReduced) return;
-  if (window.CSS && CSS.supports && CSS.supports('animation-timeline: view()')) return;
-  document.documentElement.classList.add('sd-fallback');
+  document.documentElement.classList.add('scroll-js');
 
   const clamp = (x) => Math.min(Math.max(x, 0), 1);
   const lerp = (a, b, t) => a + (b - a) * t;

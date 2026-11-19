@@ -142,12 +142,12 @@
 /* Con scroll-driven animations: el bloque se fija y la tira sube mientras bajas */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    .c-tour {
+    html:not(.scroll-js) .c-tour {
       height: 280svh;
       view-timeline: --tour block;
     }
 
-    .c-tour-sticky {
+    html:not(.scroll-js) .c-tour-sticky {
       position: sticky;
       top: 0;
       height: 100svh;
@@ -156,33 +156,33 @@
       padding: calc(var(--nav-height) + 16px) 0 24px;
     }
 
-    .c-tour-sticky .c-tour-grid { width: 100%; }
+    html:not(.scroll-js) .c-tour-sticky .c-tour-grid { width: 100%; }
 
     /* Tamaño del navegador limitado por la altura disponible */
-    .c-browser { max-width: calc((100svh - var(--nav-height) - 110px) * 1.6); }
+    html:not(.scroll-js) .c-browser { max-width: calc((100svh - var(--nav-height) - 110px) * 1.6); }
 
-    .c-strip,
-    .c-tour-label {
+    html:not(.scroll-js) .c-strip,
+    html:not(.scroll-js) .c-tour-label {
       animation-timing-function: linear;
       animation-fill-mode: both;
       animation-duration: auto;
       animation-timeline: --tour;
     }
 
-    .c-strip {
+    html:not(.scroll-js) .c-strip {
       animation-name: stripScroll;
       animation-range: cover 100svh cover calc(100% - 100svh);
     }
 
     /* Cada etiqueta se enciende en su tercio del recorrido */
-    .c-tour-label {
+    html:not(.scroll-js) .c-tour-label {
       animation-name: labelOn;
       color: var(--text-muted);
     }
 
-    .c-tour-label:nth-child(1) { animation-range: cover 100svh cover calc(100svh + 30%); }
-    .c-tour-label:nth-child(2) { animation-range: cover calc(100svh + 15%) cover calc(100svh + 45%); }
-    .c-tour-label:nth-child(3) { animation-range: cover calc(100svh + 30%) cover calc(100% - 100svh); }
+    html:not(.scroll-js) .c-tour-label:nth-child(1) { animation-range: cover 100svh cover calc(100svh + 30%); }
+    html:not(.scroll-js) .c-tour-label:nth-child(2) { animation-range: cover calc(100svh + 15%) cover calc(100svh + 45%); }
+    html:not(.scroll-js) .c-tour-label:nth-child(3) { animation-range: cover calc(100svh + 30%) cover calc(100% - 100svh); }
   }
 }
 
@@ -301,18 +301,18 @@
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     /* La captura se abre y la imagen se asienta mientras entra en pantalla */
-    .c-feature-media,
-    .c-feature-media img,
-    .c-big {
+    html:not(.scroll-js) .c-feature-media,
+    html:not(.scroll-js) .c-feature-media img,
+    html:not(.scroll-js) .c-big {
       animation-timing-function: linear;
       animation-fill-mode: both;
       animation-duration: auto;
       animation-timeline: view();
     }
 
-    .c-feature-media { animation-name: mediaOpen; animation-range: entry 0% cover 45%; }
-    .c-feature-media img { animation-name: mediaSettle; animation-range: entry 0% cover 60%; }
-    .c-big { animation-name: bigIn; animation-range: entry 0% cover 50%; }
+    html:not(.scroll-js) .c-feature-media { animation-name: mediaOpen; animation-range: entry 0% cover 45%; }
+    html:not(.scroll-js) .c-feature-media img { animation-name: mediaSettle; animation-range: entry 0% cover 60%; }
+    html:not(.scroll-js) .c-big { animation-name: bigIn; animation-range: entry 0% cover 50%; }
   }
 }
 
@@ -451,10 +451,10 @@
   .s-grid { grid-template-columns: 1fr; }
 }
 
-/* ═══ Alternativa en JS al recorrido con scroll (navegadores sin animation-timeline) ═══ */
-.sd-fallback .c-tour { height: 280svh; }
+/* ═══ Recorrido con scroll en JS (siempre que hay JavaScript) ═══ */
+.scroll-js .c-tour { height: 280svh; }
 
-.sd-fallback .c-tour-sticky {
+.scroll-js .c-tour-sticky {
   position: sticky;
   top: 0;
   height: 100svh;
@@ -463,13 +463,13 @@
   padding: calc(var(--nav-height) + 16px) 0 24px;
 }
 
-.sd-fallback .c-tour-sticky .c-tour-grid { width: 100%; }
-.sd-fallback .c-browser { max-width: calc((100svh - var(--nav-height) - 110px) * 1.6); }
+.scroll-js .c-tour-sticky .c-tour-grid { width: 100%; }
+.scroll-js .c-browser { max-width: calc((100svh - var(--nav-height) - 110px) * 1.6); }
 
-.sd-fallback .c-tour-label {
+.scroll-js .c-tour-label {
   color: var(--text-muted);
   transition: color 0.3s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.sd-fallback .c-tour-label.is-on { color: var(--text); transform: translateX(10px); }
+.scroll-js .c-tour-label.is-on { color: var(--text); transform: translateX(10px); }
 

@@ -253,11 +253,11 @@ body { font-feature-settings: "calt" 0; }
 /* Con scroll-driven animations: el hero ocupa 2 pantallas y la segunda es la expansión */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    .vt { height: 220svh; view-timeline: --vt block; }
+    html:not(.scroll-js) .vt { height: 220svh; view-timeline: --vt block; }
 
-    .vt-panel,
-    .vt-mask,
-    .vt-ui {
+    html:not(.scroll-js) .vt-panel,
+    html:not(.scroll-js) .vt-mask,
+    html:not(.scroll-js) .vt-ui {
       animation-timing-function: linear;
       animation-fill-mode: both;
       animation-duration: auto;
@@ -266,9 +266,9 @@ body { font-feature-settings: "calt" 0; }
       animation-range: cover 100svh cover calc(100% - 100svh);
     }
 
-    .vt-panel { animation-name: vtExpand; }
-    .vt-mask { animation-name: vtZoom; }
-    .vt-ui { animation-name: vtUiOut; }
+    html:not(.scroll-js) .vt-panel { animation-name: vtExpand; }
+    html:not(.scroll-js) .vt-mask { animation-name: vtZoom; }
+    html:not(.scroll-js) .vt-ui { animation-name: vtUiOut; }
   }
 }
 
@@ -1270,7 +1270,7 @@ body { font-feature-settings: "calt" 0; }
 /* La captura se "abre" a medida que entra en pantalla (scroll-driven, si el navegador lo soporta) */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    .proj-media {
+    html:not(.scroll-js) .proj-media {
       animation: projOpen linear both;
       animation-duration: auto;
       animation-timeline: view();
@@ -1351,8 +1351,8 @@ body { font-feature-settings: "calt" 0; }
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     /* El relleno y el punto van ligados al centro de la pantalla */
-    .tl-fill,
-    .tl-head-track {
+    html:not(.scroll-js) .tl-fill,
+    html:not(.scroll-js) .tl-head-track {
       animation-timing-function: linear;
       animation-fill-mode: both;
       animation-duration: auto;
@@ -1360,13 +1360,13 @@ body { font-feature-settings: "calt" 0; }
       animation-range: cover 50vh cover calc(100% - 50vh);
     }
 
-    .tl-wrap { view-timeline: --tl block; }
-    .tl-fill { animation-name: railFill; }
-    .tl-head-track { display: block; animation-name: headMove; }
+    html:not(.scroll-js) .tl-wrap { view-timeline: --tl block; }
+    html:not(.scroll-js) .tl-fill { animation-name: railFill; }
+    html:not(.scroll-js) .tl-head-track { display: block; animation-name: headMove; }
 
     /* Nodo y fecha se encienden cuando el hito cruza el centro */
-    .tl-item::before,
-    .tl-item .tl-date {
+    html:not(.scroll-js) .tl-item::before,
+    html:not(.scroll-js) .tl-item .tl-date {
       animation-timing-function: linear;
       animation-fill-mode: both;
       animation-duration: auto;
@@ -1374,8 +1374,8 @@ body { font-feature-settings: "calt" 0; }
       animation-range: cover calc(50vh - 40px) cover calc(50vh + 10px);
     }
 
-    .tl-item::before { animation-name: nodeOn; }
-    .tl-item .tl-date { animation-name: dateOn; }
+    html:not(.scroll-js) .tl-item::before { animation-name: nodeOn; }
+    html:not(.scroll-js) .tl-item .tl-date { animation-name: dateOn; }
   }
 }
 
@@ -1715,21 +1715,22 @@ body { font-feature-settings: "calt" 0; }
   .services-thumbs img { transition: none; }
 }
 
-/* ═══ Alternativa en JS a las animaciones con scroll (navegadores sin animation-timeline) ═══
-   Replica la estructura de los bloques @supports; los valores animados los pone main.js. */
-.sd-fallback .vt { height: 220svh; }
-.sd-fallback .tl-head-track { display: block; }
+/* ═══ Animaciones con scroll en JS (siempre que hay JavaScript) ═══
+   Estructura que necesitan; los valores animados los pone main.js. El CSS de @supports
+   solo actúa sin JavaScript (html:not(.scroll-js)), porque algunos Safari lo soportan a medias. */
+.scroll-js .vt { height: 220svh; }
+.scroll-js .tl-head-track { display: block; }
 
-.sd-fallback .tl-item::before {
+.scroll-js .tl-item::before {
   background: var(--bg);
   border-color: var(--border-hover);
   transform: scale(0.85);
   transition: background 0.3s ease, border-color 0.3s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.sd-fallback .tl-item.is-on::before { background: var(--accent); border-color: var(--accent); transform: none; }
-.sd-fallback .tl-item .tl-date { color: var(--text-muted); transition: color 0.3s ease; }
-.sd-fallback .tl-item.is-on .tl-date { color: var(--accent-ink); }
+.scroll-js .tl-item.is-on::before { background: var(--accent); border-color: var(--accent); transform: none; }
+.scroll-js .tl-item .tl-date { color: var(--text-muted); transition: color 0.3s ease; }
+.scroll-js .tl-item.is-on .tl-date { color: var(--accent-ink); }
 
 /* ═══ Botón de play cuando el navegador bloquea la reproducción automática ═══ */
 .proj-media { position: relative; }
