@@ -16,4 +16,20 @@
     <loc>https://walidsardib.es/projects/tacosstreet</loc>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://walidsardib.es/en/</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://walidsardib.es/en/larue3x3</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://walidsardib.es/en/services</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://walidsardib.es/en/projects/tacosstreet</loc>
+    <priority>0.6</priority>
+  </url>
 </urlset>

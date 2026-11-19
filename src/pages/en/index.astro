@@ -1,0 +1,354 @@
+---
+import Layout from '../../components/Layout.astro';
+import { works } from '../../data/works.js';
+import '../../home.css';
+
+// Tecnologías con logo (devicon). Si un icono no carga, se oculta y queda el nombre.
+const DEV = 'https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons';
+const stack = [
+  { name: 'PHP', icon: 'php/php-original' },
+  { name: 'Laravel', icon: 'laravel/laravel-original' },
+  { name: '.NET', icon: 'dotnetcore/dotnetcore-original' },
+  { name: 'C#', icon: 'csharp/csharp-original' },
+  { name: 'Java', icon: 'java/java-original' },
+  { name: 'Spring', icon: 'spring/spring-original' },
+  { name: 'JavaScript', icon: 'javascript/javascript-original' },
+  { name: 'TypeScript', icon: 'typescript/typescript-original' },
+  { name: 'Node.js', icon: 'nodejs/nodejs-original' },
+  { name: 'Astro', icon: 'astro/astro-original' },
+  { name: 'Tailwind CSS', icon: 'tailwindcss/tailwindcss-original' },
+  { name: 'MySQL', icon: 'mysql/mysql-original' },
+  { name: 'MariaDB', icon: 'mariadb/mariadb-original' },
+  { name: 'SQLite', icon: 'sqlite/sqlite-original' },
+  { name: 'MongoDB', icon: 'mongodb/mongodb-original' },
+  { name: 'Azure', icon: 'azure/azure-original' },
+  { name: 'Docker', icon: 'docker/docker-original' },
+  { name: 'Git', icon: 'git/git-original' },
+  { name: 'Firebase', icon: 'firebase/firebase-plain' },
+  { name: 'Kotlin', icon: 'kotlin/kotlin-original' },
+  { name: 'Android', icon: 'android/android-original' },
+  // IA generativa: sin logo de marca, con un icono propio (ai: true)
+  { name: 'Claude Code', ai: true },
+  { name: 'ComfyUI', ai: true },
+  { name: 'Remotion', ai: true }
+];
+---
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Walid Sardi Boukhari — Full-stack developer in Zaragoza, Spain</title>
+  <meta name="description" content="Walid Sardi Boukhari, full-stack developer in Zaragoza, Spain. Creator of LaRue3x3, a platform for 3x3 basketball competitions. Laravel, PHP, .NET, JavaScript and Azure." />
+  <meta name="author" content="Walid Sardi Boukhari" />
+  <link rel="canonical" href="https://walidsardib.es/en/" />
+  <link rel="alternate" hreflang="es" href="https://walidsardib.es/" />
+  <link rel="alternate" hreflang="en" href="https://walidsardib.es/en/" />
+  <link rel="alternate" hreflang="x-default" href="https://walidsardib.es/" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <meta name="theme-color" content="#f0531c" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Walid Sardi Boukhari" />
+  <meta property="og:title" content="Walid Sardi Boukhari — Full-stack developer" />
+  <meta property="og:description" content="Full-stack developer in Zaragoza, Spain, and creator of LaRue3x3." />
+  <meta property="og:url" content="https://walidsardib.es/en/" />
+  <meta property="og:locale" content="en_GB" />
+  <meta property="og:image" content="https://walidsardib.es/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Walid Sardi Boukhari — Full-stack developer" />
+  <meta name="twitter:description" content="Full-stack developer in Zaragoza, Spain, and creator of LaRue3x3." />
+  <meta name="twitter:image" content="https://walidsardib.es/og.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Walid Sardi Boukhari",
+    "alternateName": ["Walid Sardi", "Walid"],
+    "jobTitle": "Full-stack developer",
+    "url": "https://walidsardib.es/en/",
+    "email": "mailto:walidsardib@gmail.com",
+    "address": { "@type": "PostalAddress", "addressLocality": "Zaragoza", "addressCountry": "ES" },
+    "knowsAbout": ["Laravel", "PHP", "JavaScript", "MySQL", "Microsoft Azure", "Web development"],
+    "hasCredential": {
+      "@type": "EducationalOccupationalCredential",
+      "name": "Microsoft Certified: Azure Fundamentals",
+      "credentialCategory": "certification",
+      "recognizedBy": { "@type": "Organization", "name": "Microsoft" }
+    },
+    "sameAs": [
+      "https://github.com/walidsardib",
+      "https://www.linkedin.com/in/walid-sardi-740619304/"
+    ]
+  })} />
+</head>
+
+<Layout lang="en" alt="/">
+
+  <!-- ═══ HERO: nombre con una píldora de vídeo incrustada ═══ -->
+  <section class="h-hero" id="inicio">
+    <div class="container">
+      <p class="h-eyebrow reveal-up"><span class="h-dot"></span>Full-stack developer · Zaragoza, Spain</p>
+      <h1 class="h-name">
+        <span class="h-word"><span>Walid</span></span>
+        <a class="h-pill" href="#projects" aria-label="See projects">
+          <!-- Montaje: outro de LaRue3x3 → Tacos Street → ZazaStop → Barbería -->
+          <video muted loop playsinline preload="auto" poster="/hero/pill-poster.webp" src="/hero/pill.mp4" data-autoplay aria-hidden="true"></video>
+        </a>
+        <span class="h-word"><span>Sardi<span class="h-accent">.</span></span></span>
+      </h1>
+      <p class="h-lead reveal-up">
+        I build software end to end, from the database to the interface.
+        Developer at <strong>Memorándum Tecnología</strong>, and on my own time
+        I create my own products and custom websites.
+      </p>
+      <div class="h-ctas reveal-up">
+        <a class="h-btn h-btn-solid" href="#projects">See projects
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+        </a>
+        <a class="h-btn h-btn-ghost" href="#contact">Get in touch</a>
+        <a class="h-btn h-btn-ghost" href="/cv/Resume-Walid-Sardi-EN.pdf" download>Download resume
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="4" x2="12" y2="16"/><polyline points="6 11 12 17 18 11"/><line x1="5" y1="20" x2="19" y2="20"/></svg>
+        </a>
+      </div>
+
+      <dl class="h-facts reveal-up">
+        <div><dt>Now</dt><dd>Developer at Memorándum Tecnología</dd></div>
+        <div><dt>Latest project</dt><dd><a class="h-facts-link" href="/en/larue3x3">LaRue3x3</a></dd></div>
+        <div><dt>Latest certification</dt><dd>Microsoft Azure Fundamentals</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ═══ PROYECTOS ═══ -->
+  <section class="h-section h-projects" id="projects">
+    <div class="container">
+      <div class="h-head reveal-up">
+        <span class="h-num">01</span>
+        <h2 class="h-title">Projects</h2>
+      </div>
+
+      <div class="projects">
+        <a class="proj proj-dark reveal-up" href="/en/larue3x3">
+          <div class="proj-text">
+            <span class="proj-kicker">Own product · Sports SaaS</span>
+            <img class="proj-logo" src="/larue/logo-blanco.webp" alt="LaRue3x3" width="200" height="70" loading="lazy" />
+            <p class="proj-desc">A platform to run 3x3 basketball leagues and tournaments: live games, statistics and a digital scoring table. It started as my final-year project and is now a product ready for clubs and federations.</p>
+            <ul class="proj-tags"><li>Laravel</li><li>MySQL</li><li>JavaScript</li><li>Real time</li></ul>
+            <span class="proj-link">Discover LaRue3x3
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </span>
+          </div>
+          <div class="proj-media">
+            <video muted loop playsinline preload="none" poster="/hero/reel-poster.webp" data-autoplay data-src="/hero/reel.mp4" aria-hidden="true"></video>
+          </div>
+        </a>
+
+        <a class="proj reveal-up" href="/en/projects/tacosstreet">
+          <div class="proj-text">
+            <span class="proj-kicker">Brand website · Client · 2026</span>
+            <h3 class="proj-title">Tacos Street</h3>
+            <p class="proj-desc">Website for a French tacos chain in Zaragoza: interactive menu, a build-your-taco configurator, custom animations and direct links to delivery apps.</p>
+            <ul class="proj-tags"><li>Astro</li><li>TypeScript</li><li>CSS</li></ul>
+            <span class="proj-link">See case study
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </span>
+          </div>
+          <div class="proj-media">
+            <img src="/assets/work/tacos-hero.webp" srcset="/assets/work/tacos-hero-sm.webp 760w, /assets/work/tacos-hero.webp 1280w" sizes="(max-width: 900px) 92vw, 600px" width="1280" height="800" alt="Tacos Street website" loading="lazy" />
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TRAYECTORIA ═══ -->
+  <section class="h-section" id="experience">
+    <div class="container">
+      <div class="h-head reveal-up">
+        <span class="h-num">02</span>
+        <h2 class="h-title">Experience</h2>
+      </div>
+
+      <div class="tl-wrap">
+        <!-- Raíl: relleno + punto que baja con el scroll (decorativo) -->
+        <div class="tl-rail" aria-hidden="true">
+          <span class="tl-fill"></span>
+          <span class="tl-head-track"><span class="tl-head"></span></span>
+        </div>
+      <ol class="timeline">
+        <li class="tl-item reveal-up">
+          <span class="tl-date">Nov 2026</span>
+          <div class="tl-body">
+            <h3>Microsoft Certified: Azure Fundamentals</h3>
+            <p class="tl-where">Certification · Microsoft</p>
+            <p>Cloud fundamentals, core Azure services, security, governance and cost management.</p>
+          </div>
+        </li>
+
+        <li class="tl-item reveal-up">
+          <span class="tl-date">Mar 2025 — present</span>
+          <div class="tl-body">
+            <h3>Developer</h3>
+            <p class="tl-where">Memorándum Tecnología · Zaragoza, Spain</p>
+            <ul class="tl-list">
+              <li><span class="tl-when">Aug 2026 — present</span><strong>End-to-end management platform for a large public company</strong> built with .NET and Microsoft Azure: projects, finance, inventory and more, with ERP integrations such as Oracle PeopleSoft, Azure databases and deployment of the pre-production environment.</li>
+              <li><span class="tl-when">Mar 2026 — present</span><strong>CMS for a government agency</strong> in Java, JSP and XML: business logic, processing of complex XML structures and maintenance of legacy views.</li>
+              <li><span class="tl-when">Jul 2025 — present</span><strong>CMS for a large public organisation</strong> in PHP and MariaDB: new features, query optimisation, migrations and security.</li>
+              <li><span class="tl-when">2025 · about 3 months</span><strong>Internal management system</strong> with Laravel, JavaScript and MySQL: users, internal processes, admin panel and APIs.</li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="tl-item reveal-up">
+          <span class="tl-date">Own project</span>
+          <div class="tl-body">
+            <h3>LaRue3x3</h3>
+            <p class="tl-where">From final-year project to product · <a href="/en/larue3x3">See project</a></p>
+            <p>The basketball management platform from my final-year project, grown into a product ready to sell.</p>
+          </div>
+        </li>
+
+        <li class="tl-item reveal-up">
+          <span class="tl-date">2023 — 2025</span>
+          <div class="tl-body">
+            <h3>Higher National Diploma in Multiplatform Application Development</h3>
+            <p class="tl-where">Higher vocational training (DAM) · Izquierdo FP, Zaragoza</p>
+            <p>Programming, databases, mobile and desktop development, and services.</p>
+          </div>
+        </li>
+      </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CERTIFICACIONES ═══ -->
+  <section class="h-section" id="certifications">
+    <div class="container">
+      <div class="h-head reveal-up">
+        <span class="h-num">03</span>
+        <h2 class="h-title">Certifications</h2>
+      </div>
+
+      <div class="certs">
+        <a class="cert reveal-up" href="https://learn.microsoft.com/api/credentials/share/en-gb/walidsardib/E71C6BB3BFCEAF7A?sharingId=71F5D401DB474E1F" target="_blank" rel="noopener">
+          <span class="cert-logo" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <div class="cert-body">
+            <span class="cert-issuer">Microsoft Certified · AZ-900</span>
+            <h3>Azure Fundamentals</h3>
+            <span class="cert-date">Earned in November 2026</span>
+          </div>
+          <span class="cert-link">Verify
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ STACK ═══ -->
+  <section class="h-section" id="stack">
+    <div class="container">
+      <div class="h-head reveal-up">
+        <span class="h-num">04</span>
+        <h2 class="h-title">What I work with</h2>
+      </div>
+
+      <ul class="tech-grid">
+        {stack.map((t, i) => (
+          <li class="tech reveal-up" style={`--i:${i}`}>
+            {t.ai
+              ? <svg class="tech-ai" width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.2 6.3 6.3 2.2-6.3 2.2L12 19.5l-2.2-6.3L3.5 11l6.3-2.2z"/><path d="M19 15.5l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z"/></svg>
+              : <img src={`${DEV}/${t.icon}.svg`} alt="" width="28" height="28" loading="lazy" onerror="this.remove()" />}
+            <span>{t.name}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ═══ SERVICIOS (enlace a subpágina) ═══ -->
+  <section class="h-section" id="services">
+    <div class="container">
+      <a class="services-band reveal-up" href="/en/services">
+        <div class="services-text">
+          <span class="h-num">05 · Services</span>
+          <h2>Got a business? I also build custom websites.</h2>
+          <p>Design, development, domain, hosting and maintenance. Have a look at some sites that are already live.</p>
+          <span class="services-link">See services and work
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
+        </div>
+        <div class="services-thumbs" aria-hidden="true">
+          {works.slice(0, 3).map(w => (<img src={w.img.replace('.webp', '-sm.webp')} width="760" height="475" alt="" loading="lazy" />))}
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ═══ CONTACTO ═══ -->
+  <section class="h-section h-contact" id="contact">
+    <div class="container">
+      <div class="contact-grid">
+        <div>
+          <h2 class="h-contact-title reveal-up">Let’s talk.</h2>
+          <p class="h-contact-text reveal-up">A job offer, a website for your business or a LaRue3x3 demo. I reply quickly.</p>
+          <a class="h-mail reveal-up" href="mailto:walidsardib@gmail.com">walidsardib@gmail.com</a>
+          <div class="h-socials reveal-up">
+            <a href="https://www.linkedin.com/in/walid-sardi-740619304/" target="_blank" rel="noopener">LinkedIn ↗</a>
+            <a href="https://github.com/walidsardib" target="_blank" rel="noopener">GitHub ↗</a>
+            <a href="/cv/Resume-Walid-Sardi-EN.pdf" download>Resume (PDF) ↓</a>
+            <a href="/cv/CV-Walid-Sardi.pdf" download hreflang="es">CV en español ↓</a>
+          </div>
+        </div>
+
+        <!-- Formulario: envía con Web3Forms (FORM_ENDPOINT en main.js) -->
+        <form class="cform reveal-up" data-contact-form novalidate>
+          <!-- Clave pública de Web3Forms (pensada para ir en el HTML) -->
+          <input type="hidden" name="access_key" value="916ff1c4-48f9-4ee0-a211-c26c9d3d08bc" />
+          <input type="hidden" name="from_name" value="Portfolio walidsardib.es (EN)" />
+          <div class="cform-row">
+            <label class="cfield">
+              <span>Name</span>
+              <input type="text" name="nombre" autocomplete="name" required />
+            </label>
+            <label class="cfield">
+              <span>Email</span>
+              <input type="email" name="email" autocomplete="email" required />
+            </label>
+          </div>
+          <fieldset class="cfield">
+            <legend>Reason</legend>
+            <div class="cchips">
+              <label><input type="radio" name="motivo" value="Job offer" checked /><span>Job offer</span></label>
+              <label><input type="radio" name="motivo" value="Website for my business" /><span>Website for my business</span></label>
+              <label><input type="radio" name="motivo" value="LaRue3x3 demo" /><span>LaRue3x3 demo</span></label>
+              <label><input type="radio" name="motivo" value="Other" /><span>Other</span></label>
+            </div>
+          </fieldset>
+          <label class="cfield">
+            <span>Message</span>
+            <textarea name="mensaje" rows="5" required></textarea>
+          </label>
+          <!-- Trampa para bots: los humanos no la ven -->
+          <input class="sr-only" type="text" name="web" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          <div class="cform-foot">
+            <button class="h-btn h-btn-solid" type="submit">Send message
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+            <p class="cform-status" role="status" aria-live="polite" data-status></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+</Layout>
+</html>

@@ -1,0 +1,174 @@
+---
+import Layout from '../../components/Layout.astro';
+import { works as worksEs } from '../../data/works.js';
+import { projects } from '../../data/projects.js';
+import '../../home.css';
+import '../../case.css';
+
+// Mismos trabajos que en castellano, con los textos traducidos
+const worksEn = {
+  tacosstreet: { tagline: 'The Original French Tacos · Zaragoza', desc: 'Brand website for an urban food chain. Interactive menu, a build-your-taco configurator, custom animations and direct links to delivery apps.', caseStudy: '/en/projects/tacosstreet' },
+  zazastop: { tagline: 'French tacos & Crousty', desc: 'Restaurant landing page with its own identity, a visual menu and ordering through Glovo and Uber Eats.' },
+  barberia: { tagline: 'Barbershop in Zaragoza', desc: 'Website for a barbershop with appointment booking, a gallery of their work, services and direct contact via WhatsApp.' }
+};
+const works = worksEs.map(w => ({ ...w, ...worksEn[w.slug] }));
+
+// LaRue3x3 en inglés
+const projectsEn = projects.map(p => ({ ...p, href: '/en/larue3x3', tagline: 'Own product · From final-year project to product', desc: 'A platform to run 3x3 basketball leagues and tournaments: live games, statistics, an arena scoreboard and a digital scoring table.' }));
+
+// Lo que incluye un encargo de principio a fin
+const included = [
+  { title: 'Design', text: 'A website with your business’s identity, no generic templates.' },
+  { title: 'Development', text: 'Fast, carefully crafted and perfect on mobile.' },
+  { title: 'Domain', text: 'I register and set up your web address for you.' },
+  { title: 'Hosting', text: 'Published and running, with no server to worry about.' },
+  { title: 'SEO', text: 'Ready from day one so people find you on Google.' },
+  { title: 'Maintenance', text: 'Changes, updates and support whenever you need them.' }
+];
+---
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Web services — Walid Sardi · Custom websites in Zaragoza</title>
+  <meta name="description" content="Custom websites for businesses in Zaragoza: design, development, domain, hosting, SEO and maintenance. Tacos Street, ZazaStop and Gabriel's Barber." />
+  <meta name="author" content="Walid Sardi Boukhari" />
+  <link rel="canonical" href="https://walidsardib.es/en/services" />
+  <link rel="alternate" hreflang="es" href="https://walidsardib.es/servicios" />
+  <link rel="alternate" hreflang="en" href="https://walidsardib.es/en/services" />
+  <link rel="alternate" hreflang="x-default" href="https://walidsardib.es/servicios" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <meta name="theme-color" content="#f0531c" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Web services — Walid Sardi" />
+  <meta property="og:description" content="Custom websites for businesses: design, development, hosting, SEO and maintenance." />
+  <meta property="og:url" content="https://walidsardib.es/en/services" />
+  <meta property="og:image" content="https://walidsardib.es/og.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://walidsardib.es/og.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<Layout lang="en" alt="/servicios">
+  <!-- ═══ HERO ═══ -->
+  <section class="c-hero">
+    <div class="container">
+      <a href="/en/" class="c-back">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Home
+      </a>
+      <p class="c-meta reveal-up">Services · Custom websites</p>
+      <h1 class="c-title">
+        <span class="h-word"><span>Custom</span></span>
+        <span class="h-word"><span>websites<span class="h-accent">.</span></span></span>
+      </h1>
+      <p class="c-lead reveal-up">
+        I design and build websites for real businesses, such as restaurants, barbershops and local brands,
+        taking care of every detail: performance, design and results. Turnkey: you run your business, I take care of the website.
+      </p>
+      <div class="h-ctas reveal-up">
+        <a class="h-btn h-btn-solid" href="/en/#contact">Request a quote</a>
+        <a class="h-btn h-btn-ghost" href="#work">See work</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ QUÉ INCLUYE ═══ -->
+  <section class="h-section">
+    <div class="container">
+      <div class="h-head reveal-up">
+        <h2 class="h-title">What’s included</h2>
+      </div>
+      <dl class="s-grid">
+        {included.map((x, i) => (
+          <div class="s-cell reveal-up" style={`--i:${i}`}>
+            <dt><span>{String(i + 1).padStart(2, '0')}</span>{x.title}</dt>
+            <dd>{x.text}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- ═══ TRABAJOS ═══ -->
+  <section class="h-section" id="work">
+    <div class="container">
+      <div class="h-head reveal-up">
+        <h2 class="h-title">Client websites</h2>
+      </div>
+      <div class="projects">
+        {works.map(w => (
+          <a
+            class="proj reveal-up"
+            href={w.caseStudy || w.live}
+            target={w.caseStudy ? undefined : '_blank'}
+            rel={w.caseStudy ? undefined : 'noopener'}
+          >
+            <div class="proj-text">
+              <span class="proj-kicker">{w.tagline} · {w.year}</span>
+              <h3 class="proj-title">{w.title}</h3>
+              <p class="proj-desc">{w.desc}</p>
+              <ul class="proj-tags">{w.tech.map(t => (<li>{t}</li>))}</ul>
+              <span class="proj-link">
+                {w.caseStudy ? 'See case study' : 'Visit website'}
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </span>
+            </div>
+            <div class="proj-media">
+              <img src={w.img} srcset={`${w.img.replace('.webp','-sm.webp')} 760w, ${w.img} 1280w`} sizes="(max-width: 900px) 92vw, 600px" width="1280" height="800" alt={`${w.title} website`} loading="lazy" />
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ DESARROLLO A MEDIDA ═══ -->
+  <section class="h-section">
+    <div class="container">
+      <div class="h-head reveal-up">
+        <h2 class="h-title">Full applications too</h2>
+      </div>
+      <p class="c-note reveal-up" style="margin-bottom: 32px;">
+        Not just showcase websites: I also build applications from scratch. This is my most ambitious product.
+      </p>
+      <div class="projects">
+        {projectsEn.map(p => (
+          <a class="proj proj-dark reveal-up" href={p.href}>
+            <div class="proj-text">
+              <span class="proj-kicker">{p.tagline}</span>
+              <img class="proj-logo" src="/larue/logo-blanco.webp" alt={p.title} width="200" height="70" loading="lazy" />
+              <p class="proj-desc">{p.desc}</p>
+              <ul class="proj-tags">{p.tech.map(t => (<li>{t}</li>))}</ul>
+              <span class="proj-link">See project
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </span>
+            </div>
+            <div class="proj-media">
+              <img src={p.images[0]} srcset={`${p.images[0].replace('.webp','-sm.webp')} 760w, ${p.images[0]} 1280w`} sizes="(max-width: 900px) 92vw, 600px" width="1280" height="800" alt={`${p.title} screenshot`} loading="lazy" />
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CTA ═══ -->
+  <section class="h-section">
+    <div class="container">
+      <div class="c-cta reveal-up">
+        <h2>Got a business and need a website?</h2>
+        <p>Tell me your idea and I will propose a custom website, fast and ready to sell. No templates, no hassle.</p>
+        <div class="h-ctas">
+          <a class="h-btn h-btn-solid" href="/en/#contact">Request a quote</a>
+          <a class="h-btn h-btn-ghost" href="mailto:walidsardib@gmail.com">walidsardib@gmail.com</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+</html>

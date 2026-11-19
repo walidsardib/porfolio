@@ -5,6 +5,27 @@
 
 const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// Idioma de la página (las versiones en inglés viven en /en/)
+const LANG = document.documentElement.lang === 'en' ? 'en' : 'es';
+const MSG = {
+  es: {
+    badEmail: 'Revisa el email, parece incompleto.',
+    missing: 'Rellena los campos marcados.',
+    mailOpened: 'Se ha abierto tu correo con el mensaje listo para enviar.',
+    sending: 'Enviando…',
+    sent: '¡Mensaje enviado! Te respondo lo antes posible.',
+    failed: 'No se ha podido enviar. Escríbeme a walidsardib@gmail.com.'
+  },
+  en: {
+    badEmail: 'Please check your email address, it looks incomplete.',
+    missing: 'Please fill in the highlighted fields.',
+    mailOpened: 'Your email app has opened with the message ready to send.',
+    sending: 'Sending…',
+    sent: 'Message sent! I will get back to you as soon as possible.',
+    failed: 'The message could not be sent. Please write to walidsardib@gmail.com.'
+  }
+}[LANG];
+
 // ── Scroll Reveal ──
 function initReveal() {
   const els = document.querySelectorAll('.reveal-up');
@@ -77,7 +98,8 @@ function initScrollSpy() {
         const id = entry.target.id;
         navLinks.forEach(l => {
           const href = l.getAttribute('href');
-          l.classList.toggle('active', href === `#${id}` || href === `/#${id}`);
+          // vale para /#id y /en/#id
+          l.classList.toggle('active', !!href && href.endsWith(`#${id}`));
         });
       }
     });
@@ -365,7 +387,7 @@ function initContactForm() {
       if (bad && !firstBad) firstBad = f;
     });
     if (firstBad) {
-      setStatus(firstBad.type === 'email' && firstBad.value ? 'Revisa el email, parece incompleto.' : 'Rellena los campos marcados.', 'err');
+      setStatus(firstBad.type === 'email' && firstBad.value ? MSG.badEmail : MSG.missing, 'err');
       firstBad.focus();
       return;
     }
@@ -379,7 +401,7 @@ function initContactForm() {
 
 — ${nombre} (${data.get('email')})`;
       location.href = `mailto:walidsardib@gmail.com?subject=${encodeURIComponent(motivo + ' · ' + nombre)}&body=${encodeURIComponent(body)}`;
-      setStatus('Se ha abierto tu correo con el mensaje listo para enviar.', 'ok');
+      setStatus(MSG.mailOpened, 'ok');
       return;
     }
 
@@ -388,15 +410,15 @@ function initContactForm() {
     data.delete('web');
 
     btn.disabled = true;
-    setStatus('Enviando…');
+    setStatus(MSG.sending);
     try {
       const res = await fetch(FORM_ENDPOINT, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
       const json = await res.json().catch(() => ({}));
       if (!res.ok || json.success === false) throw new Error(json.message || res.status);
       form.reset();
-      setStatus('¡Mensaje enviado! Te respondo lo antes posible.', 'ok');
+      setStatus(MSG.sent, 'ok');
     } catch {
-      setStatus('No se ha podido enviar. Escríbeme a walidsardib@gmail.com.', 'err');
+      setStatus(MSG.failed, 'err');
     } finally {
       btn.disabled = false;
     }
@@ -410,7 +432,7 @@ function initCountUp() {
   const els = document.querySelectorAll('[data-count]');
   if (!els.length || prefersReduced) return;
 
-  const fmt = (n, d) => n.toLocaleString('es-ES', { minimumFractionDigits: d, maximumFractionDigits: d });
+  const fmt = (n, d) => n.toLocaleString(LANG === 'en' ? 'en-GB' : 'es-ES', { minimumFractionDigits: d, maximumFractionDigits: d });
 
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => {

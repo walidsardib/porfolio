@@ -874,3 +874,35 @@ font-weight: 300;
     }
   }
 }
+
+/* ── Selector de idioma (ES / EN) ── */
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  min-width: 38px;
+  padding: 0 10px;
+  margin-left: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.navbar-links a.lang-switch { padding: 0 10px; }
+
+.lang-switch:hover { color: var(--text); border-color: var(--border-hover); }
+
+/* En móvil el selector vive junto al botón de tema; en escritorio, dentro de los enlaces */
+.lang-switch-mobile { display: none; }
+
+@media (max-width: 768px) {
+  .lang-switch-mobile { display: inline-flex; margin-left: auto; }
+  /* el selector ya empuja el grupo a la derecha: el botón de tema va pegado a él */
+  #themeToggleMobile { margin-left: 6px; }
+}
+

@@ -1,0 +1,190 @@
+---
+import Layout from '../../../components/Layout.astro';
+import '../../../home.css';
+import '../../../case.css';
+
+// Secciones de la web que se recorren dentro del navegador (orden de la tira)
+const shots = [
+  { src: '/assets/work/tacos-hero.webp', h: 800, label: 'Home page', alt: 'Tacos Street website home page' },
+  { src: '/assets/work/tacos-crea.webp', h: 604, label: 'Build your taco', alt: 'Build-your-taco configurator' },
+  { src: '/assets/work/tacos-productos.webp', h: 587, label: 'The menu', alt: 'Tacos Street product menu' }
+];
+---
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tacos Street — Case study · Walid Sardi</title>
+  <meta name="description" content="Case study: brand website for Tacos Street, the original French tacos in Zaragoza. Astro, TypeScript, animations and an interactive menu. By Walid Sardi Boukhari." />
+  <meta name="author" content="Walid Sardi Boukhari" />
+  <link rel="canonical" href="https://walidsardib.es/en/projects/tacosstreet" />
+  <link rel="alternate" hreflang="es" href="https://walidsardib.es/projects/tacosstreet" />
+  <link rel="alternate" hreflang="en" href="https://walidsardib.es/en/projects/tacosstreet" />
+  <link rel="alternate" hreflang="x-default" href="https://walidsardib.es/projects/tacosstreet" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <meta name="theme-color" content="#f0531c" />
+  <meta property="og:image" content="https://walidsardib.es/assets/work/tacos-hero.jpeg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://walidsardib.es/assets/work/tacos-hero.jpeg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<Layout lang="en" alt="/projects/tacosstreet">
+  <!-- ═══ HERO ═══ -->
+  <section class="c-hero">
+    <div class="container">
+      <a href="/en/services" class="c-back">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Services
+      </a>
+      <p class="c-meta reveal-up">Success story · Brand website · 2026</p>
+      <h1 class="c-title">
+        <span class="h-word"><span>Tacos</span></span>
+        <span class="h-word"><span>Street<span class="c-dot">.</span></span></span>
+      </h1>
+      <p class="c-lead reveal-up">
+        The Original French Tacos in Zaragoza. A brand website with character: fast, animated
+        and designed to turn hunger into orders.
+      </p>
+      <div class="h-ctas reveal-up">
+        <a class="h-btn h-btn-solid" href="https://tacosstreet.es" target="_blank" rel="noopener">See live website
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+        </a>
+        <a class="h-btn h-btn-ghost" href="#tour">Tour the website</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ RECORRIDO: la web se desplaza dentro del navegador al hacer scroll ═══ -->
+  <section class="c-tour" id="tour">
+    <div class="c-tour-sticky">
+      <div class="container c-tour-grid">
+        <ol class="c-tour-labels" aria-label="Website sections">
+          {shots.map((s, i) => (
+            <li class="c-tour-label" style={`--n:${i}`}>
+              <span>{String(i + 1).padStart(2, '0')}</span>{s.label}
+            </li>
+          ))}
+        </ol>
+        <div class="c-browser">
+          <div class="c-browser-bar"><span></span><span></span><span></span><em>tacosstreet.es</em></div>
+          <div class="c-browser-view">
+            <div class="c-strip">
+              {shots.map(s => (<img src={s.src} srcset={`${s.src.replace('.webp','-sm.webp')} 760w, ${s.src} 1280w`} sizes="(max-width: 900px) 92vw, 860px" width="1280" height={s.h} alt={s.alt} loading="lazy" />))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ MÉTRICAS (cuentan hacia arriba al aparecer) ═══ -->
+  <section class="container">
+    <dl class="c-stats">
+      <div class="reveal-up"><dt>Google ranking for "tacos street"</dt><dd>#<span data-count="1">1</span></dd></div>
+      <div class="reveal-up"><dt>Organic clicks · 28 days (+79%)</dt><dd><span data-count="1.12" data-decimals="2">1.12</span>k</dd></div>
+      <div class="reveal-up"><dt>Impressions · 28 days (+75%)</dt><dd><span data-count="13.9" data-decimals="1">13.9</span>k</dd></div>
+      <div class="reveal-up"><dt>Time to reach first place</dt><dd>&lt; <span data-count="1">1</span> month</dd></div>
+    </dl>
+  </section>
+
+  <!-- ═══ EL ENCARGO: las palabras se encienden al leer ═══ -->
+  <section class="h-section c-brief">
+    <div class="container">
+      <h2 class="c-h2 reveal-up">The brief</h2>
+      <p class="c-words" data-words>
+        Tacos Street did not want just another restaurant website. They wanted to bring the energy of their urban,
+        street, bold brand, with its own identity, to a site that felt alive from the moment you land on it.
+      </p>
+      <p class="c-note reveal-up">
+        The challenge: a <strong>modern, animated</strong> experience that is still fast and lightweight,
+        and works just as well on the phone of someone hungry at 2 a.m.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══ CARACTERÍSTICAS: la captura se abre con el scroll ═══ -->
+  <section class="h-section">
+    <div class="container c-features">
+      <article class="c-feature">
+        <div class="c-feature-media"><img src="/assets/work/tacos-crea.webp" srcset="/assets/work/tacos-crea-sm.webp 760w, /assets/work/tacos-crea.webp 1280w" sizes="(max-width: 900px) 92vw, 620px" width="1280" height="604" alt="Interactive build-your-taco configurator" loading="lazy" /></div>
+        <div class="c-feature-text reveal-up">
+          <h2 class="c-h2">Build your taco</h2>
+          <p>
+            The interactive heart of the website: a <strong>build-your-taco configurator</strong> where customers
+            choose size, meats and sauces and see the price update instantly.
+          </p>
+          <p>
+            Small animations and micro-interactions make ordering almost as fun as eating,
+            without sacrificing speed or accessibility.
+          </p>
+        </div>
+      </article>
+
+      <article class="c-feature c-feature-rev">
+        <div class="c-feature-media"><img src="/assets/work/tacos-productos.webp" srcset="/assets/work/tacos-productos-sm.webp 760w, /assets/work/tacos-productos.webp 1280w" sizes="(max-width: 900px) 92vw, 620px" width="1280" height="587" alt="Tacos Street menu products section" loading="lazy" /></div>
+        <div class="c-feature-text reveal-up">
+          <h2 class="c-h2">A menu that makes you hungry</h2>
+          <p>
+            Products are presented with careful photography, category filters and clear allergen
+            information. Everything is organised so finding your order is instant.
+          </p>
+          <p>
+            The website links straight to <strong>Uber Eats and Glovo</strong>, so going from craving
+            to order takes a single click.
+          </p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ═══ RESULTADO ═══ -->
+  <section class="h-section c-result">
+    <div class="container c-result-grid">
+      <p class="c-big" aria-hidden="true">#1</p>
+      <div class="reveal-up">
+        <h2 class="c-h2">First on Google. Without spending a cent on ads.</h2>
+        <p>
+          The most important thing about a website is not how it looks, but that people <strong>find it</strong>.
+          Tacos Street launched <strong>with no promotion at all</strong>: no social media, no paid ads.
+          Just a well-built website optimised for SEO from day one.
+        </p>
+        <p>
+          In <strong>less than a month</strong> it was already in <strong>first place</strong> on Google for
+          "tacos street", ranking above giants such as <strong>Uber Eats and Glovo</strong> in organic results.
+          Today it gets over <strong>1,000 clicks</strong> and <strong>13,000 impressions</strong> every 28 days:
+          real traffic that turns into customers walking through the door.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TECNOLOGÍA + CTA ═══ -->
+  <section class="h-section">
+    <div class="container c-end">
+      <div class="reveal-up">
+        <h2 class="c-h2">Technology</h2>
+        <p class="c-note">
+          Built with <strong>Astro</strong> and <strong>TypeScript</strong> for an ultra-fast static website,
+          with custom CSS and native animations. No unnecessary weight: maximum speed and strong SEO.
+        </p>
+        <ul class="proj-tags">
+          <li>Astro</li><li>TypeScript</li><li>CSS</li><li>Animations</li><li>SEO</li><li>Responsive</li>
+        </ul>
+      </div>
+      <div class="c-cta reveal-up">
+        <h2>Want a website like this for your business?</h2>
+        <p>I will propose a custom website with the same attention to detail.</p>
+        <div class="h-ctas">
+          <a class="h-btn h-btn-solid" href="/en/#contact">Request a quote</a>
+          <a class="h-btn h-btn-ghost" href="/en/services">See more work</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+</html>
