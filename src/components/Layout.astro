@@ -1,6 +1,8 @@
 ---
 import "../styles.css";
 const year = new Date().getFullYear();
+// Versión del script en la URL: cambia en cada build para que los navegadores no usen una copia antigua (caché de 4 h)
+const build = Date.now().toString(36);
 
 // Idioma de la página ('es' por defecto) y URL de esta misma página en el otro idioma
 const { lang = 'es', alt = lang === 'es' ? '/en/' : '/' } = Astro.props;
@@ -98,4 +100,4 @@ const t = en
   </div>
 </footer>
 
-<script type="module" src="/scripts/main.js"></script>
+<script type="module" src={`/scripts/main.js?v=${build}`}></script>
