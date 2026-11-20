@@ -38,6 +38,14 @@ const larueSteps = [
 
 const DEMO = 'https://larue3x3.walidsardib.es';
 
+// Planes (mismos valores que config/planes.php de la aplicación). null = sin límite
+const plans = [
+  { name: 'Básico', price: 19, desc: 'Un organizador con pocos torneos al año.', limits: { ediciones: 2, equipos: 40, gestores: 5 }, domain: false },
+  { name: 'Pro', price: 49, desc: 'Ligas y circuitos de temporada completa.', limits: { ediciones: 10, equipos: 200, gestores: 25 }, domain: true, featured: true },
+  { name: 'Federación', price: 99, desc: 'Sin límites, con dominio propio.', limits: { ediciones: null, equipos: null, gestores: null }, domain: true }
+];
+const lim = (n, one, many) => n === null ? `${many[0].toUpperCase()}${many.slice(1)} sin límite` : `${n} ${n === 1 ? one : many}`;
+
 // Quién usa la plataforma y qué puede hacer (roles reales de la aplicación)
 const roles = [
   { name: 'Federación', text: 'Administra todo: ligas y torneos, clubes, árbitros, pistas, sanciones, noticias, usuarios y la configuración de la competición.' },
@@ -73,6 +81,7 @@ const features = [
   { id: 'directo', title: 'Directo y difusión', items: [
     'Cada acción llega al instante a quien sigue el partido',
     'Mapa de tiros y crónica jugada a jugada en directo',
+    'Mapa de tiros interactivo: al tocar un tiro, foto del jugador y sus porcentajes; filtro por jugador',
     'Enlace corto y código QR para compartir cada partido',
     'Marcador a pantalla completa para proyectar en el pabellón, del partido o del torneo',
     'Imagen del resultado lista para redes sociales (formato post y enlace)',
@@ -84,7 +93,8 @@ const features = [
     'Eficiencia de tiro y últimos partidos',
     'Vista global, por temporada y por partido',
     'Líderes de cada competición',
-    'Scouting con comparador de jugadores',
+    'Scouting con comparador de jugadores y filtro por posición',
+    'Mapa de tiros en la ficha de cada jugador',
     'Panel del entrenador con los datos de su equipo',
     'Comparativa entre los dos equipos de cada partido'
   ]},
@@ -113,14 +123,14 @@ const security = [
   { title: 'Historial de cambios', text: 'Queda registrado quién cambió qué en cada partido y en toda la federación.' },
   { title: 'Copias de seguridad', text: 'Descarga de la base de datos completa desde el panel de administración.' },
   { title: 'RGPD y LSSI', text: 'Aviso legal, privacidad y cookies; cada usuario puede descargar sus datos o borrar su cuenta.' },
-  { title: 'Supervisión', text: 'Registro de errores consultable desde el panel y un punto de estado para vigilar la web desde fuera.' }
+  { title: 'Datos aislados', text: 'Cada federación tiene su propio espacio: sus ligas, equipos y jugadores nunca se mezclan con los de otra.' }
 ];
 
 const tech = [
   { title: 'Sin instalar nada', text: 'Funciona en el navegador y se puede instalar como app (PWA) en móvil y tablet, sin pasar por tiendas.' },
   { title: 'Cualquier pantalla', text: 'Móvil, tablet, portátil y pantalla grande del pabellón. Modo claro y oscuro.' },
   { title: 'Formato FIBA 3x3', text: 'Un periodo de 10 minutos, se gana al llegar a 21 y 12 segundos de posesión. El 5x5 se puede activar.' },
-  { title: 'Hosting sencillo', text: 'Laravel y MySQL. Funciona incluso en hosting compartido, sin tareas programadas en el servidor.' }
+  { title: 'Vuestro propio espacio', text: 'Cada federación tiene su dirección: un subdominio de la plataforma o, en los planes Pro y Federación, vuestro propio dominio.' }
 ];
 
 const faqs = [
@@ -129,7 +139,10 @@ const faqs = [
   { q: '¿Sirve para 5x5 además de 3x3?', a: 'Sí. Viene configurada para 3x3 con las reglas FIBA y la modalidad 5x5 (cuatro periodos y 24 segundos de posesión) se activa desde la configuración de la federación.' },
   { q: '¿Quién puede llevar la mesa de un partido?', a: 'Los anotadores designados para ese partido. Si no hay anotador, la federación puede permitir que lo lleve el entrenador.' },
   { q: '¿Podemos sacar los datos de la plataforma?', a: 'Sí. Clasificaciones, jugadores y partidos se exportan a Excel, hay informes imprimibles y el administrador puede descargar una copia de seguridad completa.' },
-  { q: '¿Se puede probar antes?', a: 'Sí: la demo pública está abierta y además puedo hacerte una demostración guiada con tus propias competiciones.' }
+  { q: '¿Se puede probar antes?', a: 'Sí. La demo pública está abierta, todos los planes incluyen 30 días de prueba gratis y puedo hacerte una demostración guiada con tus propias competiciones.' },
+  { q: '¿Qué pasa si superamos los límites del plan?', a: 'La plataforma avisa al intentar crear una competición, un equipo o un usuario de gestión por encima del límite. Se puede cambiar de plan en cualquier momento.' },
+  { q: '¿Qué pasa si se acaba la prueba o vence el pago?', a: 'Se avisa 7 días antes y, tras el vencimiento, hay 7 días de gracia. Después la web de la federación se pausa, sin borrar ningún dato, hasta que se reactiva.' },
+  { q: '¿Los aficionados cuentan como usuarios?', a: 'No. Los límites solo cuentan los usuarios de gestión (administradores, organizadores, anotadores y entrenadores). El público y los aficionados son ilimitados.' }
 ];
 ---
 
@@ -212,6 +225,7 @@ const faqs = [
         <a href="#recorrido">Cómo funciona</a>
         <a href="#para-quien">Para quién</a>
         <a href="#funciones">Funciones</a>
+        <a href="#precios">Precios</a>
         <a href="#seguridad">Seguridad</a>
         <a href="#tecnologia">Tecnología</a>
         <a href="#historia">Historia</a>
@@ -286,6 +300,34 @@ const faqs = [
         </div>
       </section>
 
+      <!-- ═══ PLANES Y PRECIOS ═══ -->
+      <section class="l-block" id="precios">
+        <h2 class="l-h2 reveal-up">Planes y precios</h2>
+        <p class="l-sub reveal-up">Todas las funciones en todos los planes. Solo cambia el tamaño de tu competición.</p>
+        <div class="l-plans">
+          {plans.map((pl, i) => (
+            <article class={`l-plan reveal-up${pl.featured ? ' l-plan-featured' : ''}`} style={`--i:${i}`}>
+              <h3>{pl.name}</h3>
+              <p class="l-plan-desc">{pl.desc}</p>
+              <p class="l-plan-price"><strong>{pl.price} €</strong><span>/ mes</span></p>
+              <ul class="l-plan-list">
+                <li>{lim(pl.limits.ediciones, 'competición en curso', 'competiciones en curso')}</li>
+                <li>{lim(pl.limits.equipos, 'equipo', 'equipos')}</li>
+                <li>{lim(pl.limits.gestores, 'usuario de gestión', 'usuarios de gestión')}</li>
+                <li>{pl.domain ? 'Dominio propio' : 'Subdominio de la plataforma'}</li>
+                <li>Público y aficionados ilimitados</li>
+              </ul>
+              <a class={`h-btn ${pl.featured ? 'h-btn-solid' : 'h-btn-ghost'}`} href={`mailto:walidsardib@gmail.com?subject=${encodeURIComponent('Prueba de LaRue3x3 · plan ' + pl.name)}`}>Probar 30 días gratis</a>
+            </article>
+          ))}
+        </div>
+        <p class="l-plans-note reveal-up">
+          30 días de prueba gratis en cualquier plan. Aviso 7 días antes de que termine la prueba o venza el pago y
+          7 días de gracia después; si no se renueva, la web se pausa sin borrar ningún dato.
+          Los usuarios de gestión son administradores, organizadores, anotadores y entrenadores.
+        </p>
+      </section>
+
       <!-- ═══ SEGURIDAD ═══ -->
       <section class="l-block" id="seguridad">
         <h2 class="l-h2 reveal-up">Seguridad y protección de datos</h2>
@@ -341,7 +383,7 @@ const faqs = [
       </section>
 
       <div class="larue-cta reveal-up">
-        <p>¿Organizas competiciones de 3x3? Pruébalo ahora o pídeme una demo con tus propias ligas.</p>
+        <p>¿Organizas competiciones de 3x3? Pruébalo 30 días gratis o pídeme una demo con tus propias ligas.</p>
         <div class="h-ctas">
           <a class="h-btn h-btn-solid" href={DEMO} target="_blank" rel="noopener">Ver demo en vivo</a>
           <a class="h-btn h-btn-ghost" href="mailto:walidsardib@gmail.com?subject=Demo%20guiada%20de%20LaRue3x3">Pedir una demo guiada</a>

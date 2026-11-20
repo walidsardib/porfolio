@@ -38,6 +38,14 @@ const larueSteps = [
 
 const DEMO = 'https://larue3x3.walidsardib.es';
 
+// Planes (mismos valores que config/planes.php de la aplicación). null = sin límite
+const plans = [
+  { name: 'Basic', price: 19, desc: 'An organiser with a few tournaments a year.', limits: { ediciones: 2, equipos: 40, gestores: 5 }, domain: false },
+  { name: 'Pro', price: 49, desc: 'Leagues and circuits for a full season.', limits: { ediciones: 10, equipos: 200, gestores: 25 }, domain: true, featured: true },
+  { name: 'Federation', price: 99, desc: 'No limits, with your own domain.', limits: { ediciones: null, equipos: null, gestores: null }, domain: true }
+];
+const lim = (n, one, many) => n === null ? `Unlimited ${many}` : `${n} ${n === 1 ? one : many}`;
+
 // Quién usa la plataforma y qué puede hacer (roles reales de la aplicación)
 const roles = [
   { name: 'Federation', text: 'Manages everything: leagues and tournaments, clubs, referees, courts, sanctions, news, users and competition settings.' },
@@ -73,6 +81,7 @@ const features = [
   { id: 'live', title: 'Live coverage', items: [
     'Every action reaches whoever is following the game instantly',
     'Live shot chart and play-by-play',
+    'Interactive shot chart: tap a shot to see the player’s photo and percentages; filter by player',
     'Short link and QR code to share each game',
     'Full-screen scoreboard to project in the arena, for a game or a tournament',
     'Result image ready for social media (post and link formats)',
@@ -84,7 +93,8 @@ const features = [
     'Shooting efficiency and recent games',
     'Overall, per-season and per-game views',
     'Leaders for each competition',
-    'Scouting with a player comparison tool',
+    'Scouting with a player comparison tool and position filter',
+    'Shot chart on every player profile',
     'Coach dashboard with their team’s data',
     'Head-to-head comparison of both teams in each game'
   ]},
@@ -113,14 +123,14 @@ const security = [
   { title: 'Change history', text: 'A record of who changed what in every game and across the whole federation.' },
   { title: 'Backups', text: 'Download the full database from the admin panel.' },
   { title: 'GDPR compliant', text: 'Legal notice, privacy and cookie policies; every user can download their data or delete their account.' },
-  { title: 'Monitoring', text: 'Error log available from the admin panel and a status endpoint to monitor the site externally.' }
+  { title: 'Isolated data', text: 'Each federation has its own space: its leagues, teams and players never mix with another federation’s.' }
 ];
 
 const tech = [
   { title: 'Nothing to install', text: 'Runs in the browser and can be installed as an app (PWA) on phones and tablets, no app store needed.' },
   { title: 'Any screen', text: 'Phone, tablet, laptop and the big screen in the arena. Light and dark mode.' },
   { title: 'FIBA 3x3 format', text: 'A single 10-minute period, first to 21 wins, 12-second shot clock. 5x5 can be enabled.' },
-  { title: 'Simple hosting', text: 'Laravel and MySQL. Runs even on shared hosting, with no scheduled tasks needed on the server.' }
+  { title: 'Your own space', text: 'Each federation gets its own address: a subdomain of the platform or, on the Pro and Federation plans, your own domain.' }
 ];
 
 const faqs = [
@@ -129,7 +139,10 @@ const faqs = [
   { q: 'Does it work for 5x5 as well as 3x3?', a: 'Yes. It comes set up for 3x3 with FIBA rules, and 5x5 (four periods and a 24-second shot clock) can be enabled from the federation settings.' },
   { q: 'Who can run the scoring table for a game?', a: 'The scorekeepers assigned to that game. If there is no scorekeeper, the federation can allow the coach to run it.' },
   { q: 'Can we get our data out of the platform?', a: 'Yes. Standings, players and games can be exported to Excel, there are printable reports, and the administrator can download a full backup.' },
-  { q: 'Can we try it first?', a: 'Yes: the public demo is open, and I can also give you a guided demo with your own competitions.' }
+  { q: 'Can we try it first?', a: 'Yes. The public demo is open, every plan includes a 30-day free trial, and I can give you a guided demo with your own competitions.' },
+  { q: 'What happens if we go over the plan limits?', a: 'The platform lets you know when you try to create a competition, team or management user above the limit. You can change plan at any time.' },
+  { q: 'What happens when the trial ends or a payment is due?', a: 'You get a reminder 7 days before, and there are 7 days of grace after the due date. After that the federation’s site is paused, without deleting any data, until it is reactivated.' },
+  { q: 'Do fans count as users?', a: 'No. Limits only count management users (administrators, organisers, scorekeepers and coaches). The public and fans are unlimited.' }
 ];
 ---
 
@@ -212,6 +225,7 @@ const faqs = [
         <a href="#how-it-works">How it works</a>
         <a href="#who-its-for">Who it’s for</a>
         <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
         <a href="#security">Security</a>
         <a href="#technology">Technology</a>
         <a href="#story">Story</a>
@@ -286,6 +300,34 @@ const faqs = [
         </div>
       </section>
 
+      <!-- ═══ PLANES Y PRECIOS ═══ -->
+      <section class="l-block" id="pricing">
+        <h2 class="l-h2 reveal-up">Plans and pricing</h2>
+        <p class="l-sub reveal-up">Every feature on every plan. Only the size of your competition changes.</p>
+        <div class="l-plans">
+          {plans.map((pl, i) => (
+            <article class={`l-plan reveal-up${pl.featured ? ' l-plan-featured' : ''}`} style={`--i:${i}`}>
+              <h3>{pl.name}</h3>
+              <p class="l-plan-desc">{pl.desc}</p>
+              <p class="l-plan-price"><strong>€{pl.price}</strong><span>/ month</span></p>
+              <ul class="l-plan-list">
+                <li>{lim(pl.limits.ediciones, 'active competition', 'active competitions')}</li>
+                <li>{lim(pl.limits.equipos, 'team', 'teams')}</li>
+                <li>{lim(pl.limits.gestores, 'management user', 'management users')}</li>
+                <li>{pl.domain ? 'Your own domain' : 'Platform subdomain'}</li>
+                <li>Unlimited public and fans</li>
+              </ul>
+              <a class={`h-btn ${pl.featured ? 'h-btn-solid' : 'h-btn-ghost'}`} href={`mailto:walidsardib@gmail.com?subject=${encodeURIComponent('LaRue3x3 trial · ' + pl.name + ' plan')}`}>Try it free for 30 days</a>
+            </article>
+          ))}
+        </div>
+        <p class="l-plans-note reveal-up">
+          30-day free trial on any plan. A reminder 7 days before the trial ends or a payment is due, and 7 days of grace
+          afterwards; if it is not renewed, the site is paused without deleting any data.
+          Management users are administrators, organisers, scorekeepers and coaches.
+        </p>
+      </section>
+
       <!-- ═══ SEGURIDAD ═══ -->
       <section class="l-block" id="security">
         <h2 class="l-h2 reveal-up">Security and data protection</h2>
@@ -341,7 +383,7 @@ const faqs = [
       </section>
 
       <div class="larue-cta reveal-up">
-        <p>Running 3x3 competitions? Try it now or ask me for a demo with your own leagues.</p>
+        <p>Running 3x3 competitions? Try it free for 30 days or ask me for a demo with your own leagues.</p>
         <div class="h-ctas">
           <a class="h-btn h-btn-solid" href={DEMO} target="_blank" rel="noopener">See live demo</a>
           <a class="h-btn h-btn-ghost" href="mailto:walidsardib@gmail.com?subject=LaRue3x3%20guided%20demo">Request a guided demo</a>
