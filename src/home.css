@@ -820,16 +820,16 @@ body { font-feature-settings: "calt" 0; }
   padding-top: 56px;
 }
 
-/* Cursor: jugador del logo de LaRue3x3 (v13) machacando; el clic está en el balón (solo con ratón) */
+/* Cursor: jugador del logo de LaRue3x3 haciendo el mate (cuerpo entero); el clic está en el balón (solo con ratón) */
 @media (hover: hover) and (pointer: fine) {
   .larue-page,
   .larue-page *,
   .vt-larue,
-  .vt-larue * { cursor: url('/larue/cursor-mate.png') 9 10, auto; }
+  .vt-larue * { cursor: url('/larue/cursor-mate.svg') 24 3, auto; }
   .larue-page a,
   .larue-page a *,
   .vt-larue a,
-  .vt-larue a * { cursor: url('/larue/cursor-mate.png') 9 10, pointer; }
+  .vt-larue a * { cursor: url('/larue/cursor-mate.svg') 24 3, pointer; }
 }
 
 .larue-back {
