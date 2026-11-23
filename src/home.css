@@ -1930,9 +1930,17 @@ body { font-feature-settings: "calt" 0; }
 
 @media (max-width: 800px) {
   .tour { margin-top: 80px; }
-  .tour-track { height: 720vh; }
-  .tour-sticky { top: calc(var(--nav-height) + 62px); gap: 10px; }
-  .tour-stage { --avail: 100%; width: 100%; min-width: 0; aspect-ratio: 4 / 3; border-radius: 10px; }
-  .tour-caps { min-height: 150px; }
+  .tour-track { height: 720vh; height: 720svh; }
+  /* El bloque fijo ocupa TODO el alto visible (dvh sigue a la barra de Safari al encogerse), sin franja vacía debajo:
+     la escena se estira y el texto queda abajo */
+  .tour-sticky {
+    top: calc(var(--nav-height) + 62px);
+    height: calc(100svh - var(--nav-height) - 62px - 10px);
+    height: calc(100dvh - var(--nav-height) - 62px - 10px);
+    display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 10px;
+  }
+  .tour-stage { --avail: 100%; flex: 1 1 auto; width: 100%; min-width: 0; min-height: 220px; aspect-ratio: auto; border-radius: 10px; }
+  .tour-caps { flex: none; width: 100%; min-height: 128px; }
+  .tour-dots { flex: none; justify-content: center; padding-bottom: 4px; }
   .tour-cap p { font-size: 0.92rem; }
 }

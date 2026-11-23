@@ -622,19 +622,25 @@ const figs = [
       return { x: lerp(dribbleX, F.sh.x + 1, e), y: lerp(dribbleY, F.sh.y + F.sh.s * hy, e) };
     };
 
+    // En pantallas verticales (móvil) la escena se recorta por los lados: se reduce el zoom para que pantallas y tablet sigan cabiendo
+    let zf = 1;
+    const stageEl = root.querySelector<HTMLElement>('.tour-stage')!;
+    const fit = () => { const w = stageEl.clientWidth, h = stageEl.clientHeight; if (w && h) zf = clamp((w / h) / (16 / 9), .35, 1); };
+    fit();
     let lastClock = '', lastBlur = -1, frame = 0;
     function render(P: number, T: number) {
       // ── cámara: planos con desplazamiento suave + cortes con fundido a negro
       let c = { ...POSES.wide };
+      const PZ = (k: string) => k === 'wide' ? 1 : Math.max(1, POSES[k].z * zf);
       for (const [a, b, k] of MOVES) {
         const e = seg(P, a, b);
-        if (e > 0) { const q = POSES[k]; c = { x: lerp(c.x, q.x, e), y: lerp(c.y, q.y, e), z: c.z * Math.pow(q.z / c.z, e) }; }
+        if (e > 0) { const q = POSES[k]; c = { x: lerp(c.x, q.x, e), y: lerp(c.y, q.y, e), z: c.z * Math.pow(PZ(k) / c.z, e) }; }
       }
       let dip = 0;
       for (const [a, b, k] of CUTS) {
         if (P < a) continue;
         const u = clamp((P - a) / (b - a)), q = POSES[k];
-        if (u >= .5) c = { x: q.x, y: q.y, z: q.z * (.9 + .1 * seg(u, .5, 1)) };
+        if (u >= .5) c = { x: q.x, y: q.y, z: PZ(k) * (.9 + .1 * seg(u, .5, 1)) };
         dip = Math.max(dip, P < b ? Math.pow(Math.sin(Math.PI * u), 1.4) : 0);
       }
       // intro: empuje lento hacia dentro; golpe de cámara al entrar el tiro; cámara en mano
@@ -778,7 +784,7 @@ const figs = [
       render(0, 0);
     } else {
       root.classList.add('is-live');
-      let target = 0, cur = 0, visible = true, raf = 0, last = performance.now(), lastRender = 0, paused = false;
+      let target = 0, cur = 0, visible = true, raf = 0, last = performance.now(), lastRender = 0, paused = false, dirty = false;
       const progress = () => {
         const r = track.getBoundingClientRect();
         const top = parseFloat(getComputedStyle(sticky).top) || 0;
@@ -791,7 +797,7 @@ const figs = [
         const dt = Math.min(.05, (now - last) / 1000); last = now;
         target = progress();
         const moving = Math.abs(target - cur) > 1e-4;
-        const idleAnim = cur < .6 && now - lastRender > 83; // respiración de jugadores solo mientras se ven (12 fps)
+        const idleAnim = (cur < .6 && now - lastRender > 83) || dirty; dirty = false; // respiración de jugadores solo mientras se ven (12 fps)
         if (moving || idleAnim) {
           cur += (target - cur) * (1 - Math.exp(-dt * 13));
           if (!moving) cur = target;
@@ -801,6 +807,8 @@ const figs = [
       };
       const start = () => { if (!raf && !paused) { last = performance.now(); raf = requestAnimationFrame(loop); } };
       new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) start(); }, { rootMargin: '200px 0px' }).observe(track);
+      let rz = 0;
+      new ResizeObserver(() => { cancelAnimationFrame(rz); rz = requestAnimationFrame(() => { fit(); dirty = true; start(); }); }).observe(stageEl);
       cur = target = progress();
       render(cur, 0);
       start();
