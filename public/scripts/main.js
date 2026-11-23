@@ -324,17 +324,30 @@ function initStory() {
     if (bar) bar.style.transform = `scaleX(${(i + 1) / steps.length})`;
   }
 
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) activate(steps.indexOf(e.target));
-    });
-  }, {
-    // En móvil la pantalla fija ocupa la mitad de arriba: el paso cambia en la zona de texto visible
-    rootMargin: matchMedia('(max-width: 900px)').matches ? '-64% 0px -36% 0px' : '-50% 0px -50% 0px',
-    threshold: 0
-  });
-
-  steps.forEach(s => io.observe(s));
+  let io;
+  const observe = () => {
+    if (io) io.disconnect();
+    const mobile = matchMedia('(max-width: 900px)').matches;
+    const vh = window.innerHeight;
+    let top;
+    if (mobile) top = vh * 0.64;
+    else {
+      // centro de la imagen fija (no el centro de la ventana: la ventana puede ser más alta que lo visible)
+      const st = story.querySelector('.story-stage');
+      const nav = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-height')) || 72;
+      top = nav + 76 + (st ? Math.min(st.offsetHeight, 440) / 2 : 220);
+    }
+    top = Math.round(Math.min(Math.max(top, 120), vh - 40));
+    io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) activate(steps.indexOf(e.target));
+      });
+    }, { rootMargin: `-${top}px 0px -${Math.max(1, vh - top - 1)}px 0px`, threshold: 0 });
+    steps.forEach(s => io.observe(s));
+  };
+  observe();
+  let rt;
+  window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(observe, 150); });
   activate(0);
 }
 

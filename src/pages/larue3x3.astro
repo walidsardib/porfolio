@@ -1,5 +1,6 @@
 ---
 import Layout from '../components/Layout.astro';
+import CourtTour from '../components/CourtTour.astro';
 import '../home.css';
 
 // Pasos del recorrido con scroll
@@ -169,7 +170,7 @@ const faqs = [
   <meta name="twitter:image" content="https://walidsardib.es/og-larue.png?v=2" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
 </head>
 
 <Layout lang="es" alt="/en/larue3x3">
@@ -223,6 +224,7 @@ const faqs = [
       <!-- Índice de la página: se queda fijo arriba al bajar -->
       <nav class="l-toc" aria-label="Contenido de la página">
         <a href="#recorrido">Cómo funciona</a>
+        <a href="#partido">El partido</a>
         <a href="#para-quien">Para quién</a>
         <a href="#funciones">Funciones</a>
         <a href="#precios">Precios</a>
@@ -268,6 +270,9 @@ const faqs = [
           ))}
         </ol>
       </div>
+
+      <!-- ═══ RECORRIDO ANIMADO: de la mesa a la grada ═══ -->
+      <CourtTour lang="es" />
 
       <!-- ═══ PARA QUIÉN ═══ -->
       <section class="l-block" id="para-quien">

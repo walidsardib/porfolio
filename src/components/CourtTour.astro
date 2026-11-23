@@ -1,0 +1,813 @@
+---
+// Recorrido animado por scroll: mesa → pista → mesa → videomarcador → grada.
+// Escena en SVG (sin dependencias); la cámara y los elementos se mueven con el progreso del scroll.
+const { lang = 'es' } = Astro.props;
+const en = lang === 'en';
+
+const t = en
+  ? {
+      label: 'A match, from the table to the stands',
+      sub: 'Scroll to follow a single basket through the whole platform.',
+      steps: [
+        { k: 'The scoring table', h: 'The starting players are picked here.', p: 'At the table, the scorer selects the three players who start for each team and the game begins.' },
+        { k: 'On court', h: 'A shot, a basket.', p: 'Play starts and a player shoots. This is the moment the platform is waiting for.' },
+        { k: 'Back at the table', h: 'The action is logged instantly.', p: 'One tap on +2 and the basket is saved to the match record, assigned to the right player.' },
+        { k: 'The scoreboard', h: 'The big screen updates by itself.', p: 'The arena screen receives the action in real time: score, clock and the latest play.' },
+        { k: 'In the stands', h: 'And the crowd follows it live.', p: 'From their phone, a fan sees the score and the play as soon as it is scored.' },
+        { k: 'Your stream', h: 'The scoreboard, on your YouTube broadcast.', p: 'Add it as a widget in OBS with a single link, or switch it on over the broadcast inside the app itself.' },
+        { k: 'At home', h: 'And whoever watches from home misses nothing.', p: 'The scoreboard sits on top of the live video, always in sync with the scoring table.' }
+      ],
+      obs: { sources: 'Sources', cam: 'Court camera', widget: 'LaRue3x3 scoreboard', logo: 'Logo', start: 'Start streaming', live: '● LIVE', url: 'Browser source · 1920×1080', scenes: 'Scenes', match: 'Match', yt: 'LIVE', yttitle: 'Court 1 · Final · Live' },
+      aria: 'Animated illustration of a 3x3 court, from the scoring table to the stands',
+      lineup: 'Starting line-up · pick 3', start: 'Start game', live: 'Game on', action: 'Scoring table',
+      log: 'Game log', reb: 'Rebound', foul: 'Foul',
+      logNew: '09:12  +2 · #7 Marc', log1: '08:48  Rebound · #11 Iván', log2: '10:00  Opening tip',
+      board: { court: 'COURT 1', tourn: 'OPEN TOURNAMENT', a: 'BLUE', b: 'ORANGE', poss: 'SHOT CLOCK', fouls: 'FOULS  2 — 1', play: '+2 · #7 MARC · BLUE' },
+      phone: { live: '● LIVE', a: 'BLU', b: 'ORA', n: '09:12  +2 · #7 Marc', o1: '08:48  Rebound · #11', o2: '10:00  Opening tip' },
+      table: 'LARUE3x3'
+    }
+  : {
+      label: 'Un partido, de la mesa a la grada',
+      sub: 'Haz scroll y sigue una sola canasta a través de toda la plataforma.',
+      steps: [
+        { k: 'La mesa de anotación', h: 'Aquí se eligen los jugadores iniciales.', p: 'En la mesa, el anotador selecciona a los tres jugadores que saldrán de cada equipo y empieza el partido.' },
+        { k: 'En pista', h: 'Un tiro, una canasta.', p: 'Arranca el juego y un jugador lanza. Es el momento que la plataforma está esperando.' },
+        { k: 'De vuelta en la mesa', h: 'La acción se registra al instante.', p: 'Un toque en +2 y la canasta queda en el acta del partido, asignada al jugador que la anotó.' },
+        { k: 'El videomarcador', h: 'La pantalla grande se actualiza sola.', p: 'La pantalla del pabellón recibe la acción en tiempo real: marcador, reloj y última jugada.' },
+        { k: 'En la grada', h: 'Y el público lo sigue en directo.', p: 'Desde el móvil, un aficionado ve el marcador y la jugada nada más anotarse.' },
+        { k: 'Tu retransmisión', h: 'El marcador, en tu directo de YouTube.', p: 'Añádelo como widget en OBS con un solo enlace, o actívalo sobre la retransmisión dentro de la propia app.' },
+        { k: 'En casa', h: 'Y quien lo ve desde casa no se pierde nada.', p: 'El marcador aparece sobre el vídeo en directo, siempre sincronizado con la mesa.' }
+      ],
+      obs: { sources: 'Fuentes', cam: 'Cámara pista', widget: 'Marcador LaRue3x3', logo: 'Logo', start: 'Iniciar transmisión', live: '● EN DIRECTO', url: 'Fuente de navegador · 1920×1080', scenes: 'Escenas', match: 'Partido', yt: 'EN DIRECTO', yttitle: 'Pista 1 · Final · En directo' },
+      aria: 'Ilustración animada de una cancha de 3x3, desde la mesa de anotación hasta la grada',
+      lineup: 'Quinteto inicial · elige 3', start: 'Empezar partido', live: 'Partido en juego', action: 'Mesa de anotación',
+      log: 'Registro', reb: 'Rebote', foul: 'Falta',
+      logNew: '09:12  +2 · #7 Marc', log1: '08:48  Rebote · #11 Iván', log2: '10:00  Salto inicial',
+      board: { court: 'PISTA 1', tourn: 'TORNEO ABIERTO', a: 'AZUL', b: 'NARANJA', poss: 'POSESIÓN', fouls: 'FALTAS  2 — 1', play: '+2 · #7 MARC · AZUL' },
+      phone: { live: '● EN DIRECTO', a: 'AZU', b: 'NAR', n: '09:12  +2 · #7 Marc', o1: '08:48  Rebote · #11', o2: '10:00  Salto inicial' },
+      table: 'LARUE3x3'
+    };
+// Alineación del tablet: el título de la pantalla cambia de idioma, los dorsales no
+const lineup = [['4', 'Pau'], ['7', 'Marc'], ['9', 'Leo'], ['11', 'Iván']];
+const adX = [60, 340, 620, 900, 1180, 1460];
+// Jugadores en pista (de más lejos a más cerca). 'sh' es el tirador y 'd' su defensor
+const figs = [
+  { k: 'o1', x: 470, y: 560, s: 1.1, col: '#a84d20', skin: '#a97352' },
+  { k: 'b2', x: 805, y: 565, s: 1.16, col: '#2a4a96', skin: '#d5a07a' },
+  { k: 'b3', x: 395, y: 610, s: 1.32, col: '#2a4a96', skin: '#7c5038' },
+  { k: 'd', x: 610, y: 628, s: 1.42, col: '#a84d20', skin: '#c99774' },
+  { k: 'o3', x: 745, y: 655, s: 1.48, col: '#a84d20', skin: '#8a5a3f' },
+  { k: 'sh', x: 560, y: 655, s: 1.55, col: '#2a4a96', skin: '#d5a07a' }
+];
+---
+
+<section class="tour" id={en ? 'match' : 'partido'} data-tour>
+  <h2 class="l-h2 reveal-up">{t.label}</h2>
+  <p class="l-sub reveal-up">{t.sub}</p>
+
+  <div class="tour-track">
+    <div class="tour-sticky">
+      <div class="tour-stage">
+        <svg class="tour-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" role="img" aria-label={t.aria} data-svg>
+          <defs>
+            <!-- ambiente -->
+            <linearGradient id="ct-stands" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#0d0b1f"/><stop offset="1" stop-color="#1d1a3b"/>
+            </linearGradient>
+            <linearGradient id="ct-crowdfade" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#05040d" stop-opacity=".78"/>
+              <stop offset=".55" stop-color="#0b0a1c" stop-opacity=".25"/>
+              <stop offset="1" stop-color="#0b0a1c" stop-opacity=".55"/>
+            </linearGradient>
+            <linearGradient id="ct-floor" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#171a30"/><stop offset=".35" stop-color="#252a47"/><stop offset="1" stop-color="#1a1d35"/>
+            </linearGradient>
+            <linearGradient id="ct-paint" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#3a4268"/><stop offset=".5" stop-color="#2f3659"/><stop offset="1" stop-color="#262c4c"/>
+            </linearGradient>
+            <radialGradient id="ct-spot" cx=".5" cy=".5" r=".5">
+              <stop offset="0" stop-color="#9fb0ff" stop-opacity=".22"/><stop offset="1" stop-color="#9fb0ff" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="ct-ledglow" cx=".5" cy=".5" r=".5">
+              <stop offset="0" stop-color="#5b7cff" stop-opacity=".38"/><stop offset=".6" stop-color="#5b7cff" stop-opacity=".1"/><stop offset="1" stop-color="#5b7cff" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="ct-tabglow" cx=".5" cy=".5" r=".5">
+              <stop offset="0" stop-color="#ff8a4c" stop-opacity=".22"/><stop offset="1" stop-color="#ff8a4c" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="ct-shadow" cx=".5" cy=".5" r=".5">
+              <stop offset="0" stop-color="#000" stop-opacity=".55"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="ct-vig" cx=".5" cy=".5" r=".75">
+              <stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/>
+            </radialGradient>
+            <radialGradient id="ct-ball" cx=".38" cy=".34" r=".75">
+              <stop offset="0" stop-color="#f08a3e"/><stop offset=".6" stop-color="#c4561b"/><stop offset="1" stop-color="#7f3510"/>
+            </radialGradient>
+            <linearGradient id="ct-shade" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/>
+            </linearGradient>
+            <linearGradient id="ct-skin" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#fff" stop-opacity=".12"/><stop offset="1" stop-color="#000" stop-opacity=".3"/>
+            </linearGradient>
+            <linearGradient id="ct-glass" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".5" stop-color="#fff" stop-opacity=".05"/><stop offset="1" stop-color="#fff" stop-opacity=".14"/>
+            </linearGradient>
+            <linearGradient id="ct-desk" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#2c2652"/><stop offset="1" stop-color="#15122e"/>
+            </linearGradient>
+            <pattern id="ct-scan" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="1.2" fill="#000" opacity=".28"/></pattern>
+
+            <!-- jugador de pie: pies en (0,0), ~100 de alto, color de equipo con currentColor, piel con --skin -->
+            <g id="ct-arm-l">
+              <path d="M-11 -85L-15.5 -63L-14.6 -52L-10.6 -53L-9.4 -64L-7.4 -84Z" fill="var(--skin,#c99774)"/>
+              <path d="M-11 -85L-15.5 -63L-14.6 -52L-10.6 -53L-9.4 -64L-7.4 -84Z" fill="url(#ct-skin)"/>
+            </g>
+            <g id="ct-body">
+              <ellipse cx="0" cy="1" rx="19" ry="4.6" fill="url(#ct-shadow)"/>
+              <path d="M-9.4 -52L-2.4 -52L-3.4 -6L-8.8 -6Z" fill="var(--skin,#c99774)"/>
+              <path d="M2.4 -52L9.4 -52L8.8 -6L3.4 -6Z" fill="var(--skin,#c99774)"/>
+              <path d="M-9.4 -52L-2.4 -52L-3.4 -6L-8.8 -6ZM2.4 -52L9.4 -52L8.8 -6L3.4 -6Z" fill="url(#ct-skin)"/>
+              <path d="M-9.6 -6L-3 -6L-2.6 0L-10.4 0Z" fill="#14141c"/>
+              <path d="M3 -6L9.6 -6L10.4 0L2.6 0Z" fill="#14141c"/>
+              <path d="M-11 -60L11 -60L12 -39L1.6 -39L0 -47L-1.6 -39L-12 -39Z" fill="currentColor"/>
+              <path d="M-11 -60L11 -60L12 -39L1.6 -39L0 -47L-1.6 -39L-12 -39Z" fill="url(#ct-shade)"/>
+              <path d="M-11.4 -60Q-12.6 -80 -8 -86L8 -86Q12.6 -80 11.4 -60Z" fill="currentColor"/>
+              <path d="M-11.4 -60Q-12.6 -80 -8 -86L8 -86Q12.6 -80 11.4 -60Z" fill="url(#ct-shade)"/>
+              <rect x="-2.6" y="-91" width="5.2" height="6" rx="2" fill="var(--skin,#c99774)"/>
+              <ellipse cx="0" cy="-96" rx="5.3" ry="6.3" fill="var(--skin,#c99774)"/>
+              <path d="M-5.6 -96Q-6 -103 0 -102.6Q6 -103 5.6 -96Q3 -99 0 -98.6Q-3 -99 -5.6 -96Z" fill="#1b1410"/>
+            </g>
+            <g id="ct-player">
+              <use href="#ct-body"/>
+              <use href="#ct-arm-l"/>
+              <use href="#ct-arm-l" transform="scale(-1 1)"/>
+            </g>
+            <g id="ct-player-up">
+              <use href="#ct-body"/>
+              <g transform="rotate(150 -9 -83)"><use href="#ct-arm-l"/></g>
+              <g transform="rotate(-150 9 -83)"><use href="#ct-arm-l" transform="scale(-1 1)"/></g>
+            </g>
+            <pattern id="ct-grainpat" data-k="grainPat" width="256" height="256" patternUnits="userSpaceOnUse"><image href="/larue/tour/grain.webp" width="256" height="256"/></pattern>
+            <linearGradient id="ct-grade" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#3a52c8" stop-opacity=".55"/><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#e0732a" stop-opacity=".35"/>
+            </linearGradient>
+            <radialGradient id="ct-hoopglow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ffc58a" stop-opacity=".9"/><stop offset="1" stop-color="#ffc58a" stop-opacity="0"/></radialGradient>
+            <clipPath id="ct-clip-obs"><rect x="10" y="30" width="420" height="237"/></clipPath>
+            <clipPath id="ct-clip-tv"><rect x="2860" y="230" width="640" height="360"/></clipPath>
+            <radialGradient id="ct-phoneglow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#9db4ff" stop-opacity=".42"/><stop offset="1" stop-color="#9db4ff" stop-opacity="0"/></radialGradient>
+            <radialGradient id="ct-tv" cx=".5" cy=".5" r=".5">
+              <stop offset="0" stop-color="#6f8cff" stop-opacity=".3"/><stop offset="1" stop-color="#6f8cff" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="ct-lamp" cx=".5" cy=".5" r=".5">
+              <stop offset="0" stop-color="#ffb066" stop-opacity=".28"/><stop offset="1" stop-color="#ffb066" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="ct-wall" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#171210"/><stop offset="1" stop-color="#0d0a09"/>
+            </linearGradient>
+            <!-- marcador superpuesto en la retransmisión, con la estética de la app (160×36) -->
+            <linearGradient id="ct-bugbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b1f26"/><stop offset="1" stop-color="#0f1217"/></linearGradient>
+            <!-- marcador del directo (overlay de la app, 1024×67) -->
+            <g id="ct-bug" font-family="'Barlow Condensed','Arial Narrow',Arial,sans-serif" font-weight="600">
+              <rect x="2" y="6" width="1020" height="64" rx="12" fill="#000" fill-opacity=".35"/>
+              <rect width="1024" height="67" rx="10.24" fill="url(#ct-bugbg)"/>
+              <rect x="432" width="160" height="67" fill="#ea580c"/>
+              <circle cx="38.5" cy="33.5" r="24.5" fill="#7c3aed" stroke="#fff" stroke-width="2.4"/>
+              <text x="38.5" y="41" font-size="22" font-weight="700" fill="#fff" text-anchor="middle">CJ</text>
+              <text x="76" y="29" font-size="20.48" letter-spacing=".61" fill="#fff">CLUB JOVENTUT 3X3</text>
+              <circle cx="80.50" cy="46.5" r="4.5" fill="#fff" fill-opacity=".22"/><circle cx="93.15" cy="46.5" r="4.5" fill="#fff" fill-opacity=".22"/><circle cx="105.80" cy="46.5" r="4.5" fill="#fff" fill-opacity=".22"/><circle cx="118.45" cy="46.5" r="4.5" fill="#fff" fill-opacity=".22"/><circle cx="131.10" cy="46.5" r="4.5" fill="#fff" fill-opacity=".22"/><circle cx="143.75" cy="46.5" r="4.5" fill="#fff" fill-opacity=".22"/>
+              <rect x="349" y="5" width="69" height="56" rx="6.4" fill="#fff" fill-opacity=".08"/>
+              <text x="383.5" y="49" font-size="46.08" fill="#fff" text-anchor="middle">2</text>
+              <text x="512" y="45" font-size="38.4" fill="#fff" text-anchor="middle" data-k="clockBug">09:54</text>
+              <rect x="606" y="5" width="69" height="56" rx="6.4" fill="#fff" fill-opacity=".08"/>
+              <text x="640.5" y="49" font-size="46.08" fill="#fff" text-anchor="middle">0</text>
+              <text x="948" y="29" font-size="20.48" letter-spacing=".61" fill="#fff" text-anchor="end">FENERBAHÇE BEKO 3X3</text>
+              <circle cx="943.50" cy="46.5" r="4.5" fill="#fff" fill-opacity=".22"/><circle cx="930.85" cy="46.5" r="4.5" fill="#fff" fill-opacity=".22"/><circle cx="918.20" cy="46.5" r="4.5" fill="#fff" fill-opacity=".22"/><circle cx="905.55" cy="46.5" r="4.5" fill="#fff" fill-opacity=".22"/><circle cx="892.90" cy="46.5" r="4.5" fill="#fff" fill-opacity=".22"/><circle cx="880.25" cy="46.5" r="4.5" fill="#fff" fill-opacity=".22"/>
+              <circle cx="985.5" cy="33.5" r="24.5" fill="#dc2626" stroke="#fff" stroke-width="2.4"/>
+              <text x="985.5" y="41" font-size="22" font-weight="700" fill="#fff" text-anchor="middle">FB</text>
+            </g>
+            <!-- balón -->
+            <g id="ct-bball">
+              <circle r="11" fill="url(#ct-ball)"/>
+              <path d="M-11 0H11M0 -11V11M-7.8 -7.8Q0 0 -7.8 7.8M7.8 -7.8Q0 0 7.8 7.8" stroke="#1b0d05" stroke-opacity=".55" stroke-width=".9" fill="none"/>
+            </g>
+          </defs>
+
+          <g data-k="world">
+            <!-- ═ GRADA ═ -->
+            <g id="ct-venue">
+            <rect x="0" y="0" width="1600" height="346" fill="#0a0916"/>
+            <g data-k="crowd"><image href="/larue/tour/crowd.webp" x="0" y="-6" width="1600" height="346" preserveAspectRatio="none"/><image data-k="crowdB" href="/larue/tour/crowd-b.webp" x="0" y="-6" width="1600" height="346" preserveAspectRatio="none" style="opacity:0"/></g>
+            <g fill="#cfd6ff" opacity=".35">
+              <circle cx="120" cy="18" r="3"/><circle cx="420" cy="12" r="2.4"/><circle cx="760" cy="20" r="3.2"/><circle cx="1120" cy="14" r="2.6"/><circle cx="1480" cy="18" r="3"/>
+            </g>
+
+            <!-- videomarcador -->
+            <g data-k="flashes"><circle cx="180" cy="150" r="3.2" fill="#fff" style="opacity:0"/><circle cx="330" cy="210" r="2.6" fill="#fff" style="opacity:0"/><circle cx="520" cy="120" r="3" fill="#fff" style="opacity:0"/><circle cx="700" cy="230" r="2.4" fill="#fff" style="opacity:0"/><circle cx="1040" cy="70" r="2.8" fill="#fff" style="opacity:0"/><circle cx="1230" cy="200" r="3.2" fill="#fff" style="opacity:0"/><circle cx="1380" cy="140" r="2.6" fill="#fff" style="opacity:0"/><circle cx="1500" cy="230" r="3" fill="#fff" style="opacity:0"/><circle cx="250" cy="90" r="2.4" fill="#fff" style="opacity:0"/><circle cx="1430" cy="60" r="2.2" fill="#fff" style="opacity:0"/><circle cx="90" cy="230" r="2.8" fill="#fff" style="opacity:0"/><circle cx="940" cy="28" r="2.4" fill="#fff" style="opacity:0"/></g>
+            <rect x="770" y="20" width="560" height="310" fill="url(#ct-ledglow)"/>
+            <g transform="translate(814 40)">
+              <rect x="-6" y="-6" width="472" height="271" rx="3" fill="#050507"/>
+              <g transform="scale(.359375)">
+                <image href="/larue/pantalla-poster.webp" width="1280" height="720"/>
+                <rect x="500" y="300" width="282" height="100" fill="#171717"/>
+                <text x="641" y="382" font-size="88" font-weight="900" fill="#fff" text-anchor="middle" font-family="'Arial Black','Helvetica Neue',Inter,system-ui,sans-serif" data-k="clockWall">10:00</text>
+                <rect x="1130" y="30" width="124" height="32" rx="16" fill="#3a2412"/>
+                <text x="1192" y="52" font-size="15" font-weight="700" fill="#fdba74" text-anchor="middle" font-family="Inter,system-ui,sans-serif" letter-spacing=".5" data-k="wallState">RELOJ PARADO</text>
+                <g data-k="boardPost" style="opacity:0" font-family="'Arial Black','Helvetica Neue',Inter,system-ui,sans-serif">
+                  <rect x="190" y="350" width="140" height="140" fill="#171717"/>
+                  <g data-k="pop"><text x="256" y="474" font-size="150" font-weight="900" fill="#fff" text-anchor="middle">2</text></g>
+                  <rect x="32" y="646" width="1216" height="54" rx="12" fill="#242424"/>
+                  <text x="640" y="682" font-size="26" font-weight="600" fill="#fff" text-anchor="middle" font-family="Inter,system-ui,sans-serif"><tspan fill="#ff7a35" font-weight="800">+2</tspan>  ·  Jamal Murray  ·  Club Joventut 3x3</text>
+                </g>
+              </g>
+              <rect width="460" height="259" fill="url(#ct-scan)" opacity=".28"/>
+              <rect data-k="boardFlash" width="460" height="259" fill="#fff" style="opacity:0"/>
+            </g>
+
+            <!-- aficionado con el móvil -->
+            <g data-k="fan">
+              <path d="M376 304Q378 246 408 238L432 238Q452 246 454 304Z" fill="#2c211d"/>
+              <path d="M376 304Q378 246 408 238L432 238Q452 246 454 304Z" fill="url(#ct-shade)"/>
+              <rect x="412" y="222" width="16" height="18" rx="5" fill="#5a4034"/>
+              <ellipse cx="420" cy="206" rx="12.5" ry="14.5" fill="#6e5042"/>
+              <ellipse cx="428" cy="208" rx="8" ry="12" fill="url(#ct-phoneglow)"/>
+              <ellipse cx="420" cy="206" rx="12.5" ry="14.5" fill="url(#ct-skin)"/>
+              <path d="M407 204Q406 189 420 189Q434 189 433 204Q428 197 420 197Q412 197 407 204Z" fill="#1d1511"/>
+              <!-- móvil -->
+              <rect x="451" y="189" width="60" height="120" rx="9" fill="#08080c"/>
+              <rect x="451.6" y="189.6" width="58.8" height="118.8" rx="8.6" fill="none" stroke="#4a4a64" stroke-width="1"/>
+              <g transform="translate(455 193) scale(.1333)" font-family="Inter,system-ui,sans-serif">
+                <image href="/larue/tour/movil-resumen.webp" width="390" height="844"/>
+                <image data-k="phoneJug" href="/larue/tour/movil-jugadores.webp" width="390" height="844" style="opacity:0"/>
+                <g data-k="phoneMap" style="opacity:0">
+                  <image href="/larue/tour/movil-mapa.webp" width="390" height="844"/>
+                  <circle data-k="mapCover" cx="147" cy="601" r="9" fill="#faf6ee"/>
+                  <circle data-k="mapRing" cx="147" cy="601" r="12" fill="none" stroke="#2563eb" stroke-width="3" style="opacity:0;transform-box:fill-box;transform-origin:center"/>
+                </g>
+                <g data-k="phoneCro" style="opacity:0">
+                  <image href="/larue/movil-poster.webp" width="390" height="844"/>
+                  <rect x="32" y="440" width="326" height="404" fill="#181818"/>
+                  <g data-k="phoneRow" style="opacity:0">
+                    <rect x="32" y="444" width="326" height="58" fill="#2a1710"/>
+                    <rect x="32" y="444" width="4" height="58" fill="#ff6a1f"/>
+                    <text x="66" y="478" font-size="12" fill="#8a8a8a">01'</text>
+                    <clipPath id="ct-av"><circle cx="115" cy="473" r="21"/></clipPath>
+                    <g clip-path="url(#ct-av)"><image href="/larue/movil-poster.webp" x="0" y="-60" width="390" height="844"/></g>
+                    <text x="145" y="468" font-size="14.5" font-weight="600" fill="#fff">Jamal Murray</text>
+                    <text x="145" y="488" font-size="12" fill="#a3a3a3">Triple · Club Joventut 3x3</text>
+                    <text x="320" y="480" font-size="18" font-weight="700" fill="#fb923c">+2</text>
+                  </g>
+                </g>
+                <rect x="144" y="142" width="104" height="56" fill="#151714"/>
+                <text x="166" y="183" font-size="44" font-weight="700" fill="#d7f3ff" text-anchor="middle" data-k="phoneScore">0</text>
+                <text x="227" y="183" font-size="44" font-weight="700" fill="#ffe4f6" text-anchor="middle">0</text>
+                <rect x="141" y="198" width="58" height="26" fill="#262926"/>
+                <text x="146" y="217" font-size="16" font-weight="700" fill="#fdba74" data-k="clockPhone">10:00</text>
+              </g>
+              <!-- mano sujetando -->
+              <path d="M436 258Q454 264 455 292L449 298Q446 276 430 268Z" fill="#2c211d"/>
+              <ellipse cx="452" cy="288" rx="4.2" ry="9" fill="#7a5a49"/>
+            </g>
+
+            <!-- cartelería LED -->
+            <rect x="0" y="312" width="1600" height="38" fill="#0a0916"/>
+            <rect x="0" y="312" width="1600" height="1.6" fill="#7b6cff" opacity=".55"/>
+            {adX.map(x => (<text x={x} y="338" font-size="17" fill="#bdb4ff" opacity=".8" font-weight="700" letter-spacing="6" font-family="Inter,system-ui,sans-serif">LARUE3x3</text>))}
+
+            <!-- ═ PISTA ═ -->
+            <image href="/larue/tour/floor.webp" x="0" y="350" width="1600" height="550" preserveAspectRatio="none"/>
+            <g fill="none" stroke="#e9ecf8" stroke-opacity=".82" stroke-width="3.2" stroke-linecap="round">
+              <path d="M260 430L120 900M980 430L1160 900"/>
+              <path d="M260 430H980"/>
+              <path d="M330 430A290 400 0 0 0 910 430"/>
+              <path d="M540 430L525 600M700 430L715 600M525 600H715"/>
+              <path d="M525 600A95 50 0 0 0 715 600"/>
+              <path d="M590 430A30 22 0 0 0 650 430" stroke-width="2.4"/>
+            </g>
+            <path d="M525 600A95 50 0 0 1 715 600" fill="none" stroke="#e9ecf8" stroke-opacity=".6" stroke-width="2.6" stroke-dasharray="10 9"/>
+            <text x="620" y="760" font-size="46" fill="#fff" opacity=".07" font-weight="800" letter-spacing="10" text-anchor="middle" font-family="Inter,system-ui,sans-serif">LARUE3x3</text>
+
+            <!-- canasta -->
+            <ellipse cx="620" cy="440" rx="46" ry="9" fill="url(#ct-shadow)"/>
+            <rect x="614" y="372" width="12" height="62" fill="#1b1b24"/>
+            <rect x="584" y="424" width="72" height="20" rx="3" fill="#14141c"/>
+            <rect x="565" y="270" width="110" height="102" rx="3" fill="#0b0b12" fill-opacity=".35"/>
+            <rect x="565" y="270" width="110" height="102" rx="3" fill="url(#ct-glass)" stroke="#e6e9f7" stroke-opacity=".55" stroke-width="1.6"/>
+            <rect x="598" y="328" width="44" height="32" fill="none" stroke="#e6e9f7" stroke-opacity=".7" stroke-width="1.4"/>
+            <ellipse data-k="hoopGlow" cx="620" cy="366" rx="74" ry="56" fill="url(#ct-hoopglow)" style="opacity:0"/>
+            <g data-k="net">
+              <path d="M594 364L603 398M606 364L609 398M620 364V398M634 364L631 398M646 364L637 398M598 376H642M601 387H639" stroke="#f2f2f8" stroke-opacity=".55" stroke-width="1.1" fill="none"/>
+            </g>
+            <g data-k="rim"><ellipse cx="620" cy="363" rx="27" ry="6.4" fill="none" stroke="#e8532a" stroke-width="3"/></g>
+
+            <!-- jugadores articulados: rodillas, codos, salto y caída se animan con el scroll -->
+            {figs.map(f => (
+              <g data-k={f.k} style={`color:${f.col};--skin:${f.skin}`} transform={`translate(${f.x} ${f.y}) scale(${f.s})`}>
+                <ellipse cx="0" cy="1" rx="22" ry="5.2" fill="url(#ct-shadow)"/>
+                <g data-k={f.k + 'B'}>
+                  <g data-k={f.k + 'LL'} transform="translate(-4.6 -50)">
+                    <rect x="-4.8" y="-1" width="9.6" height="25.5" rx="4.8" fill="var(--skin)"/>
+                    <rect x="-4.8" y="-1" width="9.6" height="25.5" rx="4.8" fill="url(#ct-skin)"/>
+                    <g data-k={f.k + 'LS'} transform="translate(0 24)">
+                      <rect x="-3.9" y="-1" width="7.8" height="25" rx="3.9" fill="var(--skin)"/>
+                      <rect x="-3.9" y="-1" width="7.8" height="25" rx="3.9" fill="url(#ct-skin)"/>
+                      <path d="M-4.8 21.6L4.6 21.6L5.8 26.6L-6.4 26.6Z" fill="#101018"/>
+                    </g>
+                  </g>
+                  <g data-k={f.k + 'RL'} transform="translate(4.6 -50)">
+                    <rect x="-4.8" y="-1" width="9.6" height="25.5" rx="4.8" fill="var(--skin)"/>
+                    <rect x="-4.8" y="-1" width="9.6" height="25.5" rx="4.8" fill="url(#ct-skin)"/>
+                    <g data-k={f.k + 'RS'} transform="translate(0 24)">
+                      <rect x="-3.9" y="-1" width="7.8" height="25" rx="3.9" fill="var(--skin)"/>
+                      <rect x="-3.9" y="-1" width="7.8" height="25" rx="3.9" fill="url(#ct-skin)"/>
+                      <path d="M-4.6 21.6L4.8 21.6L6.4 26.6L-5.8 26.6Z" fill="#101018"/>
+                    </g>
+                  </g>
+                  <path d="M-11 -60L11 -60L12 -39L1.8 -39L0 -47L-1.8 -39L-12 -39Z" fill="currentColor"/>
+                  <path d="M-11 -60L11 -60L12 -39L1.8 -39L0 -47L-1.8 -39L-12 -39Z" fill="url(#ct-shade)"/>
+                  <path d="M-11.6 -60Q-12.8 -80 -8 -86.5L8 -86.5Q12.8 -80 11.6 -60Z" fill="currentColor"/>
+                  <path d="M-11.6 -60Q-12.8 -80 -8 -86.5L8 -86.5Q12.8 -80 11.6 -60Z" fill="url(#ct-shade)"/>
+                  <path d="M-8 -86.5Q0 -84 8 -86.5" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="1.2"/>
+                  <rect x="-2.7" y="-92" width="5.4" height="7" rx="2" fill="var(--skin)"/>
+                  <ellipse cx="0" cy="-96.5" rx="5.4" ry="6.4" fill="var(--skin)"/>
+                  <path d="M-5.7 -96.5Q-6.2 -104 0 -103.6Q6.2 -104 5.7 -96.5Q3 -100 0 -99.6Q-3 -100 -5.7 -96.5Z" fill="#17110d"/>
+                  <g data-k={f.k + 'AL'} transform="translate(-11.4 -83)">
+                    <rect x="-4.2" y="-1.5" width="8.4" height="16.5" rx="4.2" fill="var(--skin)"/>
+                    <rect x="-4.2" y="-1.5" width="8.4" height="16.5" rx="4.2" fill="url(#ct-skin)"/>
+                    <g data-k={f.k + 'FL'} transform="translate(0 14.5)">
+                      <rect x="-3.7" y="-1" width="7.4" height="15.5" rx="3.7" fill="var(--skin)"/>
+                      <circle cy="15" r="3.9" fill="var(--skin)"/>
+                    </g>
+                  </g>
+                  <g data-k={f.k + 'AR'} transform="translate(11.4 -83)">
+                    <rect x="-4.2" y="-1.5" width="8.4" height="16.5" rx="4.2" fill="var(--skin)"/>
+                    <rect x="-4.2" y="-1.5" width="8.4" height="16.5" rx="4.2" fill="url(#ct-skin)"/>
+                    <g data-k={f.k + 'FR'} transform="translate(0 14.5)">
+                      <rect x="-3.7" y="-1" width="7.4" height="15.5" rx="3.7" fill="var(--skin)"/>
+                      <circle cy="15" r="3.9" fill="var(--skin)"/>
+                    </g>
+                  </g>
+                </g>
+              </g>
+            ))}
+            <g data-k="ball"><use href="#ct-bball" transform="scale(1.15)"/></g>
+
+            <!-- ═ MESA DE ANOTACIÓN ═ -->
+            <ellipse cx="1210" cy="670" rx="230" ry="26" fill="url(#ct-shadow)"/>
+            <!-- anotadores -->
+            <g data-k="scL" transform="translate(-30 0)">
+              <path d="M1026 606Q1028 566 1048 558L1074 558Q1094 566 1096 606Z" fill="#1b2140"/>
+              <path d="M1026 606Q1028 566 1048 558L1074 558Q1094 566 1096 606Z" fill="url(#ct-shade)"/>
+              <rect x="1053" y="544" width="16" height="16" rx="5" fill="#7d5a46"/>
+              <ellipse cx="1061" cy="531" rx="11.5" ry="13.5" fill="#7d5a46"/>
+              <ellipse cx="1061" cy="531" rx="11.5" ry="13.5" fill="url(#ct-skin)"/>
+              <path d="M1049 529Q1048 515 1061 515Q1074 515 1073 529Q1068 522 1061 522Q1054 522 1049 529Z" fill="#1d1511"/>
+              </g>
+            <g data-k="scR" transform="translate(40 0)">
+              <path d="M1328 606Q1330 566 1350 558L1376 558Q1396 566 1398 606Z" fill="#242d52"/>
+              <path d="M1328 606Q1330 566 1350 558L1376 558Q1396 566 1398 606Z" fill="url(#ct-shade)"/>
+              <rect x="1355" y="544" width="16" height="16" rx="5" fill="#4f372b"/>
+              <ellipse cx="1363" cy="531" rx="11.5" ry="13.5" fill="#4f372b"/>
+              <ellipse cx="1363" cy="531" rx="11.5" ry="13.5" fill="url(#ct-skin)"/>
+              <path d="M1351 530Q1350 516 1363 516Q1376 516 1375 530Q1370 523 1363 523Q1356 523 1351 530Z" fill="#17110e"/>
+            </g>
+            <rect x="1000" y="604" width="425" height="10" rx="2" fill="#7f7b9f"/>
+            <rect x="1000" y="614" width="425" height="52" fill="url(#ct-desk)"/>
+            <text x="1212" y="648" font-size="17" fill="#cfc8ff" opacity=".85" font-weight="700" letter-spacing="6" text-anchor="middle" font-family="Inter,system-ui,sans-serif">{t.table}</text>
+            <ellipse cx="1210" cy="540" rx="170" ry="100" fill="url(#ct-tabglow)"/>
+            <!-- tablet con la captura real de la mesa -->
+            <rect x="1083" y="423" width="264" height="190" rx="9" fill="#07070b"/>
+            <rect x="1083.6" y="423.6" width="262.8" height="188.8" rx="8.6" fill="none" stroke="#454560" stroke-width="1.2"/>
+            <rect x="1090" y="430" width="250" height="174" rx="4" fill="#0d1018"/>
+            <g transform="translate(1090 430) scale(.21186)" font-family="Inter,system-ui,sans-serif">
+              <g data-k="mesaLayer" style="opacity:0">
+                <image href="/larue/tour/mesa-pre.webp" width="1180" height="820"/>
+                <image data-k="tabPost" href="/larue/mesa-poster.webp" width="1180" height="820" style="opacity:0"/>
+                <rect x="528" y="138" width="128" height="48" fill="#131613"/>
+                <text x="592" y="176" font-size="40" font-weight="800" fill="#fdd2a5" text-anchor="middle" data-k="clockTab">10:00</text>
+                <rect data-k="plusHl" x="483" y="380" width="105" height="66" rx="10" fill="#fff" style="opacity:0"/>
+              </g>
+              <g data-k="titulares">
+                <image href="/larue/tour/mesa-titulares.webp" width="1180" height="820"/>
+                <rect x="144" y="243" width="220" height="19" fill="#111827"/>
+                <text x="146" y="257" font-size="12.5" font-weight="700" fill="#93c5fd" letter-spacing="1" data-k="cntL">CLUB JOVENTUT 3X3 · 0/3</text>
+                <rect x="600" y="243" width="250" height="19" fill="#111827"/>
+                <text x="602" y="257" font-size="12.5" font-weight="700" fill="#fca5a5" letter-spacing="1" data-k="cntR">FENERBAHÇE BEKO 3X3 · 0/3</text>
+                <rect x="224" y="278" width="128" height="21" fill="#111827"/><text x="228" y="293" font-size="14" font-weight="600" fill="#f3f4f6">Jamal Murray</text><rect x="444" y="278" width="128" height="21" fill="#111827"/><text x="448" y="293" font-size="14" font-weight="600" fill="#f3f4f6">Tre Jones</text><rect x="224" y="326" width="128" height="21" fill="#111827"/><text x="228" y="341" font-size="14" font-weight="600" fill="#f3f4f6">Pakington Okoye</text><rect x="444" y="326" width="128" height="21" fill="#111827"/><text x="448" y="341" font-size="14" font-weight="600" fill="#f3f4f6">Nico Brussino</text><rect x="680" y="278" width="128" height="21" fill="#111827"/><text x="684" y="293" font-size="14" font-weight="600" fill="#f3f4f6">Dante Exum</text><rect x="900" y="278" width="128" height="21" fill="#111827"/><text x="904" y="293" font-size="14" font-weight="600" fill="#f3f4f6">Orlando Johnson</text><rect x="680" y="326" width="128" height="21" fill="#111827"/><text x="684" y="341" font-size="14" font-weight="600" fill="#f3f4f6">Jabari Parker</text><rect x="900" y="326" width="128" height="21" fill="#111827"/><text x="904" y="341" font-size="14" font-weight="600" fill="#f3f4f6">Jeremy Sochan</text>
+                <g data-k="tick0" style="opacity:0"><rect x="159" y="278" width="20" height="20" rx="4" fill="#f97316"/><path d="M164 288L167.5 292L174 284" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></g><g data-k="tick1" style="opacity:0"><rect x="379" y="278" width="20" height="20" rx="4" fill="#f97316"/><path d="M384 288L387.5 292L394 284" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></g><g data-k="tick2" style="opacity:0"><rect x="159" y="326" width="20" height="20" rx="4" fill="#f97316"/><path d="M164 336L167.5 340L174 332" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></g><g data-k="tick3" style="opacity:0"><rect x="615" y="278" width="20" height="20" rx="4" fill="#f97316"/><path d="M620 288L623.5 292L630 284" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></g><g data-k="tick4" style="opacity:0"><rect x="835" y="278" width="20" height="20" rx="4" fill="#f97316"/><path d="M840 288L843.5 292L850 284" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></g><g data-k="tick5" style="opacity:0"><rect x="615" y="326" width="20" height="20" rx="4" fill="#f97316"/><path d="M620 336L623.5 340L630 332" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></g>
+                <rect data-k="playHl" x="496" y="409" width="190" height="48" rx="12" fill="#fff" style="opacity:0"/>
+              </g>
+            </g>
+            <ellipse cx="1215" cy="520" rx="200" ry="120" fill="url(#ct-tabglow)"/>
+
+            <!-- cursor táctil -->
+            <g data-k="ptr" style="opacity:0">
+              <circle data-k="ring" r="9" fill="none" stroke="#fff" stroke-width="1.4" style="opacity:0"/>
+              <circle r="3.6" fill="#fff" fill-opacity=".85" stroke="#000" stroke-opacity=".25" stroke-width=".8"/>
+            </g>
+
+            </g>
+
+            <g data-k="obsScene" style="display:none">
+            <!-- ═ OBS ═ -->
+            <rect x="1640" y="150" width="760" height="560" fill="#08080d"/>
+            <g transform="translate(1700 230)" font-family="Inter,system-ui,sans-serif">
+              <rect x="-6" y="-6" width="652" height="412" rx="8" fill="#050508"/>
+              <rect width="640" height="400" rx="5" fill="#1c1c22"/>
+              <rect width="640" height="22" rx="5" fill="#26262e"/>
+              <text x="12" y="15" font-size="9" fill="#b8b8c8" font-weight="600">OBS Studio</text>
+              <rect x="10" y="30" width="420" height="237" fill="#000"/>
+              <g clip-path="url(#ct-clip-obs)"><g transform="translate(10 30) scale(.41176) translate(-120 -250)"><use href="#ct-venue"/></g></g>
+              <g data-k="bugObs" transform="translate(52 232.4) scale(.328)" style="opacity:0"><use href="#ct-bug"/></g>
+              <text x="440" y="40" font-size="8.4" fill="#8f8fa8" font-weight="700" letter-spacing="1">{t.obs.sources.toUpperCase()}</text>
+              <rect x="440" y="48" width="190" height="20" rx="3" fill="#25252e"/>
+              <text x="450" y="61.4" font-size="8" fill="#d8d8e4">{t.obs.cam}</text>
+              <rect x="440" y="72" width="190" height="20" rx="3" fill="#2d2740" stroke="#6a58d6" stroke-width="1"/>
+              <text x="450" y="85.4" font-size="8" fill="#fff" font-weight="600">{t.obs.widget}</text>
+              <rect x="440" y="96" width="190" height="20" rx="3" fill="#25252e"/>
+              <text x="450" y="109.4" font-size="8" fill="#d8d8e4">{t.obs.logo}</text>
+              <rect x="440" y="126" width="190" height="34" rx="3" fill="#14141a"/>
+              <text x="450" y="140" font-size="6.6" fill="#8f8fa8">{t.obs.url}</text>
+              <text x="450" y="152" font-size="6.8" fill="#7c9cff" font-family="ui-monospace,Consolas,monospace">…/partidos/231/overlay</text>
+              <g transform="translate(612 82)">
+                <path d="M-6 0Q0 -5 6 0Q0 5 -6 0Z" fill="none" stroke="#9a9ab0" stroke-width="1.2"/><circle r="1.6" fill="#9a9ab0"/>
+                <g data-k="eye" style="opacity:0"><path d="M-6 0Q0 -5 6 0Q0 5 -6 0Z" fill="none" stroke="#7c9cff" stroke-width="1.3"/><circle r="2" fill="#7c9cff"/></g>
+              </g>
+              <text x="10" y="284" font-size="8.4" fill="#8f8fa8" font-weight="700" letter-spacing="1">{t.obs.scenes.toUpperCase()}</text>
+              <rect x="10" y="292" width="205" height="20" rx="3" fill="#2d2740"/>
+              <text x="20" y="305.4" font-size="8" fill="#fff">{t.obs.match}</text>
+              <g fill="#2dd17a" opacity=".85"><rect x="232" y="296" width="150" height="4" rx="2"/><rect x="232" y="310" width="110" height="4" rx="2"/></g>
+              <rect x="440" y="318" width="190" height="28" rx="4" fill="#2a2a34"/>
+              <text x="535" y="335.6" font-size="9" fill="#e9e9f3" font-weight="600" text-anchor="middle">{t.obs.start}</text>
+              <g data-k="obsLive" style="opacity:0">
+                <rect x="440" y="318" width="190" height="28" rx="4" fill="#d3202b"/>
+                <text x="535" y="335.6" font-size="9" fill="#fff" font-weight="700" text-anchor="middle">{t.obs.live}</text>
+              </g>
+              <rect x="440" y="352" width="190" height="28" rx="4" fill="#2a2a34"/>
+            </g>
+
+            </g>
+            <g data-k="homeScene" style="display:none">
+            <!-- ═ EN CASA ═ -->
+            <rect x="2640" y="-40" width="1140" height="1000" fill="url(#ct-wall)"/>
+            <rect x="2640" y="735" width="1140" height="225" fill="#0a0807"/>
+            <rect x="2640" y="733" width="1140" height="3" fill="#2a211c"/>
+            <ellipse cx="3180" cy="410" rx="520" ry="320" fill="url(#ct-tv)"/>
+            <ellipse cx="2780" cy="470" rx="260" ry="360" fill="url(#ct-lamp)"/>
+            <!-- lámpara -->
+            <rect x="2772" y="520" width="6" height="215" fill="#26201c"/>
+            <path d="M2742 520L2808 520L2794 462L2756 462Z" fill="#d9a066" fill-opacity=".85"/>
+            <!-- tele -->
+            <rect x="2856" y="226" width="648" height="370" rx="6" fill="#050507"/>
+            <rect x="2860" y="230" width="640" height="360" rx="3" fill="#000"/>
+            <g clip-path="url(#ct-clip-tv)"><g transform="translate(2860 230) scale(.62745) translate(-120 -250)"><use href="#ct-venue"/></g></g>
+            <g transform="translate(2924 537.4) scale(.5)"><use href="#ct-bug"/></g>
+            <rect x="2860" y="572" width="640" height="18" fill="#000" fill-opacity=".6"/>
+            <rect x="2860" y="572" width="640" height="2" fill="#d3202b"/>
+            <rect x="2872" y="577" width="46" height="11" rx="5.5" fill="#d3202b"/>
+            <text x="2895" y="585.4" font-size="7.4" fill="#fff" font-weight="700" text-anchor="middle" font-family="Inter,system-ui,sans-serif">{t.obs.yt}</text>
+            <text x="2926" y="585.6" font-size="8.6" fill="#f1f1f6" font-weight="500" font-family="Inter,system-ui,sans-serif">{t.obs.yttitle}</text>
+            <rect x="3180" y="596" width="140" height="10" fill="#15110f"/>
+            <rect x="3130" y="604" width="240" height="8" rx="3" fill="#201915"/>
+            <!-- mueble -->
+            <rect x="2800" y="612" width="760" height="22" fill="#1d1612"/>
+            <rect x="2800" y="634" width="760" height="100" fill="#15100d"/>
+            <!-- sofá y espectador -->
+            <ellipse cx="3180" cy="868" rx="330" ry="26" fill="url(#ct-shadow)"/>
+            <rect x="2900" y="740" width="560" height="130" rx="22" fill="#241c19"/>
+            <rect x="2900" y="740" width="560" height="130" rx="22" fill="url(#ct-shade)" opacity=".5"/>
+            <path d="M3090 752Q3092 716 3120 706L3240 706Q3268 716 3270 752Z" fill="#2c2420"/>
+            <g>
+              <path d="M3098 800Q3098 724 3142 716L3218 716Q3262 724 3262 800Z" fill="#4a3a33"/>
+              <path d="M3098 800Q3098 724 3142 716L3218 716Q3262 724 3262 800Z" fill="url(#ct-shade)"/>
+              <rect x="3166" y="688" width="28" height="32" rx="12" fill="#3a2c26"/>
+              <ellipse cx="3180" cy="672" rx="25" ry="29" fill="#2a1f1a"/>
+              <path d="M3156 666Q3154 640 3180 640Q3206 640 3204 666Q3194 650 3180 650Q3166 650 3156 666Z" fill="#14100e"/>
+              <path d="M3155 676Q3156 654 3180 654" fill="none" stroke="#6f8cff" stroke-opacity=".45" stroke-width="2.4" stroke-linecap="round"/>
+              <path d="M3205 676Q3204 654 3180 654" fill="none" stroke="#6f8cff" stroke-opacity=".45" stroke-width="2.4" stroke-linecap="round"/>
+            </g>
+            <rect x="2900" y="788" width="560" height="84" rx="22" fill="#2b2220"/>
+            <rect x="2900" y="788" width="560" height="84" rx="22" fill="url(#ct-shade)" opacity=".5"/>
+            </g>
+          </g>
+
+          <rect width="1600" height="900" fill="url(#ct-grade)" opacity=".5" pointer-events="none"/>
+          <rect width="1600" height="900" fill="url(#ct-vig)" pointer-events="none"/>
+          <rect width="1600" height="900" fill="url(#ct-grainpat)" opacity=".05" pointer-events="none"/>
+          <rect data-k="dip" width="1600" height="900" fill="#000" style="opacity:0" pointer-events="none"/>
+        </svg>
+      </div>
+
+      <div class="tour-caps" aria-live="polite">
+        {t.steps.map((s, i) => (
+          <div class={`tour-cap${i === 0 ? ' is-active' : ''}`} data-cap>
+            <span class="story-kicker">{String(i + 1).padStart(2, '0')} · {s.k}</span>
+            <h3>{s.h}</h3>
+            <p>{s.p}</p>
+          </div>
+        ))}
+      </div>
+      <div class="tour-dots" aria-hidden="true">
+        {t.steps.map((_, i) => (<span class={i === 0 ? 'is-active' : ''} data-dot></span>))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-tour]');
+  if (root) {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const track = root.querySelector<HTMLElement>('.tour-track')!;
+    const sticky = root.querySelector<HTMLElement>('.tour-sticky')!;
+    const $ = (k: string) => root.querySelector<SVGElement>(`[data-k="${k}"]`)!;
+    const caps = Array.from(root.querySelectorAll('[data-cap]'));
+    const dots = Array.from(root.querySelectorAll('[data-dot]'));
+
+    const el = {
+      world: $('world'), tabPost: $('tabPost'), titulares: $('titulares'), mesaLayer: $('mesaLayer'), cntL: $('cntL'), cntR: $('cntR'),
+      ticks: [0, 1, 2, 3, 4, 5].map(i => $('tick' + i)),
+      clockTab: $('clockTab'), clockWall: $('clockWall'), wallState: $('wallState'), clockPhone: $('clockPhone'), clockBug: $('clockBug'),
+      phoneScore: $('phoneScore'), phoneJug: $('phoneJug'), phoneMap: $('phoneMap'), mapCover: $('mapCover'), mapRing: $('mapRing'), phoneCro: $('phoneCro'), phoneRow: $('phoneRow'),
+      playHl: $('playHl'), plusHl: $('plusHl'), ptr: $('ptr'), ring: $('ring'),
+      ball: $('ball'), net: $('net'), rim: $('rim'), hoopGlow: $('hoopGlow'),
+      boardPost: $('boardPost'), boardFlash: $('boardFlash'), pop: $('pop'),
+      bugObs: $('bugObs'), eye: $('eye'), obsLive: $('obsLive'),
+      crowd: $('crowd'), crowdB: $('crowdB'), flashes: Array.from($('flashes').children) as SVGElement[], dip: $('dip'),
+      scL: $('scL'), scR: $('scR'), obsScene: $('obsScene'), homeScene: $('homeScene')
+    };
+
+    // ── Utilidades
+    const clamp = (x: number, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+    const sm = (x: number) => x * x * x * (x * (x * 6 - 15) + 10); // smootherstep: arranque y parada más suaves
+    const seg = (p: number, a: number, b: number) => sm(clamp((p - a) / (b - a)));
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+    const op = (e: SVGElement, v: number) => { const t = String(Math.round(v * 100) / 100); if (e.style.opacity !== t) e.style.opacity = t; };
+    const txt = (e: SVGElement, v: string) => { if (e.textContent !== v) e.textContent = v; };
+    const bump = (p: number, c: number, w: number) => Math.max(0, 1 - Math.abs(p - c) / w);
+    const cache = new WeakMap<Element, string>();
+    const tf = (e: Element, v: string) => { if (cache.get(e) !== v) { cache.set(e, v); e.setAttribute('transform', v); } };
+    const showEl = (e: SVGElement, on: boolean) => { const d = on ? '' : 'none'; if (e.style.display !== d) e.style.display = d; };
+
+    // ── Jugadores articulados
+    type Fig = { g: SVGElement; B: SVGElement; LL: SVGElement; LS: SVGElement; RL: SVGElement; RS: SVGElement; AL: SVGElement; FL: SVGElement; AR: SVGElement; FR: SVGElement; x: number; y: number; s: number };
+    const mk = (k: string, x: number, y: number, s: number): Fig => ({
+      g: $(k), B: $(k + 'B'), LL: $(k + 'LL'), LS: $(k + 'LS'), RL: $(k + 'RL'), RS: $(k + 'RS'),
+      AL: $(k + 'AL'), FL: $(k + 'FL'), AR: $(k + 'AR'), FR: $(k + 'FR'), x, y, s
+    });
+    const F = {
+      sh: mk('sh', 560, 655, 1.55), d: mk('d', 610, 628, 1.42), b2: mk('b2', 805, 565, 1.16),
+      b3: mk('b3', 395, 610, 1.32), o1: mk('o1', 470, 560, 1.1), o3: mk('o3', 745, 655, 1.48)
+    };
+    // Poses de brazo: [hombro, codo] en grados. Rotación horaria desde "colgando"
+    const ARM = { idle: [8, 16], hold: [10, 195], raise: [120, 100], ext: [165, 25], up: [168, 14], guard: [24, 46] };
+    // posa una figura: c = flexión de piernas (0-1), jy = altura de salto, th/ph = hombro/codo, dx/dy/s = posición
+    function pose(f: Fig, o: { c?: number; jy?: number; th: number; ph: number; x?: number; y?: number; lean?: number }) {
+      const c = o.c ?? 0, jy = o.jy ?? 0;
+      const t = 50 * c, rad = Math.PI / 180;
+      const drop = 48 - (24 * Math.cos(t * rad) + 24 * Math.cos(t * 0.6 * rad));
+      tf(f.B, `translate(0 ${(drop - jy).toFixed(2)})`);
+      tf(f.LL, `translate(-4.6 -50) rotate(${t.toFixed(1)})`);
+      tf(f.LS, `translate(0 24) rotate(${(-1.6 * t).toFixed(1)})`);
+      tf(f.RL, `translate(4.6 -50) rotate(${(-t).toFixed(1)})`);
+      tf(f.RS, `translate(0 24) rotate(${(1.6 * t).toFixed(1)})`);
+      tf(f.AL, `translate(-11.4 -83) rotate(${o.th.toFixed(1)})`);
+      tf(f.FL, `translate(0 14.5) rotate(${o.ph.toFixed(1)})`);
+      tf(f.AR, `translate(11.4 -83) rotate(${(-o.th).toFixed(1)})`);
+      tf(f.FR, `translate(0 14.5) rotate(${(-o.ph).toFixed(1)})`);
+      tf(f.g, `translate(${(o.x ?? f.x).toFixed(2)} ${(o.y ?? f.y).toFixed(2)}) scale(${f.s})`);
+      return drop - jy;
+    }
+    const mixArm = (a: number[], b: number[], e: number) => [lerp(a[0], b[0], e), lerp(a[1], b[1], e)];
+    // altura de las manos (coordenada local) para sujetar el balón
+    const handY = (th: number, ph: number) => -83 + 15 * Math.cos(th * Math.PI / 180) + 14.5 * Math.cos((th + ph) * Math.PI / 180);
+
+    // ── Cámara
+    const POSES: Record<string, { x: number; y: number; z: number }> = {
+      wide: { x: 800, y: 450, z: 1 }, table: { x: 1215, y: 520, z: 3.3 }, court: { x: 620, y: 520, z: 1.7 },
+      board: { x: 1044, y: 170, z: 2.8 }, stands: { x: 481, y: 250, z: 5.1 },
+      obs: { x: 2020, y: 430, z: 2 }, home: { x: 3180, y: 530, z: 1.3 }
+    };
+    const MOVES: [number, number, string][] = [[.03, .10, 'table'], [.21, .27, 'court'], [.50, .56, 'table'], [.64, .70, 'board'], [.73, .79, 'stands']];
+    const CUTS: [number, number, string][] = [[.86, .88, 'obs'], [.935, .955, 'home']];
+    const BOUNDS = [0, .21, .50, .64, .73, .87, .945];
+
+    // Cursor táctil: ventanas de aparición y recorrido
+    const PATHS: { w: [number, number, number, number]; pts: [number, number, number][] }[] = [
+      { w: [.085, .10, .205, .22], pts: [[.085, 1190, 470], [.105, 1125.8, 491], [.12, 1172.4, 491], [.135, 1125.8, 501.2], [.15, 1222.4, 491], [.165, 1269, 491], [.18, 1222.4, 501.2], [.195, 1215.2, 521.7]] },
+      { w: [.52, .54, .60, .62], pts: [[.52, 1262, 566], [.575, 1203.3, 517.5]] },
+      { w: [.88, .89, .93, .945], pts: [[.88, 2200, 470], [.90, 2312, 312], [.92, 2240, 562]] }
+    ];
+    const TICKS = [.105, .12, .135, .15, .165, .18];
+    const TAPS = [...TICKS, .195, .575, .90, .92];
+
+    // Tiro: P .31 → .46. Fases (sp 0-1) definidas en shotState()
+    const SHOT0 = .31, SHOT_LEN = .15;
+    const RIM = { x: 620, y: 360 };
+    function shotState(sp: number) {
+      const crouch = seg(sp, .08, .27) * (1 - seg(sp, .27, .38)) + .5 * Math.sin(Math.PI * clamp((sp - .70) / .14));
+      const jy = sp > .32 && sp < .72 ? 36 * Math.sin(Math.PI * clamp((sp - .32) / .40)) : 0;
+      let arm = ARM.idle;
+      if (sp < .08) arm = mixArm(ARM.idle, ARM.hold, seg(sp, 0, .08));
+      else if (sp < .28) arm = ARM.hold;
+      else if (sp < .42) arm = mixArm(ARM.hold, ARM.raise, seg(sp, .28, .42));
+      else if (sp < .50) arm = mixArm(ARM.raise, ARM.ext, seg(sp, .42, .50));
+      else if (sp < .72) arm = [ARM.ext[0], ARM.ext[1] + 20 * seg(sp, .50, .54) * (1 - seg(sp, .54, .64))];
+      else arm = mixArm(ARM.ext, ARM.idle, seg(sp, .72, .88));
+      return { c: crouch, jy, th: arm[0], ph: arm[1] };
+    }
+    const holdPos = (sp: number, dribbleX: number, dribbleY: number) => {
+      const st = shotState(sp), body = 48 - (24 * Math.cos(50 * st.c * Math.PI / 180) + 24 * Math.cos(30 * st.c * Math.PI / 180)) - st.jy;
+      const hy = handY(st.th, st.ph) - 4 + body;
+      const e = seg(sp, 0, .08);
+      return { x: lerp(dribbleX, F.sh.x + 1, e), y: lerp(dribbleY, F.sh.y + F.sh.s * hy, e) };
+    };
+
+    let lastClock = '', lastBlur = -1, frame = 0;
+    function render(P: number, T: number) {
+      // ── cámara: planos con desplazamiento suave + cortes con fundido a negro
+      let c = { ...POSES.wide };
+      for (const [a, b, k] of MOVES) {
+        const e = seg(P, a, b);
+        if (e > 0) { const q = POSES[k]; c = { x: lerp(c.x, q.x, e), y: lerp(c.y, q.y, e), z: c.z * Math.pow(q.z / c.z, e) }; }
+      }
+      let dip = 0;
+      for (const [a, b, k] of CUTS) {
+        if (P < a) continue;
+        const u = clamp((P - a) / (b - a)), q = POSES[k];
+        if (u >= .5) c = { x: q.x, y: q.y, z: q.z * (.9 + .1 * seg(u, .5, 1)) };
+        dip = Math.max(dip, P < b ? Math.pow(Math.sin(Math.PI * u), 1.4) : 0);
+      }
+      // intro: empuje lento hacia dentro; golpe de cámara al entrar el tiro; cámara en mano
+      const sp = (P - SHOT0) / SHOT_LEN;
+      c.z *= 1 + .05 * (1 - seg(P, 0, .03)) * 0 + .035 * bump(sp, .82, .1);
+      const hx = 0, hy = 0;
+      tf(el.world, `translate(800 450) scale(${c.z.toFixed(4)}) translate(${(-c.x - hx).toFixed(2)} ${(-c.y - hy).toFixed(2)})`);
+      op(el.dip, dip * .96);
+      showEl(el.obsScene, P >= .855 && P < .965); showEl(el.homeScene, P >= .93);
+      // profundidad de campo: la grada se desenfoca al acercarse a las pantallas
+      const dof = Math.round(clamp((c.z - 1.3) / 2.2) * 20) / 20;
+      if (dof !== lastBlur) { lastBlur = dof; op(el.crowdB, dof); showEl(el.crowdB, dof > 0); }
+
+      // ── tablet: selección, inicio y, tras el tiro, el 2-0
+      TICKS.forEach((t, i) => op(el.ticks[i], seg(P, t, t + .008)));
+      txt(el.cntL, `CLUB JOVENTUT 3X3 · ${TICKS.slice(0, 3).filter(t => P >= t).length}/3`);
+      txt(el.cntR, `FENERBAHÇE BEKO 3X3 · ${TICKS.slice(3).filter(t => P >= t).length}/3`);
+      op(el.titulares, 1 - seg(P, .205, .22)); op(el.mesaLayer, seg(P, .205, .22));
+      op(el.playHl, bump(P, .197, .014) * .45);
+      op(el.tabPost, seg(P, .585, .60));
+      op(el.plusHl, bump(P, .578, .014) * .5);
+
+      // ── cursor táctil
+      let pv = 0, px = 0, py = 0;
+      PATHS.forEach(path => {
+        const [a, b, c2, d] = path.w;
+        const o = seg(P, a, b) * (1 - seg(P, c2, d));
+        if (o <= 0) return;
+        pv = Math.max(pv, o);
+        const pts = path.pts;
+        let i = 0; while (i < pts.length - 2 && P > pts[i + 1][0]) i++;
+        const [t0, x0, y0] = pts[i], [t1, x1, y1] = pts[Math.min(i + 1, pts.length - 1)];
+        const e = t1 === t0 ? 1 : seg(P, t0, t1);
+        px = x0 + (x1 - x0) * e; py = y0 + (y1 - y0) * e;
+      });
+      op(el.ptr, pv); tf(el.ptr, `translate(${px.toFixed(2)} ${py.toFixed(2)})`);
+      let ring = 0, rs = .4, tapN = 0;
+      TAPS.forEach(t => { const d = (P - t) / .014; if (d >= 0 && d < 1) { ring = (1 - d) * .8; rs = .4 + d * 1.5; } tapN = Math.max(tapN, bump(P, t + .004, .008)); });
+      op(el.ring, ring); tf(el.ring, `scale(${rs.toFixed(3)})`);
+      // los anotadores se inclinan un poco al tocar
+      tf(el.scL, `translate(-30 ${(1.8 * tapN).toFixed(2)})`);
+      tf(el.scR, `translate(40 ${(1.2 * tapN).toFixed(2)})`);
+
+      // ── OBS
+      const eyeOn = seg(P, .90, .91);
+      op(el.eye, eyeOn); op(el.bugObs, eyeOn);
+      op(el.obsLive, seg(P, .92, .93));
+
+      // ── pista: el tirador y el resto de jugadores
+      const st = shotState(clamp(sp, 0, 1.2));
+      const spc = clamp(sp);
+      // compañeros y rivales: movimiento de reposo y desmarques
+      const sway = (a: number, ph: number, sp2 = 1) => a * Math.sin(T * sp2 + ph);
+      pose(F.o1, { c: .14 + .07 * Math.sin(T * 1.7), th: ARM.guard[0], ph: ARM.guard[1], x: F.o1.x + sway(9, 0, .8), y: F.o1.y });
+      pose(F.o3, { c: .14 + .06 * Math.sin(T * 1.5 + 2), th: ARM.guard[0], ph: ARM.guard[1], x: F.o3.x + sway(8, 1.5, .7) });
+      pose(F.b2, { c: .06 + .04 * Math.sin(T * 1.3), th: ARM.idle[0] + 10 * Math.sin(T), ph: ARM.idle[1], x: F.b2.x + sway(5, 3, .6) });
+      const run = seg(spc, .05, .55), stepping = run > 0 && run < 1 ? Math.abs(Math.sin(T * 7)) : 0;
+      pose(F.b3, { c: .06 + .1 * stepping, jy: 3 * stepping, th: ARM.idle[0], ph: ARM.idle[1], x: F.b3.x + 70 * run, y: F.b3.y - 14 * run });
+      // defensor: postura baja, brazos arriba tarde y salto a destiempo
+      const dArms = mixArm(ARM.guard, ARM.up, seg(spc, .28, .46));
+      const dJump = spc > .44 && spc < .74 ? 24 * Math.sin(Math.PI * clamp((spc - .44) / .30)) : 0;
+      pose(F.d, { c: (.2 + .06 * Math.sin(T * 2)) * (1 - seg(spc, .44, .50)), jy: dJump, th: dArms[0], ph: dArms[1], x: F.d.x + sway(5, 2, 1.1) * (1 - seg(spc, .3, .46)) });
+      // tirador
+      const body = pose(F.sh, { c: st.c, jy: st.jy, th: st.th, ph: st.ph, x: F.sh.x + 3 * Math.sin(T * 1.2) * (1 - seg(P, SHOT0 - .04, SHOT0)) });
+      void body;
+
+      // balón: bote → recogida → tiro → aro → rebotes
+      let bx = 0, by = 0, bs = 1.15, bo = 1;
+      if (P < SHOT0 - .02) { bo = 0; }
+      const handX = F.sh.x + 14 * F.sh.s * .6, floorY = F.sh.y;
+      if (P >= SHOT0 - .02 && sp < 0) { bx = handX; by = floorY - F.sh.s * 62; bo = seg(P, SHOT0 - .02, SHOT0); }
+      if (sp >= 0 && sp < .50) {
+        const p0 = holdPos(0, handX, floorY - F.sh.s * 62);
+        const p1 = holdPos(sp, p0.x, p0.y);
+        bx = p1.x; by = p1.y;
+      } else if (sp >= .50) {
+        const rel = holdPos(.5, handX, floorY);
+        if (sp < .80) {
+          const t = (sp - .5) / .3, u = 1 - t;
+          const cx = lerp(rel.x, RIM.x, .45), cy = Math.min(rel.y, RIM.y) - 175;
+          bx = u * u * rel.x + 2 * u * t * cx + t * t * RIM.x;
+          by = u * u * rel.y + 2 * u * t * cy + t * t * RIM.y;
+          bs = 1.15 * (1 - .22 * t);
+        } else {
+          bs = 1.15 * .78;
+          if (sp < .88) { const u = (sp - .80) / .08; bx = RIM.x; by = RIM.y + 96 * u * u; }
+          else {
+            const u = clamp((sp - .88) / .12), n = u * 2.4, k = Math.floor(n), f = n - k;
+            const h = [38, 15, 5][Math.min(k, 2)] * 4 * f * (1 - f) * 1;
+            bx = RIM.x + 34 * u; by = 458 - h;
+            bo = 1 - seg(u, .85, 1);
+          }
+        }
+      }
+      tf(el.ball, `translate(${bx.toFixed(2)} ${by.toFixed(2)}) scale(${bs.toFixed(3)})`);
+      op(el.ball, bo);
+
+      // red, aro y destello al entrar
+      const sw = Math.sin(Math.PI * clamp((sp - .78) / .16));
+      tf(el.net, `translate(620 364) scale(1 ${(1 + .22 * sw).toFixed(3)}) translate(-620 -364)`);
+      const shake = Math.sin(clamp((sp - .78) / .16) * 28) * (1 - clamp((sp - .78) / .16)) * (sp > .78 ? 1 : 0);
+      tf(el.rim, `translate(0 ${(1.6 * shake).toFixed(2)})`);
+      op(el.hoopGlow, sw * .32);
+
+      // reacción del público: saltito de la grada y flashes de cámara
+      const env = seg(P, SHOT0 + .8 * SHOT_LEN, SHOT0 + .86 * SHOT_LEN) * (1 - seg(P, .50, .60));
+      tf(el.crowd, `translate(0 ${(-3.5 * env * Math.abs(Math.sin(T * 7))).toFixed(2)})`);
+      el.flashes.forEach((fl, i) => op(fl, Math.pow(Math.max(0, Math.sin(T * 9 + i * 7.3)), 8) * env));
+
+      // ── videomarcador (con "pop" del dígito) y móvil de la grada
+      op(el.boardPost, seg(P, .70, .72));
+      const pop = 1 + .28 * bump(P, .715, .02);
+      tf(el.pop, `translate(256 420) scale(${pop.toFixed(3)}) translate(-256 -420)`);
+      op(el.boardFlash, bump(P, .71, .02) * .3);
+      op(el.phoneJug, seg(P, .765, .78));
+      op(el.phoneMap, seg(P, .795, .805));
+      op(el.mapCover, 1 - seg(P, .805, .81));
+      const rg = clamp((P - .805) / .035);
+      op(el.mapRing, rg > 0 && rg < 1 ? (1 - rg) * .9 : 0);
+      el.mapRing.style.transform = `scale(${(1 + rg * 1.8).toFixed(3)})`;
+      op(el.phoneCro, seg(P, .835, .845));
+      const row = seg(P, .845, .86);
+      op(el.phoneRow, row); tf(el.phoneRow, `translate(0 ${(-8 * (1 - row)).toFixed(2)})`);
+      txt(el.phoneScore, P >= .70 ? '2' : '0');
+
+      // ── reloj: parado hasta empezar, luego cuenta atrás en todas las pantallas
+      const runClock = P >= .195;
+      const left = 600 - (runClock ? Math.floor((P - .195) * 14) : 0);
+      const clk = `${String(Math.floor(left / 60)).padStart(2, '0')}:${String(left % 60).padStart(2, '0')}`;
+      if (clk !== lastClock) { lastClock = clk; [el.clockTab, el.clockWall, el.clockPhone, el.clockBug].forEach(e => txt(e, clk)); }
+      txt(el.wallState, runClock ? 'EN JUEGO' : 'RELOJ PARADO');
+
+      // pie de escena
+      let idx = 0; BOUNDS.forEach((b, i) => { if (P >= b) idx = i; });
+      caps.forEach((cp, i) => cp.classList.toggle('is-active', i === idx));
+      dots.forEach((d, i) => d.classList.toggle('is-active', i === idx));
+    }
+
+    if (reduced) {
+      root.classList.add('is-static');
+      render(0, 0);
+    } else {
+      root.classList.add('is-live');
+      let target = 0, cur = 0, visible = true, raf = 0, last = performance.now(), lastRender = 0, paused = false;
+      const progress = () => {
+        const r = track.getBoundingClientRect();
+        const top = parseFloat(getComputedStyle(sticky).top) || 0;
+        return clamp((top - r.top) / Math.max(1, r.height - sticky.offsetHeight));
+      };
+      // el progreso se suaviza para dar inercia a la cámara. En reposo solo se repinta a 15 fps (respiración de los jugadores)
+      const loop = (now: number) => {
+        raf = 0;
+        if (paused) return;
+        const dt = Math.min(.05, (now - last) / 1000); last = now;
+        target = progress();
+        const moving = Math.abs(target - cur) > 1e-4;
+        const idleAnim = cur < .6 && now - lastRender > 83; // respiración de jugadores solo mientras se ven (12 fps)
+        if (moving || idleAnim) {
+          cur += (target - cur) * (1 - Math.exp(-dt * 13));
+          if (!moving) cur = target;
+          render(cur, now / 1000); lastRender = now;
+        }
+        if (visible) raf = requestAnimationFrame(loop);
+      };
+      const start = () => { if (!raf && !paused) { last = performance.now(); raf = requestAnimationFrame(loop); } };
+      new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) start(); }, { rootMargin: '200px 0px' }).observe(track);
+      cur = target = progress();
+      render(cur, 0);
+      start();
+      // Depuración: ?tour-debug permite fijar el progreso (window.__tourSet(p)) sin bucle de animación
+      if (location.search.includes('tour-debug')) {
+        (window as any).__tourSet = (p: number, t = 1) => { paused = true; cancelAnimationFrame(raf); raf = 0; render(p, t); };
+      }
+    }
+  }
+</script>
