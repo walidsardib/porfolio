@@ -296,8 +296,8 @@ const faqs = [
         <div class="l-specs">
           {features.map(g => (
             <div class="l-spec" id={`f-${g.id}`}>
-              <h3 class="l-spec-title">{g.title}<span>{g.items.length}</span></h3>
-              <ul class="l-spec-list">
+              <h3 class="l-spec-title"><button type="button" class="l-spec-toggle" aria-expanded="true" aria-controls={`f-${g.id}-list`}><b>{g.title}</b><span>{g.items.length}</span><i aria-hidden="true"></i></button></h3>
+              <ul class="l-spec-list" id={`f-${g.id}-list`}>
                 {g.items.map(it => (<li class="reveal-up">{it}</li>))}
               </ul>
             </div>

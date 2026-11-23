@@ -295,6 +295,25 @@ function initTheme() {
 
 // ── Recorrido con scroll (LaRue3x3) ──
 // El paso que cruza el centro del viewport activa su captura/vídeo en la pantalla fija.
+// ── Ficha de funciones: en móvil cada grupo es un acordeón (solo el primero abierto); en escritorio todo visible
+function initSpecs() {
+  const specs = Array.from(document.querySelectorAll('.l-spec'));
+  if (!specs.length) return;
+  const mq = matchMedia('(max-width: 700px)');
+  const set = (spec, collapsed) => {
+    spec.classList.toggle('is-collapsed', collapsed);
+    const b = spec.querySelector('.l-spec-toggle');
+    if (b) b.setAttribute('aria-expanded', String(!collapsed));
+  };
+  const sync = () => specs.forEach((s, i) => set(s, mq.matches && i > 0));
+  sync();
+  mq.addEventListener('change', sync);
+  specs.forEach(s => {
+    const b = s.querySelector('.l-spec-toggle');
+    if (b) b.addEventListener('click', () => { if (mq.matches) set(s, !s.classList.contains('is-collapsed')); });
+  });
+}
+
 function initStory() {
   const story = document.querySelector('[data-story]');
   if (!story) return;
@@ -631,6 +650,7 @@ function init() {
   initMagneticIcons();
   initCardTilt();
   initStory();
+  initSpecs();
   initAutoVideos();
   initContactForm();
   initCountUp();

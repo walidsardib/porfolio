@@ -991,6 +991,15 @@ body { font-feature-settings: "calt" 0; }
   color: var(--l-orange);
 }
 
+/* Botón del título: en escritorio es solo texto; en móvil abre y cierra el grupo */
+.l-spec-toggle {
+  font: inherit; color: inherit; background: none; border: 0; padding: 0; text-align: left;
+  display: flex; align-items: baseline; gap: 10px; width: auto;
+  cursor: default; pointer-events: none;
+}
+.l-spec-toggle b { font-weight: inherit; }
+.l-spec-toggle i { display: none; }
+
 .l-spec-list {
   list-style: none;
   display: grid;
@@ -1204,13 +1213,40 @@ body { font-feature-settings: "calt" 0; }
 }
 
 @media (max-width: 700px) {
-  .l-block { padding-top: 64px; }
+  .l-block { padding-top: 48px; }
+  .l-sub { font-size: 1rem; margin-bottom: 22px; }
+  .l-h2 { margin-bottom: 10px; }
+  /* Perfiles: número y nombre en la misma línea, menos aire */
   .l-roles { grid-template-columns: 1fr; }
-  .l-spec { grid-template-columns: 1fr; gap: 12px; padding: 24px 0; }
-  .l-spec-title { position: static; }
-  .l-spec-list { grid-template-columns: 1fr; }
+  .l-role, .l-role + .l-role { display: grid; grid-template-columns: auto 1fr; column-gap: 12px; align-items: baseline; padding: 14px 0 14px; }
+  .l-role h3 { margin: 0 0 4px; font-size: 1.1rem; }
+  .l-role p { grid-column: 1 / -1; font-size: 0.88rem; line-height: 1.5; }
+  /* Ficha de funciones: acordeón por grupo y lista más compacta */
+  .l-spec { grid-template-columns: 1fr; gap: 6px; padding: 14px 0; }
+  .l-spec-title { position: static; font-size: 1.15rem; }
+  .l-spec-toggle { pointer-events: auto; cursor: pointer; width: 100%; align-items: center; padding: 4px 0; -webkit-tap-highlight-color: transparent; }
+  .l-spec-toggle i {
+    display: block; margin-left: auto; width: 9px; height: 9px; flex: none;
+    border-right: 2px solid var(--l-muted); border-bottom: 2px solid var(--l-muted);
+    transform: translateY(-2px) rotate(45deg); transition: transform 0.25s ease;
+  }
+  .l-spec.is-collapsed .l-spec-toggle i { transform: translateY(0) rotate(-45deg); }
+  .l-spec.is-collapsed .l-spec-list { display: none; }
+  .l-spec-list { grid-template-columns: 1fr; gap: 0; }
+  .l-spec-list li { padding: 7px 0 7px 22px; font-size: 0.9rem; line-height: 1.4; }
+  .l-spec-list li::before { top: 12px; }
   .l-story-text { grid-template-columns: 1fr; gap: 16px; }
   .l-grid, #tecnologia .l-grid, #technology .l-grid { grid-template-columns: 1fr; }
+  /* Seguridad y tecnología: celdas más bajas */
+  .l-cell { padding: 14px 16px; }
+  .l-cell dt { font-size: 0.98rem; margin-bottom: 4px; }
+  .l-cell dd { font-size: 0.86rem; line-height: 1.45; }
+  /* Planes: descripción corta y lista de características en línea */
+  .l-plan { padding: 20px 18px; }
+  .l-plan-desc { min-height: 0; margin: 4px 0 12px; font-size: 0.9rem; }
+  .l-plan-list { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-bottom: 16px; }
+  .l-plan-list li { font-size: 0.84rem; padding-left: 20px; }
+  .l-plans-note { font-size: 0.82rem; }
   .l-toc {
     top: calc(var(--nav-height) + 4px);
     background: #161615;
