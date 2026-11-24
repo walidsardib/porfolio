@@ -19,6 +19,13 @@ body { font-feature-settings: "calt" 0; }
   margin-bottom: 32px;
 }
 
+.h-sub {
+  max-width: 56ch;
+  margin: -12px 0 32px;
+  color: var(--muted, inherit);
+  opacity: 0.75;
+}
+
 .h-num {
   font-family: var(--font-mono);
   font-size: 0.8rem;
