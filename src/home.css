@@ -1947,8 +1947,8 @@ body { font-feature-settings: "calt" 0; }
 .tour-cap p { color: var(--l-muted); font-size: 0.98rem; line-height: 1.55; margin: 0; }
 
 .tour-dots { display: flex; gap: 8px; }
-.tour-dots span { width: 22px; height: 3px; border-radius: 3px; background: var(--l-line); transition: background 0.3s, width 0.3s; }
-.tour-dots span.is-active { width: 36px; background: var(--l-orange); }
+.tour-dots span { width: 22px; height: 3px; border-radius: 3px; background: var(--l-line); transition: background 0.3s, transform 0.3s; }
+.tour-dots span.is-active { transform: scaleX(1.64); background: var(--l-orange); }
 
 /* Sin JS o con movimiento reducido: la escena queda quieta y los cinco pasos se leen como lista */
 .tour:not(.is-live) .tour-track { height: auto; }
